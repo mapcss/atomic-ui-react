@@ -9,7 +9,7 @@ export const makeOptions = (version: string): BuildOptions => ({
   entryPoints: ["./mod.ts"],
   outDir: "./npm",
   package: {
-    name: "@atomic-ui/react",
+    name: "@atomic_ui/react",
     version,
     description:
       "Tiny, Unstyled, Accessible React components/hooks, designed to integrate with Atomic CSS.",
