@@ -1,6 +1,7 @@
 # atomic-ui/react
 
-Tiny, Unstyled, Accessible UI components, designed to integrate with Atomic CSS.
+Tiny, Unstyled, Accessible React components/hooks, designed to integrate with
+Atomic CSS.
 
 ## License
 
