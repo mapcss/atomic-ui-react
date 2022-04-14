@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { createElement, useMemo } from "react";
 
 type _Props<As extends keyof JSX.IntrinsicElements> = {

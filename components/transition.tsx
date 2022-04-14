@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { createElement, ReactNode, useMemo, useRef } from "react";
 import useTransition, { TransitionProps } from "../hooks/use_transition.ts";
 

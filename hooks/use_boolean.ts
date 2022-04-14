@@ -1,6 +1,8 @@
+// This module is browser compatible.
+
 import { useMemo, useState } from "react";
 
-export type InitialState = boolean | (() => boolean);
+export type Param = boolean | (() => boolean);
 
 export type ReturnValue = [boolean, {
   on: () => void;
@@ -10,7 +12,7 @@ export type ReturnValue = [boolean, {
 
 /** Manage boolean (on - off) states */
 export default function useBoolean(
-  initialState: InitialState = false,
+  initialState: Param = false,
 ): ReturnValue {
   const [state, setState] = useState(initialState);
   const callbacks = useMemo(

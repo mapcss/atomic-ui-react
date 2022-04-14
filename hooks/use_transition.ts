@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { DependencyList, RefObject, useMemo, useRef, useState } from "react";
 import { isBrowser, VFn } from "../deps.ts";
 import useIsomorphicLayoutEffect from "./use_isomorphic_layout_effect.ts";
