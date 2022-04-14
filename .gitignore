@@ -1,0 +1,9 @@
+.DS_Store
+Thumbs.db
+.aleph/
+_playground/dist/
+_playground/hooks/
+_playground/components/
+_playground/deps.ts
+_playground/style/map.css
+node_modules/
