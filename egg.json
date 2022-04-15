@@ -19,5 +19,6 @@
   ],
   "check": false,
   "yes": true,
-  "unlisted": false
+  "unlisted": false,
+  "unstable": true
 }
