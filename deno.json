@@ -9,12 +9,12 @@
   },
   "fmt": {
     "files": {
-      "exclude": ["_playground"]
+      "exclude": ["_playground", "CHANGELOG.md"]
     }
   },
   "lint": {
     "files": {
-      "exclude": ["_playground"]
+      "exclude": ["_playground", "CHANGELOG.md"]
     }
   }
 }
