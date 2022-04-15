@@ -15,7 +15,6 @@ Deno.test("Switch as default element", async () => {
   const switchEl = result.getByRole("switch");
   expect(mockFn).not.toHaveBeenCalled();
   expect(switchEl.getAttribute("aria-checked")).toBe("false");
-  expect(switchEl.getAttribute("type")).toBe("button");
 
   fireEvent.click(switchEl);
   expect(mockFn).toHaveBeenCalledWith(true);
