@@ -1,4 +1,12 @@
-import { BuildOptions } from "https://deno.land/x/dnt@0.23.0/mod.ts";
+import {
+  BuildOptions,
+  EntryPoint,
+} from "https://deno.land/x/dnt@0.23.0/mod.ts";
+import {
+  dirname,
+  fromFileUrl,
+  join,
+} from "https://deno.land/std@0.135.0/path/mod.ts";
 
 export const makeOptions = (version: string): BuildOptions => ({
   test: false,
@@ -6,7 +14,7 @@ export const makeOptions = (version: string): BuildOptions => ({
     deno: false,
   },
   typeCheck: true,
-  entryPoints: ["./mod.ts"],
+  entryPoints: ["./mod.ts", ...makeEntryPoint()],
   outDir: "./npm",
   package: {
     name: "@atomic_ui/react",
@@ -46,6 +54,37 @@ export const makeOptions = (version: string): BuildOptions => ({
   },
   packageManager: "pnpm",
 });
+
+const url = fromFileUrl(import.meta.url);
+const PROJECT_ROOT = join(dirname(url), "..");
+
+export const packages: { name: string; entrypoint: string; rootDir: string }[] =
+  [{
+    name: "tab",
+    entrypoint: join(PROJECT_ROOT, "tab", "mod.ts"),
+    rootDir: join(PROJECT_ROOT, "tab"),
+  }, {
+    name: "switch",
+    entrypoint: join(PROJECT_ROOT, "switch", "mod.ts"),
+    rootDir: join(PROJECT_ROOT, "switch"),
+  }, {
+    name: "transition",
+    entrypoint: join(PROJECT_ROOT, "transition", "mod.ts"),
+    rootDir: join(PROJECT_ROOT, "transition"),
+  }, {
+    name: "hooks",
+    entrypoint: join(PROJECT_ROOT, "hooks", "mod.ts"),
+    rootDir: join(PROJECT_ROOT, "hooks"),
+  }];
+
+function makeEntryPoint(): EntryPoint[] {
+  return packages.map(({ name, entrypoint }) => {
+    return {
+      name: `./${name}`,
+      path: entrypoint,
+    };
+  });
+}
 
 export function cleanVersion(version: string): string {
   return version.replace(/^v(.+)$/, "$1");
