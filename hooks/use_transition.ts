@@ -87,18 +87,33 @@ export function currentClassName(
 ): string | undefined {
   switch (timing) {
     case "init": {
-      return from;
+      return joinCharacters([from]);
     }
     case "start": {
-      return `${from} ${via}`;
+      return joinCharacters([from, via]);
     }
     case "via": {
-      return `${to} ${via}`;
+      return joinCharacters([to, via]);
     }
     default: {
       return undefined;
     }
   }
+}
+
+export function joinCharacters(
+  characters: (string | undefined)[],
+): string {
+  return filterTruthy(characters).map(cleanCharacter)
+    .join(" ");
+}
+
+function cleanCharacter(value: string): string {
+  return value.trim().replaceAll(/\s+/g, " ");
+}
+
+export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
+  return value.filter(Boolean) as never;
 }
 
 export function mapClassName(

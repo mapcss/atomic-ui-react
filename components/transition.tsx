@@ -1,7 +1,10 @@
 // This module is browser compatible.
 
 import { createElement, ReactNode, useMemo, useRef } from "react";
-import useTransition, { TransitionProps } from "../hooks/use_transition.ts";
+import useTransition, {
+  joinCharacters,
+  TransitionProps,
+} from "../hooks/use_transition.ts";
 
 type _Props<As extends keyof JSX.IntrinsicElements> = TransitionProps & {
   /** The element the Wrapper should render as.
@@ -50,10 +53,10 @@ export default function Transition<
       leaveTo,
     },
   );
-  const className = useMemo<string>(() => {
-    return [..._className?.split(" ") ?? [], ...__className?.split(" ") ?? []]
-      .join(" ");
-  }, [_className, __className]);
+  const className = useMemo<string>(
+    () => joinCharacters([_className, __className]),
+    [_className, __className],
+  );
 
   return createElement(
     _as,
