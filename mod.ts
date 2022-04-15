@@ -10,7 +10,7 @@ export type {
   Param as UseBooleanParam,
   ReturnValue as UseBooleanReturnValue,
 } from "./hooks/use_boolean.ts";
-export { default as useIsomorphicLayoutEffect } from "./hooks/use_boolean.ts";
+export { default as useIsomorphicLayoutEffect } from "./hooks/use_isomorphic_layout_effect.ts";
 export { default as useTransition } from "./hooks/use_transition.ts";
 export type {
   Param as UseTransitionParam,
