@@ -2,6 +2,7 @@
 
 export * from "./switch/mod.ts";
 export * from "./transition/mod.ts";
+export * from './tab/mod.ts'
 
 export { default as useBoolean } from "./hooks/use_boolean.ts";
 export type {
