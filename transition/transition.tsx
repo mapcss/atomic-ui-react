@@ -4,7 +4,7 @@ import { createElement, ReactNode, useMemo, useRef } from "react";
 import useTransition, {
   joinCharacters,
   TransitionProps,
-} from "../hooks/use_transition.ts";
+} from "./use_transition.ts";
 
 type _Props<As extends keyof JSX.IntrinsicElements> = TransitionProps & {
   /** The element the Wrapper should render as.
