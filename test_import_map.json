@@ -4,6 +4,7 @@
     "react-dom": "https://esm.sh/react-dom@18.0.0?dev",
     "react-dom/server": "https://esm.sh/react-dom@18.0.0/server?dev",
     "@testing-library/react": "https://esm.sh/@testing-library/react@13.0.0/pure?dev&pin=v77",
-    "@testing-library/react-hooks": "https://esm.sh/@testing-library/react-hooks/native/pure?dev&pin=v77&deps=react@18.0.0,react-test-renderer@18.0.0"
+    "@testing-library/react-hooks": "https://esm.sh/@testing-library/react-hooks/native/pure?dev&pin=v77&deps=react@18.0.0,react-test-renderer@18.0.0",
+    "https://deno.land/x/atomic_ui_react@$VERSION/": "./"
   }
 }

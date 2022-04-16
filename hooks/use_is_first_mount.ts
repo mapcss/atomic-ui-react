@@ -12,6 +12,8 @@ export type ReturnValue = {
  *
  * @example
  * ```tsx
+ * import { useIsFirstMount } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+ * // in-component
  * const { isFirstMount } = useIsFirstMount()
  * // isFirstMount: true
  * // re-render
