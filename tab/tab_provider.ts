@@ -12,9 +12,9 @@ import {
 } from "react";
 import { isNumber } from "../deps.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
-import { Props as TabProps } from "./tab.tsx";
-import { Props as TabPanelProps } from "./tab_panel.tsx";
-import { Props as TabListProps } from "./tab_list.tsx";
+import { Props as TabProps } from "./tab.ts";
+import { Props as TabPanelProps } from "./tab_panel.ts";
+import { Props as TabListProps } from "./tab_list.ts";
 import { visit } from "./traverse.ts";
 import {
   DEFAULT_INDEX,

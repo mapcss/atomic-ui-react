@@ -1,4 +1,4 @@
-import Switch from "./switch.tsx";
+import Switch from "./switch.ts";
 import { expect, fn, setupJSDOM } from "../dev_deps.ts";
 
 Deno.test("Switch as default element", async () => {

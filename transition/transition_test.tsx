@@ -1,4 +1,4 @@
-import Transition from "./transition.tsx";
+import Transition from "./transition.ts";
 import {
   defineGlobalThis,
   expect,
