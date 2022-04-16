@@ -1,3 +1,19 @@
+# [1.0.0-beta.3](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.2...1.0.0-beta.3) (2022-04-16)
+
+
+### Bug Fixes
+
+* **tab:** rename `Tab` component props of `tag` to `as` ([50d5358](https://github.com/mapcss/atomic-ui-react/commit/50d5358cb6b7720deb72316277f69ea3e8629df7))
+* **tab:** rename props of Tab to `isSelected` from `isSelect` ([980fff3](https://github.com/mapcss/atomic-ui-react/commit/980fff30f1dd984c46cdb3c67607cdf228dcefb4))
+
+
+### Features
+
+* **tab:** add `TabProvider` component that manage children ([58359bc](https://github.com/mapcss/atomic-ui-react/commit/58359bcebc545d8e813944a429da5feef97c2454))
+* **tab:** add searching recursive children to traverse ([79b9aa2](https://github.com/mapcss/atomic-ui-react/commit/79b9aa2038b3c9bc031284a9d80c71c512789345))
+* **tab:** add tab provider to controllable ([baee3f7](https://github.com/mapcss/atomic-ui-react/commit/baee3f75c6315a2e849c06f59eda3780c7f5f51c))
+* **tab:** add uncontrol component feature to tab provider ([f3da5fb](https://github.com/mapcss/atomic-ui-react/commit/f3da5fbc20195eaebd70b2385db5fa6eed7a65ba))
+
 # [1.0.0-beta.2](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.1...1.0.0-beta.2) (2022-04-15)
 
 
