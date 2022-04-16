@@ -4,17 +4,22 @@ import {
   Fragment,
   ReactNode,
   useCallback,
-  useState,
 } from "react";
 import { visit } from "./traverse.ts";
 
-const defaultIndex = 0;
+export type Props = {
+  selectedIndex: number;
+
+  defaultIndex?: number;
+
+  onChange?: (index: number) => void;
+
+  children: ReactNode;
+};
 
 export default function TabProvider(
-  { children }: { children: ReactNode },
+  { children, defaultIndex = 0, selectedIndex, onChange }: Props,
 ): JSX.Element {
-  const [selectedIndex, setSelectedIndex] = useState(defaultIndex);
-
   const makeChildren = () => {
     let tabId = defaultIndex;
     let tabPanelId = defaultIndex;
@@ -24,7 +29,7 @@ export default function TabProvider(
         tabId++;
         const onClick = useCallback(() => {
           tabEl.props?.onClick?.();
-          setSelectedIndex(currentIndex);
+          onChange?.(currentIndex);
         }, []);
 
         const props = {
