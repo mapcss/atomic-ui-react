@@ -34,7 +34,7 @@ export function useTabPanelAttribute(): UseTabPanelAttributeReturnValue {
 }
 
 type UseTabAttributeParam = {
-  selected: boolean;
+  isSelected: boolean;
 };
 
 type UseTabAttributeReturnValue = Pick<
@@ -42,16 +42,16 @@ type UseTabAttributeReturnValue = Pick<
   "role" | "aria-selected" | "tabIndex"
 >;
 export function useTabAttribute(
-  { selected }: UseTabAttributeParam,
+  { isSelected }: UseTabAttributeParam,
 ): UseTabAttributeReturnValue {
   const attribute = useMemo<UseTabAttributeReturnValue>(() => {
     return {
       role: "tab",
-      "aria-selected": selected ? "true" : "false",
+      "aria-selected": isSelected ? "true" : "false",
       // "aria-controls": "",
-      tabIndex: selected ? 0 : -1,
+      tabIndex: isSelected ? 0 : -1,
     };
-  }, [selected]);
+  }, [isSelected]);
 
   return attribute;
 }

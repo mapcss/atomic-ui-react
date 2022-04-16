@@ -13,11 +13,7 @@ type _Props<Tag extends keyof JSX.IntrinsicElements> = {
   /**
    * @default false
    */
-  isSelect?: boolean;
-
-  propsAs?: (
-    { isSelect }: { isSelect: boolean },
-  ) => JSX.IntrinsicElements["button"];
+  isSelected?: boolean;
 };
 
 export type Props<Tag extends keyof JSX.IntrinsicElements = "button"> =
@@ -25,9 +21,9 @@ export type Props<Tag extends keyof JSX.IntrinsicElements = "button"> =
   & Omit<JSX.IntrinsicElements[Tag], keyof _Props<Tag>>;
 
 export default function Tab(
-  { tag = "button", isSelect = false, ...rest }: Props,
+  { tag = "button", isSelected = false, ...rest }: Props,
 ): JSX.Element {
-  const attribute = useTabAttribute({ selected: isSelect });
+  const attribute = useTabAttribute({ isSelected });
 
   return createElement(tag, { ...attribute, ...rest });
 }
