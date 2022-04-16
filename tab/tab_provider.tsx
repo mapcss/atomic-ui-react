@@ -2,10 +2,11 @@ import {
   cloneElement,
   createElement,
   Fragment,
+  MouseEventHandler,
   ReactNode,
-  useCallback,
 } from "react";
 import { visit } from "./traverse.ts";
+import { DEFAULT_INDEX } from "./constant.ts";
 
 export type Props = {
   selectedIndex: number;
@@ -18,38 +19,38 @@ export type Props = {
 };
 
 export default function TabProvider(
-  { children, defaultIndex = 0, selectedIndex, onChange }: Props,
+  { children, defaultIndex = DEFAULT_INDEX, selectedIndex, onChange }: Props,
 ): JSX.Element {
-  const makeChildren = () => {
-    let tabId = defaultIndex;
-    let tabPanelId = defaultIndex;
-    const newChildren = visit(children, {
-      tab: (tabEl) => {
-        const currentIndex = tabId;
-        tabId++;
-        const onClick = useCallback(() => {
-          tabEl.props?.onClick?.();
-          onChange?.(currentIndex);
-        }, []);
+  let tabId = defaultIndex;
+  let tabPanelId = defaultIndex;
 
-        const props = {
-          id: `tab-${currentIndex}`,
-          onClick,
-          isSelect: currentIndex === selectedIndex,
-        };
+  const newChildren = visit(children, {
+    tab: (tabEl) => {
+      const currentIndex = tabId;
+      tabId++;
+
+      const onClick: MouseEventHandler = (ev): void => {
+        tabEl.props?.onClick?.(ev);
+        onChange?.(currentIndex);
+      };
+
+      const props = {
+        id: `tab-${currentIndex}`,
+        onClick,
+        isSelect: currentIndex === selectedIndex,
+      };
+      return cloneElement(tabEl, props);
+    },
+    tabPanel: (tabEl) => {
+      const currentIndex = tabPanelId;
+      tabPanelId++;
+
+      if (currentIndex === selectedIndex) {
+        const props = { id: currentIndex };
         return cloneElement(tabEl, props);
-      },
-      tabPanel: (tabEl) => {
-        const currentIndex = tabPanelId;
-        tabPanelId++;
-        if (currentIndex === selectedIndex) {
-          const props = { id: currentIndex };
-          return cloneElement(tabEl, props);
-        }
-      },
-    });
-    return newChildren;
-  };
+      }
+    },
+  });
 
-  return createElement(Fragment, null, makeChildren());
+  return createElement(Fragment, null, newChildren);
 }
