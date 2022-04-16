@@ -19,39 +19,48 @@ export function useTabListAttribute(): UseTabListAttributeReturnValue {
   return attribute;
 }
 
-type UseTabPanelAttributeReturnValue = {
-  role: "tabpanel";
+export type UseTabPanelAttributeParam = {
+  tabId: string;
 };
 
-export function useTabPanelAttribute(): UseTabPanelAttributeReturnValue {
+export type UseTabPanelAttributeReturnValue = Pick<
+  JSX.IntrinsicElements[keyof JSX.IntrinsicElements],
+  "role" | "aria-labelledby"
+>;
+
+export function useTabPanelAttribute(
+  { tabId }: Readonly<Partial<UseTabPanelAttributeParam>> = {},
+): UseTabPanelAttributeReturnValue {
   const attribute = useMemo<UseTabPanelAttributeReturnValue>(() => {
     return {
       role: "tabpanel",
+      "aria-labelledby": tabId,
     };
-  }, []);
+  }, [tabId]);
 
   return attribute;
 }
 
-type UseTabAttributeParam = {
+export type UseTabAttributeParam = {
   isSelected: boolean;
+  tabPanelId: string;
 };
 
-type UseTabAttributeReturnValue = Pick<
+export type UseTabAttributeReturnValue = Pick<
   JSX.IntrinsicElements[keyof JSX.IntrinsicElements],
-  "role" | "aria-selected" | "tabIndex"
+  "role" | "aria-selected" | "tabIndex" | "aria-controls"
 >;
 export function useTabAttribute(
-  { isSelected }: UseTabAttributeParam,
+  { isSelected, tabPanelId }: Readonly<Partial<UseTabAttributeParam>>,
 ): UseTabAttributeReturnValue {
   const attribute = useMemo<UseTabAttributeReturnValue>(() => {
     return {
       role: "tab",
       "aria-selected": isSelected ? "true" : "false",
-      // "aria-controls": "",
+      "aria-controls": tabPanelId,
       tabIndex: isSelected ? 0 : -1,
     };
-  }, [isSelected]);
+  }, [isSelected, tabPanelId]);
 
   return attribute;
 }

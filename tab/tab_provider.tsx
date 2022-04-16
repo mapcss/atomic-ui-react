@@ -13,7 +13,11 @@ import { isNumber } from "../deps.ts";
 import { Props as TabProps } from "./tab.tsx";
 import { Props as TabPanelProps } from "./tab_panel.tsx";
 import { visit } from "./traverse.ts";
-import { DEFAULT_INDEX } from "./constant.ts";
+import {
+  DEFAULT_INDEX,
+  TAB_ID_PREFIX,
+  TAB_PANEL_ID_PREFIX,
+} from "./constant.ts";
 
 export type Props = {
   /** The selected index if you want to use as a controlled component. */
@@ -67,7 +71,8 @@ export default function TabProvider(
       };
 
       const props: TabProps = {
-        id: `tab-${currentIndex}`,
+        id: `${TAB_ID_PREFIX}${currentIndex}`,
+        tabPanelId: `${TAB_PANEL_ID_PREFIX}${currentIndex}`,
         onClick,
         isSelected: currentIndex === index,
       };
@@ -78,7 +83,10 @@ export default function TabProvider(
       tabPanelId++;
 
       if (currentIndex === index) {
-        const props: TabPanelProps = { id: String(currentIndex) };
+        const props: TabPanelProps = {
+          id: `${TAB_PANEL_ID_PREFIX}${currentIndex}`,
+          tabId: `${TAB_ID_PREFIX}${currentIndex}`,
+        };
         return cloneElement(tabEl, props);
       }
     },

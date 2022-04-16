@@ -10,10 +10,9 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
    */
   as?: As;
 
-  /**
-   * @default false
-   */
   isSelected?: boolean;
+
+  tabPanelId?: string;
 };
 
 export type Props<Tag extends keyof JSX.IntrinsicElements = "button"> =
@@ -21,9 +20,9 @@ export type Props<Tag extends keyof JSX.IntrinsicElements = "button"> =
   & Omit<JSX.IntrinsicElements[Tag], keyof _Props<Tag>>;
 
 export default function Tab(
-  { as = "button", isSelected = false, ...rest }: Props,
+  { as = "button", isSelected, tabPanelId, ...rest }: Props,
 ): JSX.Element {
-  const attribute = useTabAttribute({ isSelected });
+  const attribute = useTabAttribute({ isSelected, tabPanelId });
 
   return createElement(as, { ...attribute, ...rest });
 }

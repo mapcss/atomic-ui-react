@@ -9,6 +9,8 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
    * @default `div`
    */
   as?: As;
+
+  tabId?: string;
 };
 
 export type Props<As extends keyof JSX.IntrinsicElements = "div"> =
@@ -16,10 +18,10 @@ export type Props<As extends keyof JSX.IntrinsicElements = "div"> =
   & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
 
 export default function TabPanel<As extends keyof JSX.IntrinsicElements>(
-  { as, ...rest }: Props<As>,
+  { as, tabId, ...rest }: Props<As>,
 ): JSX.Element {
   const _as = as ?? "div";
-  const attribute = useTabPanelAttribute();
+  const attribute = useTabPanelAttribute({ tabId });
 
   return createElement(_as, { ...attribute, ...rest });
 }
