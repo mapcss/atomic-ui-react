@@ -21,6 +21,7 @@ import {
   TAB_ID_PREFIX,
   TAB_PANEL_ID_PREFIX,
 } from "./constant.ts";
+import { getFirstIndex, getNextIndex, getPrevIndex } from "./util.ts";
 
 export type Props = {
   /** The selected index if you want to use as a controlled component. */
@@ -112,6 +113,12 @@ export default function TabProvider(
             updateState(nextIndex);
             break;
           }
+          case "Home":
+          case "PageUp": {
+            const firstIndex = getFirstIndex();
+            updateState(firstIndex);
+            break;
+          }
         }
       };
 
@@ -146,21 +153,4 @@ export default function TabProvider(
   });
 
   return createElement(Fragment, null, newChildren);
-}
-
-function getNextIndex(currentIndex: number, wholeCount: number): number {
-  const _next = currentIndex + 1;
-
-  if (_next < wholeCount) {
-    return _next;
-  }
-  return 0;
-}
-
-function getPrevIndex(currentIndex: number, wholeCount: number): number {
-  const _prev = currentIndex - 1;
-  if (0 <= _prev) {
-    return _prev;
-  }
-  return wholeCount - 1;
 }
