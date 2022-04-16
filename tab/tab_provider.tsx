@@ -4,12 +4,14 @@ import {
   cloneElement,
   createElement,
   Fragment,
+  KeyboardEventHandler,
   MouseEventHandler,
   ReactNode,
   useMemo,
   useState,
 } from "react";
 import { isNumber } from "../deps.ts";
+import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Props as TabProps } from "./tab.tsx";
 import { Props as TabPanelProps } from "./tab_panel.tsx";
 import { visit } from "./traverse.ts";
@@ -40,6 +42,7 @@ export default function TabProvider(
   let tabId = 0;
   let tabPanelId = 0;
 
+  const { isFirstMount } = useIsFirstMount();
   const isControl = useMemo<boolean>(() => isNumber(selectedIndex), [
     selectedIndex,
   ]);
@@ -60,7 +63,7 @@ export default function TabProvider(
       const currentIndex = tabId;
       tabId++;
 
-      const onClick: MouseEventHandler = (ev): void => {
+      const onClick: MouseEventHandler = (ev) => {
         tabEl.props?.onClick?.(ev);
 
         if (currentIndex === index) return;
@@ -70,10 +73,34 @@ export default function TabProvider(
         }
       };
 
+      const onKeyDown: KeyboardEventHandler = (ev) => {
+        switch (ev.code) {
+          case "ArrowLeft": {
+            const prevIndex = getPrevIndex(currentIndex, tabId);
+
+            onChange?.(prevIndex);
+            if (!isControl) {
+              setState(prevIndex);
+            }
+            break;
+          }
+          case "ArrowRight": {
+            const nextIndex = getNextIndex(currentIndex, tabId);
+            onChange?.(nextIndex);
+            if (!isControl) {
+              setState(nextIndex);
+            }
+            break;
+          }
+        }
+      };
+
       const props: TabProps = {
         id: `${TAB_ID_PREFIX}${currentIndex}`,
         tabPanelId: `${TAB_PANEL_ID_PREFIX}${currentIndex}`,
         onClick,
+        onKeyDown,
+        focus: !isFirstMount && currentIndex === index,
         isSelected: currentIndex === index,
       };
       return cloneElement(tabEl, props);
@@ -93,4 +120,21 @@ export default function TabProvider(
   });
 
   return createElement(Fragment, null, newChildren);
+}
+
+function getNextIndex(currentIndex: number, wholeCount: number): number {
+  const _next = currentIndex + 1;
+
+  if (_next < wholeCount) {
+    return _next;
+  }
+  return 0;
+}
+
+function getPrevIndex(currentIndex: number, wholeCount: number): number {
+  const _prev = currentIndex - 1;
+  if (0 <= _prev) {
+    return _prev;
+  }
+  return wholeCount - 1;
 }
