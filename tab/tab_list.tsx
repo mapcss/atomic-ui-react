@@ -2,6 +2,7 @@
 
 import { createElement } from "react";
 import { useTabListAttribute } from "./use_attribute.ts";
+import { TAB_LIST, TYPE } from "./constant.ts";
 
 type _Props<As extends keyof JSX.IntrinsicElements> = {
   /**
@@ -22,3 +23,5 @@ export default function TabList<As extends keyof JSX.IntrinsicElements>(
 
   return createElement(_as, { ...attribute, ...rest });
 }
+
+TabList[TYPE] = TAB_LIST;

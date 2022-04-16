@@ -2,6 +2,7 @@
 
 import { createElement } from "react";
 import { useTabPanelAttribute } from "./use_attribute.ts";
+import { TAB_PANEL, TYPE } from "./constant.ts";
 
 type _Props<As extends keyof JSX.IntrinsicElements> = {
   /**
@@ -22,3 +23,5 @@ export default function TabPanel<As extends keyof JSX.IntrinsicElements>(
 
   return createElement(_as, { ...attribute, ...rest });
 }
+
+TabPanel[TYPE] = TAB_PANEL;
