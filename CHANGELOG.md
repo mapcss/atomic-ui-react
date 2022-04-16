@@ -1,3 +1,12 @@
+# [1.0.0-beta.4](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.3...1.0.0-beta.4) (2022-04-16)
+
+
+### Features
+
+* **hooks:** add `useIsFirstMount` hooks ([39bb054](https://github.com/mapcss/atomic-ui-react/commit/39bb05401d229e040534aaa492620e2bded5e60c))
+* **tab:** add key board shortcut of `ArrowLeft` and `ArrowRight` ([5b585e7](https://github.com/mapcss/atomic-ui-react/commit/5b585e77dc6383381fcadee9a26efef5719199b8))
+* **tab:** add WAI-ARIA attribute of aria-controls ([a467563](https://github.com/mapcss/atomic-ui-react/commit/a4675630b9094e8602a61276b265832c17f342b4))
+
 # [1.0.0-beta.3](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.2...1.0.0-beta.3) (2022-04-16)
 
 
