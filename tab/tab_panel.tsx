@@ -11,7 +11,7 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
   as?: As;
 };
 
-export type Props<As extends keyof JSX.IntrinsicElements> =
+export type Props<As extends keyof JSX.IntrinsicElements = "div"> =
   & _Props<As>
   & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
 

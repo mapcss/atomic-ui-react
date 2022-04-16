@@ -10,6 +10,8 @@ import {
   useState,
 } from "react";
 import { isNumber } from "../deps.ts";
+import { Props as TabProps } from "./tab.tsx";
+import { Props as TabPanelProps } from "./tab_panel.tsx";
 import { visit } from "./traverse.ts";
 import { DEFAULT_INDEX } from "./constant.ts";
 
@@ -64,10 +66,10 @@ export default function TabProvider(
         }
       };
 
-      const props = {
+      const props: TabProps = {
         id: `tab-${currentIndex}`,
         onClick,
-        isSelect: currentIndex === index,
+        isSelected: currentIndex === index,
       };
       return cloneElement(tabEl, props);
     },
@@ -76,7 +78,7 @@ export default function TabProvider(
       tabPanelId++;
 
       if (currentIndex === index) {
-        const props = { id: currentIndex };
+        const props: TabPanelProps = { id: String(currentIndex) };
         return cloneElement(tabEl, props);
       }
     },
