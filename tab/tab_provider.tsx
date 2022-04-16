@@ -4,15 +4,23 @@ import {
   Fragment,
   MouseEventHandler,
   ReactNode,
+  useMemo,
+  useState,
 } from "react";
 import { visit } from "./traverse.ts";
 import { DEFAULT_INDEX } from "./constant.ts";
+import { isNumber } from "../deps.ts";
 
 export type Props = {
-  selectedIndex: number;
+  /** The selected index if you want to use as a controlled component. */
+  selectedIndex?: number;
 
+  /** The default selected index.
+   * @default 0
+   */
   defaultIndex?: number;
 
+  /** A function called whenever the active tab will change. */
   onChange?: (index: number) => void;
 
   children: ReactNode;
@@ -21,8 +29,23 @@ export type Props = {
 export default function TabProvider(
   { children, defaultIndex = DEFAULT_INDEX, selectedIndex, onChange }: Props,
 ): JSX.Element {
-  let tabId = defaultIndex;
-  let tabPanelId = defaultIndex;
+  let tabId = 0;
+  let tabPanelId = 0;
+
+  const isControl = useMemo<boolean>(() => isNumber(selectedIndex), [
+    selectedIndex,
+  ]);
+  const [state, setState] = useState<number>(selectedIndex ?? defaultIndex);
+
+  const index = useMemo<number>(
+    () => isControl ? selectedIndex ?? defaultIndex : state,
+    [
+      isControl,
+      selectedIndex,
+      state,
+      defaultIndex,
+    ],
+  );
 
   const newChildren = visit(children, {
     tab: (tabEl) => {
@@ -31,13 +54,18 @@ export default function TabProvider(
 
       const onClick: MouseEventHandler = (ev): void => {
         tabEl.props?.onClick?.(ev);
+
+        if (currentIndex === index) return;
         onChange?.(currentIndex);
+        if (!isControl) {
+          setState(currentIndex);
+        }
       };
 
       const props = {
         id: `tab-${currentIndex}`,
         onClick,
-        isSelect: currentIndex === selectedIndex,
+        isSelect: currentIndex === index,
       };
       return cloneElement(tabEl, props);
     },
@@ -45,7 +73,7 @@ export default function TabProvider(
       const currentIndex = tabPanelId;
       tabPanelId++;
 
-      if (currentIndex === selectedIndex) {
+      if (currentIndex === index) {
         const props = { id: currentIndex };
         return cloneElement(tabEl, props);
       }
