@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import {
   cloneElement,
   createElement,
@@ -7,9 +9,9 @@ import {
   useMemo,
   useState,
 } from "react";
+import { isNumber } from "../deps.ts";
 import { visit } from "./traverse.ts";
 import { DEFAULT_INDEX } from "./constant.ts";
-import { isNumber } from "../deps.ts";
 
 export type Props = {
   /** The selected index if you want to use as a controlled component. */
