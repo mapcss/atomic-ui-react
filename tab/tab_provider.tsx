@@ -21,7 +21,12 @@ import {
   TAB_ID_PREFIX,
   TAB_PANEL_ID_PREFIX,
 } from "./constant.ts";
-import { getFirstIndex, getNextIndex, getPrevIndex } from "./util.ts";
+import {
+  getFirstIndex,
+  getLastIndex,
+  getNextIndex,
+  getPrevIndex,
+} from "./util.ts";
 
 export type Props = {
   /** The selected index if you want to use as a controlled component. */
@@ -117,6 +122,12 @@ export default function TabProvider(
           case "PageUp": {
             const firstIndex = getFirstIndex();
             updateState(firstIndex);
+            break;
+          }
+          case "End":
+          case "PageDown": {
+            const lastIndex = getLastIndex(currentIndex, tabId);
+            updateState(lastIndex);
             break;
           }
         }

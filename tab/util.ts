@@ -18,3 +18,7 @@ export function getPrevIndex(currentIndex: number, sumCount: number): number {
 export function getFirstIndex(): number {
   return 0;
 }
+
+export function getLastIndex(_: number, sumCount: number): number {
+  return sumCount - 1;
+}
