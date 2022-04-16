@@ -1,3 +1,13 @@
+# [1.0.0-beta.5](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.4...1.0.0-beta.5) (2022-04-16)
+
+
+### Features
+
+* **tab:** add `renderProps` props that dynamic rendering props with context ([3f11983](https://github.com/mapcss/atomic-ui-react/commit/3f11983f92fb36e051ce5a4e69875eb48325bca8))
+* **tab:** add keyboard shortcut of `End` and `PageDown` ([9d43caf](https://github.com/mapcss/atomic-ui-react/commit/9d43cafac42a80c34f03c59cbb6f9a03d16a6fb9))
+* **tab:** add keyboard shortcut of `Home` and `PageUp` ([d22aba9](https://github.com/mapcss/atomic-ui-react/commit/d22aba9763c0435a15ffdb5e52f359f42d7b803d))
+* **tab:** add switching vertical/horizontal mode ([574b04d](https://github.com/mapcss/atomic-ui-react/commit/574b04de5c8c5500be2cd215cc69b05eed43af8d))
+
 # [1.0.0-beta.4](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.3...1.0.0-beta.4) (2022-04-16)
 
 
