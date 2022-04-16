@@ -1,20 +1,28 @@
 // This module is browser compatible.
 
 import { useMemo } from "react";
+import { isBoolean } from "../deps.ts";
 
-type UseTabListAttributeReturnValue =
-  & Pick<JSX.IntrinsicElements[keyof JSX.IntrinsicElements], "aria-orientation">
-  & {
-    role: "tablist";
-  };
+export type UseTabListAttributeParam = {
+  isHorizontal: boolean;
+};
 
-export function useTabListAttribute(): UseTabListAttributeReturnValue {
+export type UseTabListAttributeReturnValue = Pick<
+  JSX.IntrinsicElements[keyof JSX.IntrinsicElements],
+  "aria-orientation" | "role"
+>;
+
+export function useTabListAttribute(
+  { isHorizontal }: Readonly<Partial<UseTabListAttributeParam>> = {},
+): UseTabListAttributeReturnValue {
   const attribute = useMemo<UseTabListAttributeReturnValue>(() => {
     return {
       role: "tablist",
-      "aria-orientation": "horizontal",
+      "aria-orientation": isBoolean(isHorizontal)
+        ? isHorizontal ? "horizontal" : "vertical"
+        : undefined,
     };
-  }, []);
+  }, [isHorizontal]);
 
   return attribute;
 }

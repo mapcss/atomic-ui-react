@@ -14,6 +14,7 @@ import { isNumber } from "../deps.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Props as TabProps } from "./tab.tsx";
 import { Props as TabPanelProps } from "./tab_panel.tsx";
+import { Props as TabListProps } from "./tab_list.tsx";
 import { visit } from "./traverse.ts";
 import {
   DEFAULT_INDEX,
@@ -33,11 +34,22 @@ export type Props = {
   /** A function called whenever the active tab will change. */
   onChange?: (index: number) => void;
 
+  /** When `true`, the orientation of the `TabList` will be `horizontal`, otherwise `vertical`
+   * @default true
+   */
+  isHorizontal?: boolean;
+
   children: ReactNode;
 };
 
 export default function TabProvider(
-  { children, defaultIndex = DEFAULT_INDEX, selectedIndex, onChange }: Props,
+  {
+    children,
+    defaultIndex = DEFAULT_INDEX,
+    selectedIndex,
+    isHorizontal = true,
+    onChange,
+  }: Props,
 ): JSX.Element {
   let tabId = 0;
   let tabPanelId = 0;
@@ -47,6 +59,15 @@ export default function TabProvider(
     selectedIndex,
   ]);
   const [state, setState] = useState<number>(selectedIndex ?? defaultIndex);
+
+  const arrowLeftUp = useMemo<"ArrowLeft" | "ArrowUp">(
+    () => isHorizontal ? "ArrowLeft" : "ArrowUp",
+    [isHorizontal],
+  );
+  const arrowRightDown = useMemo<"ArrowRight" | "ArrowDown">(
+    () => isHorizontal ? "ArrowRight" : "ArrowDown",
+    [isHorizontal],
+  );
 
   const index = useMemo<number>(
     () => isControl ? selectedIndex ?? defaultIndex : state,
@@ -63,33 +84,32 @@ export default function TabProvider(
       const currentIndex = tabId;
       tabId++;
 
+      const updateState = (index: number): void => {
+        onChange?.(index);
+        if (!isControl) {
+          setState(index);
+        }
+      };
+
       const onClick: MouseEventHandler = (ev) => {
         tabEl.props?.onClick?.(ev);
 
         if (currentIndex === index) return;
-        onChange?.(currentIndex);
-        if (!isControl) {
-          setState(currentIndex);
-        }
+        updateState(currentIndex);
       };
 
       const onKeyDown: KeyboardEventHandler = (ev) => {
-        switch (ev.code) {
-          case "ArrowLeft": {
-            const prevIndex = getPrevIndex(currentIndex, tabId);
+        tabEl.props?.onKeyDown?.(ev);
 
-            onChange?.(prevIndex);
-            if (!isControl) {
-              setState(prevIndex);
-            }
+        switch (ev.code) {
+          case arrowLeftUp: {
+            const prevIndex = getPrevIndex(currentIndex, tabId);
+            updateState(prevIndex);
             break;
           }
-          case "ArrowRight": {
+          case arrowRightDown: {
             const nextIndex = getNextIndex(currentIndex, tabId);
-            onChange?.(nextIndex);
-            if (!isControl) {
-              setState(nextIndex);
-            }
+            updateState(nextIndex);
             break;
           }
         }
@@ -116,6 +136,12 @@ export default function TabProvider(
         };
         return cloneElement(tabEl, props);
       }
+    },
+    tabList: (tabEl) => {
+      const props: TabListProps = {
+        isHorizontal,
+      };
+      return cloneElement(tabEl, props);
     },
   });
 

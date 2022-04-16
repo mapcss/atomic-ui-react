@@ -2,7 +2,7 @@
 
 import { ReactElement, ReactNode } from "react";
 import { isNil, isObject } from "../deps.ts";
-import { TAB, TAB_PANEL, TYPE } from "./constant.ts";
+import { TAB, TAB_LIST, TAB_PANEL, TYPE } from "./constant.ts";
 import { TabElement, TabFC } from "./types.ts";
 
 export function isTab(functionComponent: TabFC): functionComponent is TabFC {
@@ -13,6 +13,12 @@ export function isTabPanel(
   functionComponent: TabFC,
 ): functionComponent is TabFC {
   return functionComponent[TYPE] === TAB_PANEL;
+}
+
+export function isTabList(
+  functionComponent: TabFC,
+): functionComponent is TabFC {
+  return functionComponent[TYPE] === TAB_LIST;
 }
 
 export function isTabElement(
