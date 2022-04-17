@@ -1,3 +1,20 @@
+# [1.0.0-beta.8](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.7...1.0.0-beta.8) (2022-04-17)
+
+
+### Features
+
+* **switch:** rename prop name of `checked` to `isChecked` ([9a4f396](https://github.com/mapcss/atomic-ui-react/commit/9a4f3965aaf81483d80e98859554b0ba356c1402))
+* **tab:** add aria-disabled attribute to hook ([bd196c9](https://github.com/mapcss/atomic-ui-react/commit/bd196c99e12cbbbca65e4b7d6bac7414efbb6478))
+* **tab:** export tab WAI-ARIA hooks ([4a55cb1](https://github.com/mapcss/atomic-ui-react/commit/4a55cb1e79433ca0bd22d8fc3be4938085558021))
+* **tab:** if tab aria-disabled is true, ignore to update state on keydown `Home` and `End` ([894dc82](https://github.com/mapcss/atomic-ui-react/commit/894dc82b336704bd0848418911a931a8e4a6894b))
+* **tab:** if the tab is aria-disabled true, ignore keyboard interaction ([75cb117](https://github.com/mapcss/atomic-ui-react/commit/75cb1176e895ca3b717527b02b4525b869383086))
+* **tab:** pass dynamic context to renderProps function ([76f81f9](https://github.com/mapcss/atomic-ui-react/commit/76f81f920709c9c1469bb1c60a61c6442e8b5859))
+
+
+### Performance Improvements
+
+* **tab:** remove duplicated const for reduce bundle size ([2844880](https://github.com/mapcss/atomic-ui-react/commit/2844880b3d8dfbb9507fb573163461c75fbf808b))
+
 # [1.0.0-beta.7](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.6...1.0.0-beta.7) (2022-04-17)
 
 
