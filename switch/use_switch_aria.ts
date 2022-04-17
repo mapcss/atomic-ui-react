@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 export type Param = {
   /** Whether or not the switch is checked. */
-  checked: boolean;
+  isChecked: boolean;
 };
 
 export type ReturnValue = Pick<
@@ -12,15 +12,15 @@ export type ReturnValue = Pick<
   "role" | "aria-checked"
 >;
 
-export default function useAria(
-  { checked }: Param,
+export default function useSwitchAria(
+  { isChecked }: Readonly<Partial<Param>>,
 ): ReturnValue {
   const aria = useMemo<ReturnValue>(() => {
     return {
       role: "switch" as const,
-      "aria-checked": checked,
+      "aria-checked": isChecked,
     };
-  }, [checked]);
+  }, [isChecked]);
 
   return aria;
 }

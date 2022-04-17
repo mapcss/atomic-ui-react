@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { createElement, MouseEventHandler, useMemo } from "react";
-import useAria, { Param } from "./use_aria.ts";
+import useAria, { Param } from "./use_switch_aria.ts";
 
 type _Props<As extends keyof JSX.IntrinsicElements> = {
   /** The element the Switch should render as.
@@ -11,7 +11,7 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
 
   /** The function to call when the switch is toggled. */
   onChange: (isChecked: boolean) => void;
-} & Param;
+} & Partial<Param>;
 
 export type Props<As extends keyof JSX.IntrinsicElements> =
   & _Props<As>
@@ -19,16 +19,16 @@ export type Props<As extends keyof JSX.IntrinsicElements> =
 
 export default function Switch<
   As extends keyof JSX.IntrinsicElements = "button",
->({ checked, onChange, onClick, as, ...rest }: Props<As>): JSX.Element {
+>({ isChecked, onChange, onClick, as, ...rest }: Props<As>): JSX.Element {
   const _as = as ?? "button";
 
-  const ariaProps = useAria({ checked });
+  const ariaProps = useAria({ isChecked });
   const handleClick = useMemo<MouseEventHandler>(() => {
     return (ev) => {
       onClick?.(ev as never);
-      onChange(!checked);
+      onChange(!isChecked);
     };
-  }, [checked, onClick, onChange]);
+  }, [isChecked, onClick, onChange]);
   const props = useMemo(() => ({
     ...ariaProps,
     tabIndex: 0,
