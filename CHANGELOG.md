@@ -1,3 +1,12 @@
+# [1.0.0-beta.7](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.6...1.0.0-beta.7) (2022-04-17)
+
+
+### Features
+
+* **hooks:** add `useId` that generate universal uniqu id ([5737a12](https://github.com/mapcss/atomic-ui-react/commit/5737a124c943239df9876efc7a959bd80526cab2))
+* **ssr:** add ensuring global id is same with server side and client side ([64f636e](https://github.com/mapcss/atomic-ui-react/commit/64f636edc1a59a622cb835afdfdfb78eb51b0850))
+* **tab:** use global id and local id combination for ARIA attribute ([bdb8411](https://github.com/mapcss/atomic-ui-react/commit/bdb84113252d98eff7414e20bfc903062db42c62))
+
 # [1.0.0-beta.6](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.5...1.0.0-beta.6) (2022-04-17)
 
 
