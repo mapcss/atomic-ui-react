@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { DependencyList, RefObject, useMemo, useRef, useState } from "react";
-import { isBrowser, VFn } from "../deps.ts";
+import { isBrowser, joinChars, VFn } from "../deps.ts";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
 
 type Transition =
@@ -87,33 +87,18 @@ export function currentClassName(
 ): string | undefined {
   switch (timing) {
     case "init": {
-      return joinCharacters([from]);
+      return joinChars([from], " ");
     }
     case "start": {
-      return joinCharacters([from, via]);
+      return joinChars([from, via], " ");
     }
     case "via": {
-      return joinCharacters([to, via]);
+      return joinChars([to, via], " ");
     }
     default: {
       return undefined;
     }
   }
-}
-
-export function joinCharacters(
-  characters: (string | undefined)[],
-): string {
-  return filterTruthy(characters).map(cleanCharacter)
-    .join(" ");
-}
-
-function cleanCharacter(value: string): string {
-  return value.trim().replaceAll(/\s+/g, " ");
-}
-
-export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
-  return value.filter(Boolean) as never;
 }
 
 export function mapClassName(
