@@ -38,3 +38,7 @@ export function isValidChildren(
 ): value is Record<never, never> | undefined | null {
   return isObject(value) || isNil(value);
 }
+
+export function isAriaDisabled(el: Element | undefined | null): boolean {
+  return el?.ariaDisabled === "true";
+}

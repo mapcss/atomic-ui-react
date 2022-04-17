@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { createElement, useEffect, useMemo, useRef } from "react";
+import { createElement, RefObject, useMemo } from "react";
 import { TAB, TYPE } from "./constant.ts";
 import useTabAria, { Param } from "./use_tab_aria.ts";
 
@@ -10,7 +10,7 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
    */
   as?: As;
 
-  focus?: boolean;
+  tabRef?: RefObject<HTMLElement>;
 
   /** Dynamic rendering props with context. */
   renderProps?: (
@@ -23,10 +23,16 @@ export type Props<As extends keyof JSX.IntrinsicElements = "button"> =
   & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
 
 export default function Tab<As extends keyof JSX.IntrinsicElements = "button">(
-  { as, isSelected, tabPanelId, focus, renderProps, ...rest }: Props<As>,
+  {
+    as,
+    isSelected,
+    isDisabled,
+    tabPanelId,
+    renderProps,
+    tabRef,
+    ...rest
+  }: Props<As>,
 ): JSX.Element {
-  const ref = useRef<HTMLElement>(null);
-
   const props = useMemo(
     () => renderProps?.({ isSelected: isSelected ?? false }) ?? {},
     [isSelected],
@@ -36,14 +42,10 @@ export default function Tab<As extends keyof JSX.IntrinsicElements = "button">(
     isSelected,
   ]);
 
-  useEffect(() => {
-    if (!ref.current || !isSelected || !focus) return;
-    ref.current.focus();
-  }, [isSelected, focus]);
-  const aria = useTabAria({ isSelected, tabPanelId });
+  const aria = useTabAria({ isSelected, tabPanelId, isDisabled });
 
   return createElement(as ?? "button", {
-    ref,
+    ref: tabRef,
     ...aria,
     ...tabIndexProps,
     ...rest,

@@ -3,19 +3,23 @@
 import {
   cloneElement,
   createElement,
+  createRef,
   Fragment,
   KeyboardEventHandler,
   MouseEventHandler,
   ReactNode,
+  RefObject,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { isNumber, joinChars } from "../deps.ts";
-import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Props as TabProps } from "./tab.ts";
 import { Props as TabPanelProps } from "./tab_panel.ts";
 import { Props as TabListProps } from "./tab_list.ts";
 import { visit } from "./traverse.ts";
+import { isAriaDisabled } from "./assert.ts";
 import { DEFAULT_INDEX, TAB_PANEL_PREFIX, TAB_PREFIX } from "./constant.ts";
 import {
   getFirstIndex,
@@ -56,11 +60,12 @@ export default function TabProvider(
     onChange,
   } = props;
   const id = useId();
+  const refs = useRef<RefObject<HTMLElement>[]>([]);
+  refs.current.length = 0;
 
   let tabId = 0;
   let tabPanelId = 0;
 
-  const { isFirstMount } = useIsFirstMount();
   const isControl = useMemo<boolean>(() => isNumber(selectedIndex), [
     selectedIndex,
   ]);
@@ -85,6 +90,10 @@ export default function TabProvider(
     ],
   );
 
+  useEffect(() => {
+    refs.current[index].current?.focus();
+  }, [index]);
+
   const newChildren = visit(children, {
     tab: (tabEl) => {
       const currentIndex = tabId;
@@ -100,6 +109,7 @@ export default function TabProvider(
       const onClick: MouseEventHandler = (ev) => {
         tabEl.props?.onClick?.(ev);
 
+        if (isAriaDisabled(refs.current[currentIndex].current)) return;
         if (currentIndex === index) return;
         updateState(currentIndex);
       };
@@ -133,12 +143,14 @@ export default function TabProvider(
         }
       };
 
+      const ref = createRef<HTMLElement>();
+      refs.current.push(ref);
       const props: TabProps = {
         id: joinChars([id, TAB_PREFIX, currentIndex], "-"),
         tabPanelId: joinChars([id, TAB_PANEL_PREFIX, currentIndex], "-"),
         onClick,
         onKeyDown,
-        focus: !isFirstMount && currentIndex === index,
+        tabRef: ref,
         isSelected: currentIndex === index,
       };
       return cloneElement(tabEl, props);
