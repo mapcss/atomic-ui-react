@@ -14,3 +14,18 @@ export const isBrowser = !("Deno" in globalThis);
 export function wrap<T>(val: T): T extends any[] ? T : T[] {
   return Array.isArray(val) ? val as never : [val] as never;
 }
+
+export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
+  return value.filter(Boolean) as never;
+}
+export function joinChars(
+  characters: (string | undefined)[],
+  separator: string,
+): string {
+  return filterTruthy(characters).map(cleanCharacter).filter(Boolean)
+    .join(separator);
+}
+
+export function cleanCharacter(value: string): string {
+  return value.trim().replaceAll(/\s+/g, " ");
+}
