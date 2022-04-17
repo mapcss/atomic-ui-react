@@ -2,7 +2,7 @@
 
 import { createElement, useEffect, useMemo, useRef } from "react";
 import { TAB, TYPE } from "./constant.ts";
-import { useTabAttribute } from "./use_attribute.ts";
+import useTabAria, { Param } from "./use_tab_aria.ts";
 
 type _Props<As extends keyof JSX.IntrinsicElements> = {
   /** The element tag as.
@@ -10,17 +10,13 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
    */
   as?: As;
 
-  isSelected?: boolean;
-
-  tabPanelId?: string;
-
   focus?: boolean;
 
   /** Dynamic rendering props with context. */
   renderProps?: (
     context: { isSelected: boolean },
   ) => Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
-};
+} & Partial<Param>;
 
 export type Props<As extends keyof JSX.IntrinsicElements = "button"> =
   & _Props<As>
@@ -36,15 +32,20 @@ export default function Tab<As extends keyof JSX.IntrinsicElements = "button">(
     [isSelected],
   );
 
+  const tabIndexProps = useMemo(() => ({ tabIndex: isSelected ? 0 : -1 }), [
+    isSelected,
+  ]);
+
   useEffect(() => {
     if (!ref.current || !isSelected || !focus) return;
     ref.current.focus();
   }, [isSelected, focus]);
-  const attribute = useTabAttribute({ isSelected, tabPanelId });
+  const aria = useTabAria({ isSelected, tabPanelId });
 
   return createElement(as ?? "button", {
     ref,
-    ...attribute,
+    ...aria,
+    ...tabIndexProps,
     ...rest,
     ...props,
   });
