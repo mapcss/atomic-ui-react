@@ -14,7 +14,7 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
 
   /** Dynamic rendering props with context. */
   renderProps?: (
-    context: { isSelected: boolean },
+    context: Param,
   ) => Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
 } & Partial<Param>;
 
@@ -34,7 +34,12 @@ export default function Tab<As extends keyof JSX.IntrinsicElements = "button">(
   }: Props<As>,
 ): JSX.Element {
   const props = useMemo(
-    () => renderProps?.({ isSelected: isSelected ?? false }) ?? {},
+    () =>
+      renderProps?.({
+        isSelected: isSelected ?? false,
+        isDisabled: isDisabled ?? false,
+        tabPanelId: tabPanelId ?? "",
+      }) ?? {},
     [isSelected],
   );
 
