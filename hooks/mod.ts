@@ -7,4 +7,5 @@ export type {
 } from "./use_boolean.ts";
 export { default as useIsomorphicLayoutEffect } from "./use_isomorphic_layout_effect.ts";
 export { default as useIsFirstMount } from "./use_is_first_mount.ts";
+export { default as useId } from "./use_id.ts";
 export type { ReturnValue as UseIsFirstMountReturnValue } from "./use_is_first_mount.ts";
