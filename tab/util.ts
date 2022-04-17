@@ -1,18 +1,25 @@
-export function getNextIndex(currentIndex: number, sumCount: number): number {
-  const _next = currentIndex + 1;
+import { isLength0, not } from "../deps.ts";
 
-  if (_next < sumCount) {
-    return _next;
+export function getNextIndex(currentIndex: number, matrix: boolean[]): number {
+  if (isLength0(matrix) || matrix.every(not(Boolean))) return currentIndex;
+  const _next = currentIndex + 1;
+  if (matrix[_next]) return _next;
+  if (matrix[_next] === false) {
+    return getNextIndex(_next, matrix);
   }
-  return 0;
+
+  // if overflow from array, check from start.
+  return getNextIndex(-1, matrix);
 }
 
-export function getPrevIndex(currentIndex: number, sumCount: number): number {
+export function getPrevIndex(currentIndex: number, matrix: boolean[]): number {
+  if (isLength0(matrix) || matrix.every(not(Boolean))) return currentIndex;
   const _prev = currentIndex - 1;
-  if (0 <= _prev) {
-    return _prev;
+  if (matrix[_prev]) return _prev;
+  if (matrix[_prev] === false) {
+    return getPrevIndex(_prev, matrix);
   }
-  return sumCount - 1;
+  return getPrevIndex(matrix.length, matrix);
 }
 
 export function getFirstIndex(): number {

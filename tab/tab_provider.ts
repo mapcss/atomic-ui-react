@@ -91,7 +91,13 @@ export default function TabProvider(
   );
 
   useEffect(() => {
-    refs.current[index].current?.focus();
+    onChange?.(state);
+  }, [onChange, state]);
+
+  useEffect(() => {
+    if (!isAriaDisabled(refs.current[index].current)) {
+      refs.current[index].current?.focus();
+    }
   }, [index]);
 
   const newChildren = visit(children, {
@@ -99,19 +105,11 @@ export default function TabProvider(
       const currentIndex = tabId;
       tabId++;
 
-      const updateState = (index: number): void => {
-        onChange?.(index);
-        if (!isControl) {
-          setState(index);
-        }
-      };
-
       const onClick: MouseEventHandler = (ev) => {
         tabEl.props?.onClick?.(ev);
 
         if (isAriaDisabled(refs.current[currentIndex].current)) return;
-        if (currentIndex === index) return;
-        updateState(currentIndex);
+        setState(currentIndex);
       };
 
       const onKeyDown: KeyboardEventHandler = (ev) => {
@@ -119,25 +117,33 @@ export default function TabProvider(
 
         switch (ev.code) {
           case arrowLeftUp: {
-            const prevIndex = getPrevIndex(currentIndex, tabId);
-            updateState(prevIndex);
+            if (isAriaDisabled(refs.current[currentIndex].current)) return;
+            const prevIndex = getPrevIndex(
+              currentIndex,
+              refs.current.map(({ current }) => !isAriaDisabled(current)),
+            );
+            setState(prevIndex);
             break;
           }
           case arrowRightDown: {
-            const nextIndex = getNextIndex(currentIndex, tabId);
-            updateState(nextIndex);
+            if (isAriaDisabled(refs.current[currentIndex].current)) return;
+            const nextIndex = getNextIndex(
+              currentIndex,
+              refs.current.map(({ current }) => !isAriaDisabled(current)),
+            );
+            setState(nextIndex);
             break;
           }
           case "Home":
           case "PageUp": {
             const firstIndex = getFirstIndex();
-            updateState(firstIndex);
+            setState(firstIndex);
             break;
           }
           case "End":
           case "PageDown": {
             const lastIndex = getLastIndex(currentIndex, tabId);
-            updateState(lastIndex);
+            setState(lastIndex);
             break;
           }
         }
