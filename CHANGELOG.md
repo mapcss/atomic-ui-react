@@ -1,3 +1,10 @@
+# [1.0.0-beta.9](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.8...1.0.0-beta.9) (2022-04-17)
+
+
+### Features
+
+* **hooks:** add `useOnMount` hooks that call on mount/unmount and so on ([91589d4](https://github.com/mapcss/atomic-ui-react/commit/91589d4a725082b4d05bd7bd376730a68c8fcb88))
+
 # [1.0.0-beta.8](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.7...1.0.0-beta.8) (2022-04-17)
 
 
