@@ -10,23 +10,20 @@ import {
   useMemo,
   useState,
 } from "react";
-import { isNumber } from "../deps.ts";
+import { isNumber, joinChars } from "../deps.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Props as TabProps } from "./tab.ts";
 import { Props as TabPanelProps } from "./tab_panel.ts";
 import { Props as TabListProps } from "./tab_list.ts";
 import { visit } from "./traverse.ts";
-import {
-  DEFAULT_INDEX,
-  TAB_ID_PREFIX,
-  TAB_PANEL_ID_PREFIX,
-} from "./constant.ts";
+import { DEFAULT_INDEX, TAB_PANEL_PREFIX, TAB_PREFIX } from "./constant.ts";
 import {
   getFirstIndex,
   getLastIndex,
   getNextIndex,
   getPrevIndex,
 } from "./util.ts";
+import useId from "../hooks/use_id.ts";
 
 export type Props = {
   /** The selected index if you want to use as a controlled component. */
@@ -49,14 +46,17 @@ export type Props = {
 };
 
 export default function TabProvider(
-  {
+  props: Props,
+): JSX.Element {
+  const {
     children,
     defaultIndex = DEFAULT_INDEX,
     selectedIndex,
     isHorizontal = true,
     onChange,
-  }: Props,
-): JSX.Element {
+  } = props;
+  const id = useId();
+
   let tabId = 0;
   let tabPanelId = 0;
 
@@ -134,8 +134,8 @@ export default function TabProvider(
       };
 
       const props: TabProps = {
-        id: `${TAB_ID_PREFIX}${currentIndex}`,
-        tabPanelId: `${TAB_PANEL_ID_PREFIX}${currentIndex}`,
+        id: joinChars([id, TAB_PREFIX, currentIndex], "-"),
+        tabPanelId: joinChars([id, TAB_PANEL_PREFIX, currentIndex], "-"),
         onClick,
         onKeyDown,
         focus: !isFirstMount && currentIndex === index,
@@ -149,8 +149,8 @@ export default function TabProvider(
 
       if (currentIndex === index) {
         const props: TabPanelProps = {
-          id: `${TAB_PANEL_ID_PREFIX}${currentIndex}`,
-          tabId: `${TAB_ID_PREFIX}${currentIndex}`,
+          id: joinChars([id, TAB_PREFIX, currentIndex], "-"),
+          tabId: joinChars([id, TAB_PANEL_PREFIX, currentIndex], "-"),
         };
         return cloneElement(tabEl, props);
       }
