@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { ReactElement, ReactNode } from "react";
-import { isNil, isObject } from "../deps.ts";
+import { isFunction, isNil, isObject } from "../deps.ts";
 import { TAB, TAB_LIST, TAB_PANEL, TYPE } from "./constant.ts";
 import { TabElement, TabFC } from "./types.ts";
 
@@ -24,7 +24,7 @@ export function isTabList(
 export function isTabElement(
   reactElement: JSX.Element,
 ): reactElement is TabElement {
-  return typeof reactElement.type === "function" && TYPE in reactElement.type;
+  return isFunction(reactElement.type) && TYPE in reactElement.type;
 }
 
 export function hasChildren(
