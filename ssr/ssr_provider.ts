@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
-import { ReactNode, useContext, useMemo } from "react";
-import _Context from "./context.ts";
+import { createElement, ReactNode, useContext, useMemo } from "react";
+import Context from "./context.ts";
 import { _DEFAULT_CONTEXT } from "./constant.ts";
 import { _ContextValue } from "./types.ts";
 
@@ -10,7 +10,7 @@ export type Props = {
 };
 
 export default function SSRProvider({ children }: Props): JSX.Element {
-  const ctx = useContext(_Context);
+  const ctx = useContext(Context);
   const value = useMemo<_ContextValue>(() => ({
     // If this is the first SSRProvider, start with an empty string prefix, otherwise
     // append and increment the counter.
@@ -18,9 +18,5 @@ export default function SSRProvider({ children }: Props): JSX.Element {
     current: -1,
   }), [ctx]);
 
-  return (
-    <_Context.Provider value={value}>
-      {children}
-    </_Context.Provider>
-  );
+  return createElement(Context.Provider, { value }, children);
 }
