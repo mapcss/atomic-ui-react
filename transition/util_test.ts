@@ -1,4 +1,4 @@
-import { getDuration } from "./use_transition.ts";
+import { getDuration } from "./util.ts";
 import { defineGlobalThis, expect, setupJSDOM } from "../dev_deps.ts";
 
 Deno.test("getDuration", () => {
