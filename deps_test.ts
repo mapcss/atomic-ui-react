@@ -52,7 +52,7 @@ Deno.test("cleanCharacter", () => {
   const table: ParamReturn<typeof cleanCharacter>[] = [
     ["", ""],
     ["   ", ""],
-    ['This  is sunny !   ', 'This is sunny !']
+    ["This  is sunny !   ", "This is sunny !"],
   ];
 
   table.forEach(([value, result]) =>
