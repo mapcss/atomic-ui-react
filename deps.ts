@@ -3,6 +3,7 @@
 export {
   isBoolean,
   isFunction,
+  isLength0,
   isNil,
   isNumber,
   isObject,
@@ -28,6 +29,11 @@ export function joinChars(
   )
     .map(cleanCharacter).filter(Boolean)
     .join(separator);
+}
+
+// deno-lint-ignore no-explicit-any
+export function not<T extends (...args: any[]) => any>(fn: T) {
+  return (...args: Parameters<T>): boolean => !fn(...args);
 }
 
 export function cleanCharacter(value: string): string {
