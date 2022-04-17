@@ -1,3 +1,17 @@
+# [1.0.0-beta.6](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.5...1.0.0-beta.6) (2022-04-17)
+
+
+### Bug Fixes
+
+* all export component to be `.ts` ext ([aeab295](https://github.com/mapcss/atomic-ui-react/commit/aeab2950c75d5bbd70b5fcd034e0d6ca7bbce76f))
+* **hooks:** fix `useIsomorphicLayoutEffect` typo ([b47201b](https://github.com/mapcss/atomic-ui-react/commit/b47201bff94905b3d9ce89ca7491461d8ef67f76))
+* **transition:** fix export shim ([e0f83bf](https://github.com/mapcss/atomic-ui-react/commit/e0f83bfcb19fa1f4929ab84aeba47acc3dede3c6))
+
+
+### Features
+
+* **switch:** export `useSwitchAria` hooks that memorized role switch aria ([0da8891](https://github.com/mapcss/atomic-ui-react/commit/0da8891d1c13740fa60c88f6ce8d0a637486ff39))
+
 # [1.0.0-beta.5](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.4...1.0.0-beta.5) (2022-04-16)
 
 
