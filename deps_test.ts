@@ -42,6 +42,11 @@ Deno.test("joinChars", () => {
       "-",
       "id-2-3",
     ],
+    [
+      [0, 1, "2", "3"],
+      "-",
+      "0-1-2-3",
+    ],
   ];
   table.forEach(([value, separator, result]) =>
     expect(joinChars(value, separator)).toBe(result)
