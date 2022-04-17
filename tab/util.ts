@@ -22,10 +22,20 @@ export function getPrevIndex(currentIndex: number, matrix: boolean[]): number {
   return getPrevIndex(matrix.length, matrix);
 }
 
-export function getFirstIndex(): number {
-  return 0;
+export function getFirstIndex(currentIndex: number, matrix: boolean[]): number {
+  const index = matrix.findIndex(Boolean);
+  if (index < 0) {
+    return currentIndex;
+  } else {
+    return index;
+  }
 }
 
-export function getLastIndex(_: number, sumCount: number): number {
-  return sumCount - 1;
+export function getLastIndex(currentIndex: number, matrix: boolean[]): number {
+  const index = matrix.findLastIndex(Boolean);
+  if (index < 0) {
+    return currentIndex;
+  } else {
+    return index;
+  }
 }

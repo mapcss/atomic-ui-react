@@ -95,10 +95,22 @@ export default function TabProvider(
   }, [onChange, state]);
 
   useEffect(() => {
+    focus(index);
+  }, [index]);
+
+  const focus = (index: number): void => {
     if (!isAriaDisabled(refs.current[index].current)) {
       refs.current[index].current?.focus();
     }
-  }, [index]);
+  };
+
+  const updateOrFocus = (currentIndex: number, featureIndex: number): void => {
+    if (featureIndex === currentIndex) {
+      focus(index);
+      return;
+    }
+    setState(featureIndex);
+  };
 
   const newChildren = visit(children, {
     tab: (tabEl) => {
@@ -117,33 +129,37 @@ export default function TabProvider(
 
         switch (ev.code) {
           case arrowLeftUp: {
-            if (isAriaDisabled(refs.current[currentIndex].current)) return;
             const prevIndex = getPrevIndex(
               currentIndex,
-              refs.current.map(({ current }) => !isAriaDisabled(current)),
+              refs.current.map(isNotRefAriaDisabled),
             );
-            setState(prevIndex);
+            updateOrFocus(index, prevIndex);
             break;
           }
           case arrowRightDown: {
-            if (isAriaDisabled(refs.current[currentIndex].current)) return;
             const nextIndex = getNextIndex(
               currentIndex,
-              refs.current.map(({ current }) => !isAriaDisabled(current)),
+              refs.current.map(isNotRefAriaDisabled),
             );
-            setState(nextIndex);
+            updateOrFocus(index, nextIndex);
             break;
           }
           case "Home":
           case "PageUp": {
-            const firstIndex = getFirstIndex();
-            setState(firstIndex);
+            const firstIndex = getFirstIndex(
+              currentIndex,
+              refs.current.map(isNotRefAriaDisabled),
+            );
+            updateOrFocus(index, firstIndex);
             break;
           }
           case "End":
           case "PageDown": {
-            const lastIndex = getLastIndex(currentIndex, tabId);
-            setState(lastIndex);
+            const lastIndex = getLastIndex(
+              currentIndex,
+              refs.current.map(isNotRefAriaDisabled),
+            );
+            updateOrFocus(index, lastIndex);
             break;
           }
         }
@@ -182,4 +198,8 @@ export default function TabProvider(
   });
 
   return createElement(Fragment, null, newChildren);
+}
+
+function isNotRefAriaDisabled(ref: RefObject<HTMLElement>): boolean {
+  return !isAriaDisabled(ref.current);
 }
