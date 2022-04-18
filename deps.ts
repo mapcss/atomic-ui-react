@@ -8,8 +8,9 @@ export {
   isNil,
   isNumber,
   isObject,
+  isString,
 } from "https://deno.land/x/isx@v1.0.0-beta.17/mod.ts";
-import { isUndefined } from "https://deno.land/x/isx@v1.0.0-beta.17/mod.ts";
+import { isNil } from "https://deno.land/x/isx@v1.0.0-beta.17/mod.ts";
 export type VFn = () => void;
 
 export function wrap<T>(val: T): T extends any[] ? T : T[] {
@@ -20,10 +21,10 @@ export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
   return value.filter(Boolean) as never;
 }
 export function joinChars(
-  characters: (string | number | undefined)[],
+  characters: (string | number | undefined | null)[],
   separator: string,
 ): string {
-  return (characters.filter((v) => !isUndefined(v))).map(
+  return (characters.filter((v) => !isNil(v))).map(
     String,
   )
     .map(cleanCharacter).filter(Boolean)

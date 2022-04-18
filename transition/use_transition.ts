@@ -13,7 +13,7 @@ import {
 } from "./util.ts";
 import { BEFORE_MOUNT, COMPLETE } from "./constant.ts";
 
-export type Param<T extends Element> = {
+export type Param<T extends Element = Element> = {
   target: RefObject<T | undefined>;
   isShow: boolean;
 };
