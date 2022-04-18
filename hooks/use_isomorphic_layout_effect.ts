@@ -3,6 +3,6 @@
 import { useEffect, useLayoutEffect } from "react";
 import { isBrowser } from "../deps.ts";
 
-const useIsomorphicLayoutEffect = isBrowser ? useEffect : useLayoutEffect;
+const useIsomorphicLayoutEffect = isBrowser ? useLayoutEffect : useEffect;
 
 export default useIsomorphicLayoutEffect;

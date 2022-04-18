@@ -1,3 +1,102 @@
+# [1.0.0-beta.11](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.10...1.0.0-beta.11) (2022-04-18)
+
+
+### Bug Fixes
+
+* **tab:** not use `Array#findLastIndex` bacause it API is too new ([0965671](https://github.com/mapcss/atomic-ui-react/commit/09656714991f442022ceaa6fc027de8cd87ba295))
+
+# [1.0.0-beta.10](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.9...1.0.0-beta.10) (2022-04-18)
+
+
+### Bug Fixes
+
+* **hooks:** in effect, call callback function every rendering ([d4b26b9](https://github.com/mapcss/atomic-ui-react/commit/d4b26b9146dfc34e95297b5999e595ad8633a7f3))
+* **transition:** do not use `useLayoutEffect` ([1daa6a4](https://github.com/mapcss/atomic-ui-react/commit/1daa6a4cfdbf24ceb56ce9066d548f87782ae143))
+* **transition:** fix transition timing logic ([bb1d4f3](https://github.com/mapcss/atomic-ui-react/commit/bb1d4f32b40c12cae9462a0131a74a9382643670))
+* **transition:** fix updating transition state synchronicity ([1de8a20](https://github.com/mapcss/atomic-ui-react/commit/1de8a20b3bcd94b27718e12813529d469d6c482e))
+
+# [1.0.0-beta.9](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.8...1.0.0-beta.9) (2022-04-17)
+
+
+### Features
+
+* **hooks:** add `useOnMount` hooks that call on mount/unmount and so on ([91589d4](https://github.com/mapcss/atomic-ui-react/commit/91589d4a725082b4d05bd7bd376730a68c8fcb88))
+
+# [1.0.0-beta.8](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.7...1.0.0-beta.8) (2022-04-17)
+
+
+### Features
+
+* **switch:** rename prop name of `checked` to `isChecked` ([9a4f396](https://github.com/mapcss/atomic-ui-react/commit/9a4f3965aaf81483d80e98859554b0ba356c1402))
+* **tab:** add aria-disabled attribute to hook ([bd196c9](https://github.com/mapcss/atomic-ui-react/commit/bd196c99e12cbbbca65e4b7d6bac7414efbb6478))
+* **tab:** export tab WAI-ARIA hooks ([4a55cb1](https://github.com/mapcss/atomic-ui-react/commit/4a55cb1e79433ca0bd22d8fc3be4938085558021))
+* **tab:** if tab aria-disabled is true, ignore to update state on keydown `Home` and `End` ([894dc82](https://github.com/mapcss/atomic-ui-react/commit/894dc82b336704bd0848418911a931a8e4a6894b))
+* **tab:** if the tab is aria-disabled true, ignore keyboard interaction ([75cb117](https://github.com/mapcss/atomic-ui-react/commit/75cb1176e895ca3b717527b02b4525b869383086))
+* **tab:** pass dynamic context to renderProps function ([76f81f9](https://github.com/mapcss/atomic-ui-react/commit/76f81f920709c9c1469bb1c60a61c6442e8b5859))
+
+
+### Performance Improvements
+
+* **tab:** remove duplicated const for reduce bundle size ([2844880](https://github.com/mapcss/atomic-ui-react/commit/2844880b3d8dfbb9507fb573163461c75fbf808b))
+
+# [1.0.0-beta.7](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.6...1.0.0-beta.7) (2022-04-17)
+
+
+### Features
+
+* **hooks:** add `useId` that generate universal uniqu id ([5737a12](https://github.com/mapcss/atomic-ui-react/commit/5737a124c943239df9876efc7a959bd80526cab2))
+* **ssr:** add ensuring global id is same with server side and client side ([64f636e](https://github.com/mapcss/atomic-ui-react/commit/64f636edc1a59a622cb835afdfdfb78eb51b0850))
+* **tab:** use global id and local id combination for ARIA attribute ([bdb8411](https://github.com/mapcss/atomic-ui-react/commit/bdb84113252d98eff7414e20bfc903062db42c62))
+
+# [1.0.0-beta.6](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.5...1.0.0-beta.6) (2022-04-17)
+
+
+### Bug Fixes
+
+* all export component to be `.ts` ext ([aeab295](https://github.com/mapcss/atomic-ui-react/commit/aeab2950c75d5bbd70b5fcd034e0d6ca7bbce76f))
+* **hooks:** fix `useIsomorphicLayoutEffect` typo ([b47201b](https://github.com/mapcss/atomic-ui-react/commit/b47201bff94905b3d9ce89ca7491461d8ef67f76))
+* **transition:** fix export shim ([e0f83bf](https://github.com/mapcss/atomic-ui-react/commit/e0f83bfcb19fa1f4929ab84aeba47acc3dede3c6))
+
+
+### Features
+
+* **switch:** export `useSwitchAria` hooks that memorized role switch aria ([0da8891](https://github.com/mapcss/atomic-ui-react/commit/0da8891d1c13740fa60c88f6ce8d0a637486ff39))
+
+# [1.0.0-beta.5](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.4...1.0.0-beta.5) (2022-04-16)
+
+
+### Features
+
+* **tab:** add `renderProps` props that dynamic rendering props with context ([3f11983](https://github.com/mapcss/atomic-ui-react/commit/3f11983f92fb36e051ce5a4e69875eb48325bca8))
+* **tab:** add keyboard shortcut of `End` and `PageDown` ([9d43caf](https://github.com/mapcss/atomic-ui-react/commit/9d43cafac42a80c34f03c59cbb6f9a03d16a6fb9))
+* **tab:** add keyboard shortcut of `Home` and `PageUp` ([d22aba9](https://github.com/mapcss/atomic-ui-react/commit/d22aba9763c0435a15ffdb5e52f359f42d7b803d))
+* **tab:** add switching vertical/horizontal mode ([574b04d](https://github.com/mapcss/atomic-ui-react/commit/574b04de5c8c5500be2cd215cc69b05eed43af8d))
+
+# [1.0.0-beta.4](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.3...1.0.0-beta.4) (2022-04-16)
+
+
+### Features
+
+* **hooks:** add `useIsFirstMount` hooks ([39bb054](https://github.com/mapcss/atomic-ui-react/commit/39bb05401d229e040534aaa492620e2bded5e60c))
+* **tab:** add key board shortcut of `ArrowLeft` and `ArrowRight` ([5b585e7](https://github.com/mapcss/atomic-ui-react/commit/5b585e77dc6383381fcadee9a26efef5719199b8))
+* **tab:** add WAI-ARIA attribute of aria-controls ([a467563](https://github.com/mapcss/atomic-ui-react/commit/a4675630b9094e8602a61276b265832c17f342b4))
+
+# [1.0.0-beta.3](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.2...1.0.0-beta.3) (2022-04-16)
+
+
+### Bug Fixes
+
+* **tab:** rename `Tab` component props of `tag` to `as` ([50d5358](https://github.com/mapcss/atomic-ui-react/commit/50d5358cb6b7720deb72316277f69ea3e8629df7))
+* **tab:** rename props of Tab to `isSelected` from `isSelect` ([980fff3](https://github.com/mapcss/atomic-ui-react/commit/980fff30f1dd984c46cdb3c67607cdf228dcefb4))
+
+
+### Features
+
+* **tab:** add `TabProvider` component that manage children ([58359bc](https://github.com/mapcss/atomic-ui-react/commit/58359bcebc545d8e813944a429da5feef97c2454))
+* **tab:** add searching recursive children to traverse ([79b9aa2](https://github.com/mapcss/atomic-ui-react/commit/79b9aa2038b3c9bc031284a9d80c71c512789345))
+* **tab:** add tab provider to controllable ([baee3f7](https://github.com/mapcss/atomic-ui-react/commit/baee3f75c6315a2e849c06f59eda3780c7f5f51c))
+* **tab:** add uncontrol component feature to tab provider ([f3da5fb](https://github.com/mapcss/atomic-ui-react/commit/f3da5fbc20195eaebd70b2385db5fa6eed7a65ba))
+
 # [1.0.0-beta.2](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.1...1.0.0-beta.2) (2022-04-15)
 
 
