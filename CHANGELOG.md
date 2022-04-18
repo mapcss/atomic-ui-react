@@ -1,3 +1,13 @@
+# [1.0.0-beta.10](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.9...1.0.0-beta.10) (2022-04-18)
+
+
+### Bug Fixes
+
+* **hooks:** in effect, call callback function every rendering ([d4b26b9](https://github.com/mapcss/atomic-ui-react/commit/d4b26b9146dfc34e95297b5999e595ad8633a7f3))
+* **transition:** do not use `useLayoutEffect` ([1daa6a4](https://github.com/mapcss/atomic-ui-react/commit/1daa6a4cfdbf24ceb56ce9066d548f87782ae143))
+* **transition:** fix transition timing logic ([bb1d4f3](https://github.com/mapcss/atomic-ui-react/commit/bb1d4f32b40c12cae9462a0131a74a9382643670))
+* **transition:** fix updating transition state synchronicity ([1de8a20](https://github.com/mapcss/atomic-ui-react/commit/1de8a20b3bcd94b27718e12813529d469d6c482e))
+
 # [1.0.0-beta.9](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.8...1.0.0-beta.9) (2022-04-17)
 
 
