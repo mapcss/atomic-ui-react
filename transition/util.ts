@@ -14,15 +14,28 @@ import {
 /** Compute transition duration from `CSSStyleDeclaration` */
 export function getDuration(el: Element): number {
   try {
-    const { transitionDuration } = globalThis.getComputedStyle(el);
+    const { transitionDuration, transitionDelay } = globalThis.getComputedStyle(
+      el,
+    );
 
-    const num = Number.parseFloat(transitionDuration);
-    if (!Number.isFinite(num)) return 0;
+    const duration = parseFiniteFloat(transitionDuration);
 
-    return num * 1000;
+    if (!duration) {
+      return 0;
+    }
+
+    const delay = parseFiniteFloat(transitionDelay) ?? 0;
+    const extension = 1000 * (duration + delay);
+
+    return Number.isFinite(extension) ? extension : 0;
   } catch {
     return 0;
   }
+}
+
+function parseFiniteFloat(value: string): number | undefined {
+  const num = Number.parseFloat(value);
+  return Number.isFinite(num) ? num : undefined;
 }
 
 export function getTransitionMap(isEnter: boolean): TransitionLifecycleMap {
