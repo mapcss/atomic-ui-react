@@ -11,13 +11,13 @@ import { renderToString } from "react-dom/server";
 Deno.test("render as SSR", () => {
   const table: ParamReturn<typeof renderToString>[] = [
     [
-      <Transition enter="transition" show>
+      <Transition enter="transition" isShow>
         <div>test</div>
       </Transition>,
       `<div class=""><div>test</div></div>`,
     ],
     [
-      <Transition enter="transition" show={false}>
+      <Transition enter="transition" isShow={false}>
         <div>test</div>
       </Transition>,
       `<div class=""></div>`,
@@ -43,7 +43,7 @@ Deno.test(
     const { render } = await import("@testing-library/react");
 
     const result = render(
-      <Transition data-testid="test" enter="transition" show>
+      <Transition data-testid="test" enter="transition" isShow>
         <div>test</div>
       </Transition>,
     );
@@ -52,7 +52,7 @@ Deno.test(
     expect(result.getByTestId("test").innerHTML).toBe("<div>test</div>");
 
     result.rerender(
-      <Transition data-testid="test" enter="transition" show={false}>
+      <Transition data-testid="test" enter="transition" isShow={false}>
         <div>test</div>
       </Transition>,
     );

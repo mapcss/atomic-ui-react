@@ -13,7 +13,7 @@ type _Props<As extends keyof JSX.IntrinsicElements> =
     as?: As;
 
     /** Whether the children should be shown or hidden. */
-    show: boolean;
+    isShow: boolean;
 
     children: ReactNode;
   };
@@ -26,7 +26,7 @@ export default function Transition<
   As extends keyof JSX.IntrinsicElements = "div",
 >(
   {
-    show,
+    isShow,
     children,
     enter,
     enterFrom,
@@ -42,8 +42,8 @@ export default function Transition<
   const ref = useRef<HTMLElement>();
   const _as = as ?? "div";
 
-  const { className: __className, show: isShow } = useTransition(
-    { target: ref, show },
+  const { className: __className, isRendered } = useTransition(
+    { target: ref, isShow },
     {
       enter,
       enterFrom,
@@ -61,6 +61,6 @@ export default function Transition<
   return createElement(
     _as,
     { ref, className, ...props },
-    isShow ? children : undefined,
+    isRendered ? children : undefined,
   );
 }

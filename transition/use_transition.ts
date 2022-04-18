@@ -15,47 +15,69 @@ import { BEFORE_MOUNT, COMPLETE } from "./constant.ts";
 
 export type Param<T extends Element> = {
   target: RefObject<T | undefined>;
-  show: boolean;
+  isShow: boolean;
 };
 
 export type ReturnValue = {
+  /** The className from adapted currently transition. */
   className: string;
-  show: boolean;
+
+  /** Whether rendering of the transition is finished or not. */
+  isRendered: boolean;
+
+  /** List of currently adapted transition. */
   currentTransitions: Transition[];
 };
 
 export type TransitionProps = Record<Transition, string>;
 
+/** Monitors the mount lifecycle and returns the appropriate transition status.
+ * ```tsx
+ * import { useRef, useState } from "react"
+ * import { useTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+ *
+ * export default () => {
+ *   const [isShow] = useState(true)
+ *   const ref = useRef<HTMLDivElement>(null)
+ *   const { className } = useTransition({ isShow, target: ref }, {
+ *     enter: "transition duration-300",
+ *     enterFrom: "opacity-0",
+ *   });
+ *
+ *   return <div ref={ref} className={className}></div>
+ *   };
+ * ```
+ */
 export default function useTransition<T extends Element>(
-  { target, show }: Readonly<Param<T>>,
+  { target, isShow }: Readonly<Param<T>>,
   transitionProps: Readonly<
     Partial<TransitionProps>
   >,
 ): ReturnValue {
-  const [state, setState] = useState<boolean>(show);
+  const [state, setState] = useState<boolean>(isShow);
 
   const timing = useTransitionTiming(
     () => {
       return target.current ? getDuration(target.current) : 0;
     },
-    [show],
+    [isShow],
   );
 
   useEffect(() => {
-    if (timing === BEFORE_MOUNT && show) {
+    if (timing === BEFORE_MOUNT && isShow) {
       setState(true);
     }
   }, [timing]);
 
   useIsomorphicLayoutEffect(() => {
-    if (timing === COMPLETE && !show) {
+    if (timing === COMPLETE && !isShow) {
       setState(false);
     }
   }, [timing]);
 
   const transitionLifecycleMap = useMemo<TransitionLifecycleMap>(
-    () => getTransitionMap(show),
-    [show],
+    () => getTransitionMap(isShow),
+    [isShow],
   );
 
   const currentTransitions = useMemo<Transition[]>(
@@ -70,7 +92,7 @@ export default function useTransition<T extends Element>(
 
   return {
     className,
-    show: state,
+    isRendered: state,
     currentTransitions,
   };
 }
