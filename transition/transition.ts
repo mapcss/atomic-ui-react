@@ -4,17 +4,19 @@ import { createElement, ReactNode, useMemo, useRef } from "react";
 import useTransition, { TransitionProps } from "./use_transition.ts";
 import { joinChars } from "../deps.ts";
 
-type _Props<As extends keyof JSX.IntrinsicElements> = TransitionProps & {
-  /** The element the Wrapper should render as.
-   * @default `div`
-   */
-  as?: As;
+type _Props<As extends keyof JSX.IntrinsicElements> =
+  & Partial<TransitionProps>
+  & {
+    /** The element the Wrapper should render as.
+     * @default `div`
+     */
+    as?: As;
 
-  /** Whether the children should be shown or hidden. */
-  show: boolean;
+    /** Whether the children should be shown or hidden. */
+    show: boolean;
 
-  children: ReactNode;
-};
+    children: ReactNode;
+  };
 
 export type Props<As extends keyof JSX.IntrinsicElements> =
   & Readonly<_Props<As>>
