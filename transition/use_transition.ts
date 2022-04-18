@@ -34,11 +34,12 @@ export default function useTransition<T extends Element>(
 ): ReturnValue {
   const [state, setState] = useState<boolean>(show);
 
-  const timing = useTransitionTiming({
-    extension: () => {
+  const timing = useTransitionTiming(
+    () => {
       return ref.current ? getDuration(ref.current) : 0;
     },
-  }, [show]);
+    [show],
+  );
 
   useEffect(() => {
     if (timing === BEFORE_MOUNT && show) {

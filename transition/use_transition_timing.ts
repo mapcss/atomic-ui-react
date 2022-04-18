@@ -6,8 +6,8 @@ import useOnMount from "../hooks/use_on_mount.ts";
 import { TransitionStage, TransitionTiming } from "./types.ts";
 
 export default function useTransitionTiming(
-  { extension }: { extension: Callable<number> },
-  deps?: DependencyList,
+  extension: Callable<number>,
+  deps: DependencyList,
 ): TransitionTiming {
   const [state, setState] = useState<TransitionStage>(0);
 
