@@ -1,3 +1,18 @@
+# [1.0.0-beta.12](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.11...1.0.0-beta.12) (2022-04-18)
+
+
+### Bug Fixes
+
+* **transition:** change `useTransitionTiming` hooks interface ([da93d7e](https://github.com/mapcss/atomic-ui-react/commit/da93d7eb25f69fec5226c011e16bada88e723589))
+* **transition:** timer id should check data types ([80c830c](https://github.com/mapcss/atomic-ui-react/commit/80c830c4e478b4d0436df9e28faae0af4e93fb5d))
+
+
+### Features
+
+* **transition:** rename props name to `target` from `ref` ([fe58f08](https://github.com/mapcss/atomic-ui-react/commit/fe58f080830ec756fc35b5ec6d9bdaba3ee6bbdc))
+* **transition:** treat transition delay with transition duration ([13d7f72](https://github.com/mapcss/atomic-ui-react/commit/13d7f729b7fdaf31253268aedd38df15996cd5f1))
+* **util:** export pure utility functions ([eca7b60](https://github.com/mapcss/atomic-ui-react/commit/eca7b60b00507be67ad490d88d9868fd840f70b7))
+
 # [1.0.0-beta.11](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.10...1.0.0-beta.11) (2022-04-18)
 
 
