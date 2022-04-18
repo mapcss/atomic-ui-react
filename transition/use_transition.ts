@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { RefObject, useMemo, useState } from "react";
-import { isBrowser, joinChars } from "../deps.ts";
+import { joinChars } from "../deps.ts";
 import useOnMount from "../hooks/use_on_mount.ts";
 import { getDuration } from "./util.ts";
 
@@ -12,8 +12,6 @@ type Transition =
   | "leaveFrom"
   | "leaveTo"
   | "leave";
-
-type Timing = "init" | "start" | "via" | "fin";
 
 type TimingProps = {
   from: string | undefined;
@@ -27,24 +25,26 @@ export type Param<T extends Element> = {
 };
 
 export type ReturnValue = {
-  className: string | undefined;
+  className: string;
   show: boolean;
 };
 
-export type TransitionProps = Partial<Record<Transition, string>>;
+export type TransitionProps = Record<Transition, string>;
+
+type Stage = 0 | 1 | 2 | 3;
 
 export default function useTransition<T extends Element>(
   { ref, show }: Readonly<Param<T>>,
   { enter, enterFrom, enterTo, leave, leaveFrom, leaveTo }: Readonly<
-    TransitionProps
+    Partial<TransitionProps>
   >,
 ): ReturnValue {
-  const [timing, setTiming] = useState<Timing>("init");
   const [state, setState] = useState<boolean>(show);
+  const [stage, next] = useState<Stage>(0);
 
-  const className = useMemo<string | undefined>(() =>
-    mapClassName(
-      timing,
+  const className = useMemo<string>(() =>
+    currentClassName(
+      stage,
       classNameMap({
         enter,
         enterFrom,
@@ -53,29 +53,37 @@ export default function useTransition<T extends Element>(
         leaveFrom,
         leaveTo,
       }, show),
-    ), [timing, show]);
+    ) ?? "", [
+    stage,
+    enter,
+    enterFrom,
+    enterTo,
+    leave,
+    leaveFrom,
+    leaveTo,
+    show,
+  ]);
 
   useOnMount({
     onBeforeMount: () => {
-      setTiming("init");
+      next(0);
       if (show) {
         setState(true);
       }
     },
-    onMount: () => {
-      setTiming("start");
-      if (!ref.current) return;
-      const delay = getDuration(ref.current);
+    onMount: () => next(1),
+    onAfterMount: () => {
+      next(2);
+
+      const delay = ref.current ? getDuration(ref.current) : 0;
       const id = setTimeout(() => {
-        setTiming("fin");
+        next(3);
         if (!show) {
           setState(false);
         }
       }, delay);
-
       return () => clearTimeout(id);
     },
-    onAfterMount: () => setTiming("via"),
   }, { deps: [show] });
 
   return {
@@ -85,17 +93,18 @@ export default function useTransition<T extends Element>(
 }
 
 export function currentClassName(
-  timing: Timing,
+  stage: Stage,
   { from, via, to }: TimingProps,
 ): string | undefined {
-  switch (timing) {
-    case "init": {
+  console.log(from);
+  switch (stage) {
+    case 0: {
       return joinChars([from], " ");
     }
-    case "start": {
+    case 1: {
       return joinChars([from, via], " ");
     }
-    case "via": {
+    case 2: {
       return joinChars([to, via], " ");
     }
     default: {
@@ -104,17 +113,9 @@ export function currentClassName(
   }
 }
 
-export function mapClassName(
-  timing: Timing,
-  timingProps: Readonly<TimingProps>,
-): string | undefined {
-  if (!isBrowser) return;
-  return currentClassName(timing, timingProps);
-}
-
 export function classNameMap(
   { enter, enterFrom, enterTo, leave, leaveFrom, leaveTo }: Readonly<
-    TransitionProps
+    Partial<TransitionProps>
   >,
   isEnter: boolean,
 ): TimingProps {
