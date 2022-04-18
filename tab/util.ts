@@ -1,6 +1,9 @@
 import { isLength0, not } from "../deps.ts";
 
-export function getNextIndex(currentIndex: number, matrix: boolean[]): number {
+export function getNextIndex(
+  currentIndex: number,
+  matrix: Readonly<boolean[]>,
+): number {
   if (isLength0(matrix) || matrix.every(not(Boolean))) return currentIndex;
   const _next = currentIndex + 1;
   if (matrix[_next]) return _next;
@@ -12,7 +15,10 @@ export function getNextIndex(currentIndex: number, matrix: boolean[]): number {
   return getNextIndex(-1, matrix);
 }
 
-export function getPrevIndex(currentIndex: number, matrix: boolean[]): number {
+export function getPrevIndex(
+  currentIndex: number,
+  matrix: Readonly<boolean[]>,
+): number {
   if (isLength0(matrix) || matrix.every(not(Boolean))) return currentIndex;
   const _prev = currentIndex - 1;
   if (matrix[_prev]) return _prev;
@@ -22,7 +28,10 @@ export function getPrevIndex(currentIndex: number, matrix: boolean[]): number {
   return getPrevIndex(matrix.length, matrix);
 }
 
-export function getFirstIndex(currentIndex: number, matrix: boolean[]): number {
+export function getFirstIndex(
+  currentIndex: number,
+  matrix: Readonly<boolean[]>,
+): number {
   const index = matrix.findIndex(Boolean);
   if (index < 0) {
     return currentIndex;
