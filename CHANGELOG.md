@@ -1,3 +1,11 @@
+# [1.0.0-beta.13](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.12...1.0.0-beta.13) (2022-04-18)
+
+
+### Features
+
+* **transition:** add `TransitionProvider` Component that full managed transition props under child ([835ac4c](https://github.com/mapcss/atomic-ui-react/commit/835ac4c3a6573c61f8fdd2fb471198dfc01917a0))
+* **transition:** rename props name of `show` to `isShow` and `isRendered` ([9a74592](https://github.com/mapcss/atomic-ui-react/commit/9a745928b42afcd98c2da9597120fed5a7d99403))
+
 # [1.0.0-beta.12](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.11...1.0.0-beta.12) (2022-04-18)
 
 
