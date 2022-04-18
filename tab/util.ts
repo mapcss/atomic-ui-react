@@ -31,8 +31,16 @@ export function getFirstIndex(currentIndex: number, matrix: boolean[]): number {
   }
 }
 
-export function getLastIndex(currentIndex: number, matrix: boolean[]): number {
-  const index = matrix.findLastIndex(Boolean);
+export function getLastIndex(
+  currentIndex: number,
+  matrix: Readonly<boolean[]>,
+): number {
+  // findLastIndex is ES2022 feature. so Not used for a while.
+  // const index = matrix.findLastIndex(Boolean);
+  const index = matrix.reduceRight((acc, cur, i) => {
+    if (0 <= acc) return acc;
+    return cur ? i : acc;
+  }, -1);
   if (index < 0) {
     return currentIndex;
   } else {
