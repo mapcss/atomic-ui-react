@@ -1,6 +1,6 @@
 import { DependencyList } from "react";
 import { useMemo, useState } from "react";
-import { Callable, evaluate } from "../deps.ts";
+import { Callable, evaluate, isNumber } from "../deps.ts";
 import { TRANSITION_TIMING_MAP } from "./constant.ts";
 import useOnMount from "../hooks/use_on_mount.ts";
 import { TransitionStage, TransitionTiming } from "./types.ts";
@@ -12,9 +12,7 @@ export default function useTransitionTiming(
   const [state, setState] = useState<TransitionStage>(0);
 
   useOnMount({
-    onBeforeMount: () => {
-      setState(0);
-    },
+    onBeforeMount: () => setState(0),
     onAfterMount: () => {
       setState(1);
 
@@ -23,14 +21,12 @@ export default function useTransitionTiming(
       const rid = requestAnimationFrame(() => {
         setState(2);
         const ms = evaluate(extension);
-        tid = setTimeout(() => {
-          setState(3);
-        }, ms);
+        tid = setTimeout(() => setState(3), ms);
       });
 
       return () => {
         cancelAnimationFrame(rid);
-        if (tid) {
+        if (isNumber(tid)) {
           clearTimeout(tid);
         }
       };
