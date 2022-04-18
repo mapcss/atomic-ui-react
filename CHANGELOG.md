@@ -1,3 +1,10 @@
+# [1.0.0-beta.11](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.10...1.0.0-beta.11) (2022-04-18)
+
+
+### Bug Fixes
+
+* **tab:** not use `Array#findLastIndex` bacause it API is too new ([0965671](https://github.com/mapcss/atomic-ui-react/commit/09656714991f442022ceaa6fc027de8cd87ba295))
+
 # [1.0.0-beta.10](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.9...1.0.0-beta.10) (2022-04-18)
 
 
