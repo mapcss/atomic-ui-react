@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { DependencyList, EffectCallback, useEffect, useRef } from "react";
+import { DependencyList, EffectCallback, useEffect } from "react";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
 import { isNumber } from "../deps.ts";
 
@@ -16,8 +16,6 @@ export default function useOnMount(
   >,
   { deps }: { deps?: DependencyList } = {},
 ): void {
-  const onAfterMountCallbackRef = useRef<ReturnType<EffectCallback>>();
-  onAfterMountCallbackRef.current = undefined;
   useIsomorphicLayoutEffect(() => {
     return onBeforeMount?.();
   }, deps);
@@ -25,17 +23,19 @@ export default function useOnMount(
   useEffect(() => {
     const onMountCallback = onMount?.();
 
+    let onAfterMountCallback: ReturnType<EffectCallback>;
+
     const rid = onAfterMount
       ? (() => {
         const callback = (): void => {
-          onAfterMountCallbackRef.current = onAfterMount?.();
+          onAfterMountCallback = onAfterMount?.();
         };
         return requestAnimationFrame(callback);
       })()
       : undefined;
     return (): void => {
       onMountCallback?.();
-      onAfterMountCallbackRef.current?.();
+      onAfterMountCallback?.();
       if (isNumber(rid)) {
         cancelAnimationFrame(rid);
       }
