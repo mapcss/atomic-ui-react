@@ -14,7 +14,7 @@ import {
 import { BEFORE_MOUNT, COMPLETE } from "./constant.ts";
 
 export type Param<T extends Element> = {
-  ref: RefObject<T | undefined>;
+  target: RefObject<T | undefined>;
   show: boolean;
 };
 
@@ -27,7 +27,7 @@ export type ReturnValue = {
 export type TransitionProps = Record<Transition, string>;
 
 export default function useTransition<T extends Element>(
-  { ref, show }: Readonly<Param<T>>,
+  { target, show }: Readonly<Param<T>>,
   transitionProps: Readonly<
     Partial<TransitionProps>
   >,
@@ -36,7 +36,7 @@ export default function useTransition<T extends Element>(
 
   const timing = useTransitionTiming(
     () => {
-      return ref.current ? getDuration(ref.current) : 0;
+      return target.current ? getDuration(target.current) : 0;
     },
     [show],
   );

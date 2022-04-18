@@ -43,7 +43,7 @@ export default function Transition<
   const _as = as ?? "div";
 
   const { className: __className, show: isShow } = useTransition(
-    { ref, show },
+    { target: ref, show },
     {
       enter,
       enterFrom,
