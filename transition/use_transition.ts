@@ -1,8 +1,9 @@
 // This module is browser compatible.
 
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { RefObject, useMemo, useState } from "react";
 import { joinChars } from "../deps.ts";
+import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
 import { Transition, TransitionLifecycleMap } from "./types.ts";
 import useTransitionTiming from "./use_transition_timing.ts";
 import {
@@ -45,7 +46,7 @@ export default function useTransition<T extends Element>(
     }
   }, [timing]);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (timing === COMPLETE && !show) {
       setState(false);
     }
