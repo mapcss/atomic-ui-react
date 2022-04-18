@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { useEffect, useLayoutEffect } from "react";
-import { isBrowser } from "../deps.ts";
+import { isBrowser } from "../util.ts";
 
 const useIsomorphicLayoutEffect = isBrowser ? useLayoutEffect : useEffect;
 

@@ -1,12 +1,13 @@
 import { DependencyList } from "react";
 import { useMemo, useState } from "react";
-import { Callable, evaluate, isNumber } from "../deps.ts";
+import { isNumber } from "../deps.ts";
+import { Lazyable, lazyEval } from "../util.ts";
 import { TRANSITION_TIMING_MAP } from "./constant.ts";
 import useOnMount from "../hooks/use_on_mount.ts";
 import { TransitionStage, TransitionTiming } from "./types.ts";
 
 export default function useTransitionTiming(
-  extension: Callable<number>,
+  extension: Lazyable<number>,
   deps: DependencyList,
 ): TransitionTiming {
   const [state, setState] = useState<TransitionStage>(0);
@@ -20,7 +21,7 @@ export default function useTransitionTiming(
 
       const rid = requestAnimationFrame(() => {
         setState(2);
-        const ms = evaluate(extension);
+        const ms = lazyEval(extension);
         tid = setTimeout(() => setState(3), ms);
       });
 

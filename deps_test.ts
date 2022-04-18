@@ -1,9 +1,5 @@
-import { cleanCharacter, isBrowser, joinChars } from "./deps.ts";
+import { cleanCharacter, joinChars } from "./deps.ts";
 import { expect, ParamReturn } from "./dev_deps.ts";
-
-Deno.test("isBrowser", () => {
-  expect(isBrowser).toBeFalsy();
-});
 
 Deno.test("joinChars", () => {
   const table: ParamReturn<typeof joinChars>[] = [
