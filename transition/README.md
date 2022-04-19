@@ -47,12 +47,26 @@ import { ReactElement } from "react";
 type TransitionProviderProps = {
   /** Root child adapting transitions. */
   children: ReactElement;
+
+  /** Whether the target should be shown or hidden. */
   isShow: boolean;
+
+  /** Classes during the entire enter phase. */
   enter?: string;
+
+  /** Classes immediately after the enter phase starts. */
   enterFrom?: string;
+
+  /** Classes immediately after the enter phase starts. */
   enterTo?: string;
+
+  /** Classes during the entire leave phase. */
   leave?: string;
+
+  /** Classes before the leave phase starts. */
   leaveTo?: string;
+
+  /** Classes to immediately after the leave phase starts. */
   leaveFrom?: string;
 };
 ```
@@ -87,35 +101,11 @@ Monitors the mount lifecycle and returns the appropriate transition status.
 
 ```ts
 import { RefObject } from "react";
-type UseTransitionParam<T extends Element = Element> = {
-  /** Target to monitor end of transitions.
-   * Specify `Element` or equivalent.
-   * The duration and delay of the transition are taken from the actual DOM and used to calculate the length of the transition.
-   */
-  target: RefObject<T | undefined>;
-
-  /** Whether the target should be shown or hidden. */
-  isShow: boolean;
-};
-
-type UseTransitionReturnValue = {
-  /** The className from adapted currently transition. */
-  className: string;
-
-  /** Whether transition lifecycle is completed or not. */
-  isCompleted: boolean;
-
-  /** List of currently adapted transition. */
-  currentTransitions: Transition[];
-};
-type Transition =
-  | "enter"
-  | "enterFrom"
-  | "enterTo"
-  | "leave"
-  | "leaveTo"
-  | "leaveFrom";
-type TransitionProps = Record<Transition, string>;
+import {
+  TransitionProps,
+  UseTransitionParam,
+  UseTransitionReturnValue,
+} from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 declare function useTransition<T extends Element>(
   { target, isShow }: Readonly<UseTransitionParam<T>>,
@@ -144,3 +134,41 @@ export default () => {
 
 How about
 [mapcss]([https://github/mapcss/mapcss](https://github.com/TomokiMiyauci/mapcss))?
+
+### useTransitionLifecycle
+
+Reactive state that records the current status of the transaction lifecycle
+
+#### Types
+
+```ts
+import { DependencyList } from "react";
+import {
+  TransitionLifecycle,
+} from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+declare function useTransitionLifecycle(
+  /** Specifies the transition duration */
+  duration: number | (() => number),
+  /** If present, effect will only activate if the values in the list change.
+   * Must be specified to monitor component lifecycle. Otherwise, loops may occur.
+   */
+  deps: DependencyList,
+): TransitionLifecycle;
+```
+
+#### Example
+
+```tsx
+import {
+  getDuration,
+  useTransitionLifecycle,
+} from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+
+export default () => {
+  const lifeCycle = useTransitionLifecycle(() => {
+    const el = globalThis.document.getElementById("target");
+    return el ? getDuration(el) : 0;
+  }, []);
+  console.log(lifeCycle); // 'init'
+};
+```
