@@ -130,11 +130,6 @@ export default () => {
 };
 ```
 
-## Looking for Atomic CSS?
-
-How about
-[mapcss]([https://github/mapcss/mapcss](https://github.com/TomokiMiyauci/mapcss))?
-
 ### useTransitionLifecycle
 
 Reactive state that records the current status of the transaction lifecycle
@@ -172,3 +167,7 @@ export default () => {
   console.log(lifeCycle); // 'init'
 };
 ```
+
+## Looking for Atomic CSS?
+
+How about [mapcss](https://github.com/TomokiMiyauci/mapcss)?
