@@ -1,8 +1,7 @@
 // This module is browser compatible.
 
-import { RefObject, useEffect, useMemo, useState } from "react";
+import { RefObject, useMemo } from "react";
 import { joinChars } from "../deps.ts";
-import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
 import { Transition, TransitionLifecycleMap } from "./types.ts";
 import useTransitionTiming from "./use_transition_timing.ts";
 import {
@@ -10,7 +9,7 @@ import {
   getTransitionMap,
   mapTiming2TransitionLifecycle,
 } from "./util.ts";
-import { BEFORE_MOUNT, COMPLETE } from "./constant.ts";
+import { COMPLETE } from "./constant.ts";
 
 export type Param<T extends Element = Element> = {
   target: RefObject<T | undefined>;
@@ -53,8 +52,6 @@ export default function useTransition<T extends Element>(
     Partial<TransitionProps>
   >,
 ): ReturnValue {
-  const [state, setState] = useState<boolean>(isShow);
-
   const timing = useTransitionTiming(
     () => {
       return target.current ? getDuration(target.current) : 0;
@@ -62,17 +59,7 @@ export default function useTransition<T extends Element>(
     [isShow],
   );
 
-  useEffect(() => {
-    if (timing === BEFORE_MOUNT && isShow) {
-      setState(true);
-    }
-  }, [timing]);
-
-  useIsomorphicLayoutEffect(() => {
-    if (timing === COMPLETE && !isShow) {
-      setState(false);
-    }
-  }, [timing]);
+  const isRendered = useMemo<boolean>(() => timing === COMPLETE, [timing]);
 
   const transitionLifecycleMap = useMemo<TransitionLifecycleMap>(
     () => getTransitionMap(isShow),
@@ -91,7 +78,7 @@ export default function useTransition<T extends Element>(
 
   return {
     className,
-    isRendered: state,
+    isRendered,
     currentTransitions,
   };
 }

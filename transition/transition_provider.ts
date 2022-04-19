@@ -55,7 +55,20 @@ export default function TransitionProvider(
     [className, children],
   );
 
-  return isRendered
-    ? cloneElement(children, { ref, className: cls })
-    : createElement(Fragment);
+  const _isRenderable = useMemo<boolean>(
+    () => isRenderable(isShow, isRendered),
+    [isShow, isRendered],
+  );
+
+  const child = useMemo<ReactElement>(() => {
+    return _isRenderable
+      ? cloneElement(children, { ref, className: cls })
+      : createElement(Fragment);
+  }, [_isRenderable, children, cls]);
+
+  return child;
+}
+
+function isRenderable(isShow: boolean, isRendered: boolean): boolean {
+  return isShow || !isRendered;
 }
