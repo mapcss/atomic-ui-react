@@ -10,6 +10,7 @@ import {
 } from "react";
 import { isNil, isNumber, isString, joinChars } from "../deps.ts";
 import useTransition, { Param, TransitionProps } from "./use_transition.ts";
+import { isShowable } from "./util.ts";
 
 export type Props =
   & {
@@ -39,7 +40,7 @@ export default function TransitionProvider(
   { children, isShow, ...rest }: Readonly<Props>,
 ): ReactElement {
   const ref = useRef();
-  const { className, isRendered } = useTransition(
+  const { className, isCompleted } = useTransition(
     { target: ref, isShow },
     rest,
   );
@@ -55,20 +56,16 @@ export default function TransitionProvider(
     [className, children],
   );
 
-  const _isRenderable = useMemo<boolean>(
-    () => isRenderable(isShow, isRendered),
-    [isShow, isRendered],
+  const _isShowable = useMemo<boolean>(
+    () => isShowable(isShow, isCompleted),
+    [isShow, isCompleted],
   );
 
   const child = useMemo<ReactElement>(() => {
-    return _isRenderable
+    return _isShowable
       ? cloneElement(children, { ref, className: cls })
       : createElement(Fragment);
-  }, [_isRenderable, children, cls]);
+  }, [_isShowable, children, cls]);
 
   return child;
-}
-
-function isRenderable(isShow: boolean, isRendered: boolean): boolean {
-  return isShow || !isRendered;
 }

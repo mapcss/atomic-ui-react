@@ -20,8 +20,8 @@ export type ReturnValue = {
   /** The className from adapted currently transition. */
   className: string;
 
-  /** Whether rendering of the transition is finished or not. */
-  isRendered: boolean;
+  /** Whether transition lifecycle is completed or not. */
+  isCompleted: boolean;
 
   /** List of currently adapted transition. */
   currentTransitions: Transition[];
@@ -59,7 +59,7 @@ export default function useTransition<T extends Element>(
     [isShow],
   );
 
-  const isRendered = useMemo<boolean>(() => timing === COMPLETE, [timing]);
+  const isCompleted = useMemo<boolean>(() => timing === COMPLETE, [timing]);
 
   const transitionLifecycleMap = useMemo<TransitionLifecycleMap>(
     () => getTransitionMap(isShow),
@@ -78,7 +78,7 @@ export default function useTransition<T extends Element>(
 
   return {
     className,
-    isRendered,
+    isCompleted,
     currentTransitions,
   };
 }
