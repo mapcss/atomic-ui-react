@@ -1,3 +1,10 @@
+# [1.0.0-beta.14](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.13...1.0.0-beta.14) (2022-04-19)
+
+
+### Bug Fixes
+
+* **transition:** fix isRendered state logic, remove unnessesary state for performance ([59bb16c](https://github.com/mapcss/atomic-ui-react/commit/59bb16c58998039176171b73554697c2d8f1247b))
+
 # [1.0.0-beta.13](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.12...1.0.0-beta.13) (2022-04-18)
 
 
