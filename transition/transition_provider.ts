@@ -9,8 +9,9 @@ import {
   useRef,
 } from "react";
 import { isNil, isNumber, isString, joinChars } from "../deps.ts";
-import useTransition, { Param, TransitionProps } from "./use_transition.ts";
+import useTransition, { Param } from "./use_transition.ts";
 import { isShowable } from "./util.ts";
+import { TransitionProps } from "./types.ts";
 
 export type Props =
   & {

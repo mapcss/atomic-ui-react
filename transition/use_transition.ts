@@ -2,7 +2,11 @@
 
 import { RefObject, useMemo } from "react";
 import { joinChars } from "../deps.ts";
-import { Transition, TransitionLifecycleMap } from "./types.ts";
+import {
+  Transition,
+  TransitionLifecycleMap,
+  TransitionProps,
+} from "./types.ts";
 import useTransitionTiming from "./use_transition_timing.ts";
 import {
   getDuration,
@@ -32,8 +36,6 @@ export type ReturnValue = {
   /** List of currently adapted transition. */
   currentTransitions: Transition[];
 };
-
-export type TransitionProps = Record<Transition, string>;
 
 /** Monitors the mount lifecycle and returns the appropriate transition status.
  * ```tsx
