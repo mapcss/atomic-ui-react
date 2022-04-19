@@ -12,7 +12,13 @@ import {
 import { COMPLETE } from "./constant.ts";
 
 export type Param<T extends Element = Element> = {
+  /** Target to monitor end of transitions.
+   * Specify `Element` or equivalent.
+   * The duration and delay of the transition are taken from the actual DOM and used to calculate the length of the transition.
+   */
   target: RefObject<T | undefined>;
+
+  /** Whether the target should be shown or hidden. */
   isShow: boolean;
 };
 
