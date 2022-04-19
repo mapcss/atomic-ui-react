@@ -11,3 +11,4 @@ export type {
 export { default as useTransitionLifecycle } from "./use_transition_lifecycle.ts";
 export type { TransitionLifecycle } from "./use_transition_lifecycle.ts";
 export { getDuration, isShowable } from "./util.ts";
+export * from "./types.ts";
