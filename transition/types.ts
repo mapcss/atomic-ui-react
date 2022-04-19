@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import {
   AFTER_MOUNT,
   BEFORE_MOUNT,

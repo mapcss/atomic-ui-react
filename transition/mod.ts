@@ -8,3 +8,4 @@ export type {
   Param as UseTransitionParam,
   ReturnValue as UseTransitionReturnValue,
 } from "./use_transition.ts";
+export { isShowable } from "./util.ts";

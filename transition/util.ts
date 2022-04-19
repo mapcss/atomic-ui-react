@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import {
   AFTER_MOUNT,
   BEFORE_MOUNT,
@@ -60,4 +62,21 @@ export function mapTiming2TransitionLifecycle(
       return end;
     }
   }
+}
+
+/** It takes two `boolean` values and determines if it can be rendered to the DOM.
+ * This can be used to determine rendering of components with transitions applied.
+ * @param isShow - Whether visible or not.
+ * @param isCompleted - Whether the transition is completed or not.
+ *
+ * ```ts
+ * import { isShowable } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+ * isShowable(true, true) // true
+ * isShowable(true, false) // true
+ * isShowable(false, true) // false
+ * isShowable(false, false) // true
+ * ```
+ */
+export function isShowable(isShow: boolean, isCompleted: boolean): boolean {
+  return isShow || !isCompleted;
 }

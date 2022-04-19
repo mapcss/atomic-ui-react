@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { TransitionLifecycleMap } from "./types.ts";
 
 export const BEFORE_MOUNT = "beforeMount";
