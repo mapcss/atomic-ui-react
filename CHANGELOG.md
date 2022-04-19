@@ -1,3 +1,13 @@
+# [1.0.0-beta.15](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.14...1.0.0-beta.15) (2022-04-19)
+
+
+### Features
+
+* **transition:** export transition shared types as global module ([0c230f0](https://github.com/mapcss/atomic-ui-react/commit/0c230f0f24e5f688b2ffe67517e0ceb4512599be))
+* **transition:** export transition utility to global ([2321e12](https://github.com/mapcss/atomic-ui-react/commit/2321e1290fb55d19198700607306a04961e14e92))
+* **transition:** rename `useTransitionTiming` to `useTransitionLifecycle`, export as global module ([6921b54](https://github.com/mapcss/atomic-ui-react/commit/6921b5406d045fcb09b73fff205b09ef22c6113d))
+* **transition:** rename field of `isRendered` to `isCompleted` ([db5de48](https://github.com/mapcss/atomic-ui-react/commit/db5de48c49b2c1a204c23ea49f8dd3156244083d))
+
 # [1.0.0-beta.14](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.13...1.0.0-beta.14) (2022-04-19)
 
 
