@@ -1,7 +1,6 @@
 // This module is browser compatible.
 
-import { useEffect } from "react";
-import { RefObject, useMemo, useState } from "react";
+import { RefObject, useEffect, useMemo, useState } from "react";
 import { joinChars } from "../deps.ts";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
 import { Transition, TransitionLifecycleMap } from "./types.ts";
