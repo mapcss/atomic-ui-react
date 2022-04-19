@@ -2,18 +2,12 @@
 
 import { RefObject, useMemo } from "react";
 import { joinChars } from "../deps.ts";
-import {
-  Transition,
+import { Transition, TransitionProps } from "./types.ts";
+import useTransitionLifeCycle, {
   TransitionLifecycleMap,
-  TransitionProps,
-} from "./types.ts";
-import useTransitionTiming from "./use_transition_timing.ts";
-import {
-  getDuration,
-  getTransitionMap,
-  mapTiming2TransitionLifecycle,
-} from "./util.ts";
-import { COMPLETE } from "./constant.ts";
+} from "./use_transition_lifecycle.ts";
+import { getDuration, getTransitionMap } from "./util.ts";
+import { END } from "./constant.ts";
 
 export type Param<T extends Element = Element> = {
   /** Target to monitor end of transitions.
@@ -60,14 +54,16 @@ export default function useTransition<T extends Element>(
     Partial<TransitionProps>
   >,
 ): ReturnValue {
-  const timing = useTransitionTiming(
+  const transitionLifeCycle = useTransitionLifeCycle(
     () => {
       return target.current ? getDuration(target.current) : 0;
     },
     [isShow],
   );
 
-  const isCompleted = useMemo<boolean>(() => timing === COMPLETE, [timing]);
+  const isCompleted = useMemo<boolean>(() => transitionLifeCycle === END, [
+    transitionLifeCycle,
+  ]);
 
   const transitionLifecycleMap = useMemo<TransitionLifecycleMap>(
     () => getTransitionMap(isShow),
@@ -75,8 +71,8 @@ export default function useTransition<T extends Element>(
   );
 
   const currentTransitions = useMemo<Transition[]>(
-    () => mapTiming2TransitionLifecycle(timing, transitionLifecycleMap),
-    [timing, transitionLifecycleMap],
+    () => transitionLifecycleMap[transitionLifeCycle],
+    [transitionLifeCycle, transitionLifecycleMap],
   );
 
   const className = useMemo<string>(() => {

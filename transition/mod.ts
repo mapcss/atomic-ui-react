@@ -8,4 +8,6 @@ export type {
   Param as UseTransitionParam,
   ReturnValue as UseTransitionReturnValue,
 } from "./use_transition.ts";
-export { isShowable } from "./util.ts";
+export { default as useTransitionLifecycle } from "./use_transition_lifecycle.ts";
+export type { TransitionLifecycle } from "./use_transition_lifecycle.ts";
+export { getDuration, isShowable } from "./util.ts";

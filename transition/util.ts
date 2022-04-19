@@ -1,17 +1,32 @@
 // This module is browser compatible.
 
 import {
-  AFTER_MOUNT,
-  BEFORE_MOUNT,
-  ENTER_TRANSITION_MAP,
-  LEAVE_TRANSITION_MAP,
-  MOUNT,
+  END,
+  ENTER,
+  ENTER_FROM,
+  ENTER_TO,
+  INIT,
+  LEAVE,
+  LEAVE_FROM,
+  LEAVE_TO,
+  START,
+  WAIT,
 } from "./constant.ts";
-import {
-  Transition,
-  TransitionLifecycleMap,
-  TransitionTiming,
-} from "./types.ts";
+import { TransitionLifecycleMap } from "./use_transition_lifecycle.ts";
+
+const ENTER_TRANSITION_MAP: TransitionLifecycleMap = {
+  [INIT]: [ENTER_FROM],
+  [START]: [ENTER_FROM, ENTER],
+  [WAIT]: [ENTER, ENTER_TO],
+  [END]: [],
+};
+
+const LEAVE_TRANSITION_MAP: TransitionLifecycleMap = {
+  [INIT]: [LEAVE_FROM],
+  [START]: [LEAVE_FROM, LEAVE],
+  [WAIT]: [LEAVE, LEAVE_TO],
+  [END]: [],
+};
 
 /** Compute transition duration from `CSSStyleDeclaration` */
 export function getDuration(el: Element): number {
@@ -42,26 +57,6 @@ function parseFiniteFloat(value: string): number | undefined {
 
 export function getTransitionMap(isEnter: boolean): TransitionLifecycleMap {
   return isEnter ? ENTER_TRANSITION_MAP : LEAVE_TRANSITION_MAP;
-}
-
-export function mapTiming2TransitionLifecycle(
-  transitionTiming: TransitionTiming,
-  { init, start, middle, end }: TransitionLifecycleMap,
-): Transition[] {
-  switch (transitionTiming) {
-    case BEFORE_MOUNT: {
-      return init;
-    }
-    case MOUNT: {
-      return start;
-    }
-    case AFTER_MOUNT: {
-      return middle;
-    }
-    default: {
-      return end;
-    }
-  }
 }
 
 /** It takes two `boolean` values and determines if it can be rendered to the DOM.
