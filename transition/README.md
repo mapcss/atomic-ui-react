@@ -84,13 +84,29 @@ type UseTransitionReturnValue = {
   /** Current transition lifecycle */
   lifecycle: TransitionLifecycle;
 };
+type TransitionRenderContext<P = any> = {
+  /** Root child adapting transitions. */
+  children: ReactElement;
 
-type TransitionProviderProps = {
+  /** Props that deep merged with children root props and transition props */
+  mergedProps: Partial<P>;
+
+  /** Whether transition is completed and `isShow` state is `false` or not. */
+  isShowable: boolean;
+};
+type TransitionRender<P> = (
+  context: TransitionRenderContext<P>,
+) => ReactElement;
+type TransitionProviderProps<P> = {
   /** Root child adapting transitions. */
   children: ReactElement;
 
   /** Call on change transition states. */
   onChange?: (state: UseTransitionReturnValue) => void;
+
+  /** Controls the rendering element. Called just before rendering it returns the element to actually render.
+   */
+  render?: TransitionRender<P>;
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
