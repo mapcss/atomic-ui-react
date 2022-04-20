@@ -5,11 +5,12 @@ import {
   createElement,
   Fragment,
   ReactElement,
+  useEffect,
   useMemo,
   useRef,
 } from "react";
 import { isNil, isNumber, isString, joinChars } from "../deps.ts";
-import useTransition, { Param } from "./use_transition.ts";
+import useTransition, { Param, ReturnValue } from "./use_transition.ts";
 import { isShowable } from "./util.ts";
 import { TransitionProps } from "./types.ts";
 
@@ -17,6 +18,9 @@ export type Props =
   & {
     /** Root child adapting transitions. */
     children: ReactElement;
+
+    /** Call on change transition states. */
+    onChange?: (state: ReturnValue) => void;
   }
   & Pick<Param, "isShow">
   & Partial<TransitionProps>;
@@ -38,13 +42,14 @@ export type Props =
  * ```
  */
 export default function TransitionProvider(
-  { children, isShow, ...rest }: Readonly<Props>,
+  { children, isShow, onChange, ...rest }: Readonly<Props>,
 ): ReactElement {
   const ref = useRef();
-  const { className, isCompleted } = useTransition(
+  const returnValue = useTransition(
     { target: ref, isShow },
     rest,
   );
+  const { className, isCompleted } = returnValue;
   const cls = useMemo<string>(
     () => {
       const _className = children.props.className;
@@ -61,6 +66,10 @@ export default function TransitionProvider(
     () => isShowable(isShow, isCompleted),
     [isShow, isCompleted],
   );
+
+  useEffect(() => {
+    onChange?.(returnValue);
+  }, [onChange, returnValue]);
 
   const child = useMemo<ReactElement>(() => {
     return _isShowable

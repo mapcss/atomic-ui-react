@@ -44,9 +44,23 @@ Component to automatically adapt transitions to the root child.
 
 ```ts
 import { ReactElement } from "react";
+type UseTransitionReturnValue = {
+  /** The className from adapted currently transition. */
+  className: string;
+
+  /** Whether transition lifecycle is completed or not. */
+  isCompleted: boolean;
+
+  /** List of currently adapted transition. */
+  currentTransitions: Transition[];
+};
+
 type TransitionProviderProps = {
   /** Root child adapting transitions. */
   children: ReactElement;
+
+  /** Call on change transition states. */
+  onChange?: (state: UseTransitionReturnValue) => void;
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
