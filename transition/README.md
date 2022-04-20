@@ -44,6 +44,33 @@ Component to automatically adapt transitions to the root child.
 
 ```ts
 import { ReactElement } from "react";
+/** Named transition lifecycle
+ * - `init`: Initializing
+ * - `start`: Starting
+ * - `wait`: Waiting for end
+ * - `end`: Ended
+ */
+type TransitionLifecycle = "init" | "start" | "wait" | "end";
+type TransitionProps = {
+  /** Classes during the entire enter phase. */
+  enter: string;
+
+  /** Classes immediately after the enter phase starts. */
+  enterFrom: string;
+
+  /** Classes immediately after the enter phase starts. */
+  enterTo: string;
+
+  /** Classes during the entire leave phase. */
+  leave: string;
+
+  /** Classes before the leave phase starts. */
+  leaveTo: string;
+
+  /** Classes to immediately after the leave phase starts. */
+  leaveFrom: string;
+};
+type Transition = keyof TransitionProps;
 type UseTransitionReturnValue = {
   /** The className from adapted currently transition. */
   className: string;
@@ -53,6 +80,9 @@ type UseTransitionReturnValue = {
 
   /** List of currently adapted transition. */
   currentTransitions: Transition[];
+
+  /** Current transition lifecycle */
+  lifecycle: TransitionLifecycle;
 };
 
 type TransitionProviderProps = {
@@ -64,25 +94,7 @@ type TransitionProviderProps = {
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
-
-  /** Classes during the entire enter phase. */
-  enter?: string;
-
-  /** Classes immediately after the enter phase starts. */
-  enterFrom?: string;
-
-  /** Classes immediately after the enter phase starts. */
-  enterTo?: string;
-
-  /** Classes during the entire leave phase. */
-  leave?: string;
-
-  /** Classes before the leave phase starts. */
-  leaveTo?: string;
-
-  /** Classes to immediately after the leave phase starts. */
-  leaveFrom?: string;
-};
+} & Partial<TransitionProps>;
 ```
 
 #### Example

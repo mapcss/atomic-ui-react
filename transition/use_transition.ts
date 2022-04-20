@@ -4,6 +4,7 @@ import { RefObject, useMemo } from "react";
 import { joinChars } from "../deps.ts";
 import { Transition, TransitionProps } from "./types.ts";
 import useTransitionLifeCycle, {
+  TransitionLifecycle,
   TransitionLifecycleMap,
 } from "./use_transition_lifecycle.ts";
 import { getDuration, getTransitionMap } from "./util.ts";
@@ -29,6 +30,9 @@ export type ReturnValue = {
 
   /** List of currently adapted transition. */
   currentTransitions: Transition[];
+
+  /** Current transition lifecycle */
+  lifecycle: TransitionLifecycle;
 };
 
 /** Monitors the mount lifecycle and returns the appropriate transition status.
@@ -84,5 +88,6 @@ export default function useTransition<T extends Element>(
     className,
     isCompleted,
     currentTransitions,
+    lifecycle: transitionLifeCycle,
   };
 }

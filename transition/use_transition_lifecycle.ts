@@ -12,7 +12,7 @@ export type TransitionLifecycleMap = {
   [END]: Transition[];
 };
 
-/** Transition lifecycle named
+/** Named transition lifecycle
  * - `init`: Initializing
  * - `start`: Starting
  * - `wait`: Waiting for end

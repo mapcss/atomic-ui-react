@@ -44,7 +44,7 @@ export type Props =
 export default function TransitionProvider(
   { children, isShow, onChange, ...rest }: Readonly<Props>,
 ): ReactElement {
-  const ref = useRef();
+  const ref = useRef<Element>(null);
   const returnValue = useTransition(
     { target: ref, isShow },
     rest,
