@@ -1,3 +1,12 @@
+# [1.0.0-beta.16](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.15...1.0.0-beta.16) (2022-04-20)
+
+
+### Features
+
+* **transition:** add `onChange` handler to `TransitionProvider` that call on change transtion state ([a4e5e9f](https://github.com/mapcss/atomic-ui-react/commit/a4e5e9f4f3751ef457a5c5ec8077becad339e2bf))
+* **transition:** add `render` props to controll rendering actulal element ([c33c253](https://github.com/mapcss/atomic-ui-react/commit/c33c253d0b51d356516c5170c2c97492c5a5a9a3))
+* **transition:** export transition lifecycle on `useTransition` and `TransitionProvider` ([4b037fe](https://github.com/mapcss/atomic-ui-react/commit/4b037fe4cddecb565abd342ebd2ee6dbe0958221))
+
 # [1.0.0-beta.15](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.14...1.0.0-beta.15) (2022-04-19)
 
 
