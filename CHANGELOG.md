@@ -1,3 +1,10 @@
+# [1.0.0-beta.18](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.17...1.0.0-beta.18) (2022-04-21)
+
+
+### Features
+
+* **tab:** tab components to be generic forwawrd reffable component ([e7f8b13](https://github.com/mapcss/atomic-ui-react/commit/e7f8b132fd04366d897b89be96505faad87fe035))
+
 # [1.0.0-beta.17](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.16...1.0.0-beta.17) (2022-04-21)
 
 
