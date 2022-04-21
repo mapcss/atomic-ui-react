@@ -1,3 +1,15 @@
+# [1.0.0-beta.19](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.18...1.0.0-beta.19) (2022-04-21)
+
+
+### Bug Fixes
+
+* **tab:** prevent focus tab element at first mount ([31d34f2](https://github.com/mapcss/atomic-ui-react/commit/31d34f214b2db3d39e8d08dc594f75358d100055))
+
+
+### Features
+
+* **util:** add checking Node.js environment or not ([339f073](https://github.com/mapcss/atomic-ui-react/commit/339f073f330659f2d2e0d9da4334d442dbf3fcdb))
+
 # [1.0.0-beta.18](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.17...1.0.0-beta.18) (2022-04-21)
 
 
