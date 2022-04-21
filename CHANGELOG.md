@@ -1,3 +1,10 @@
+# [1.0.0-beta.17](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.16...1.0.0-beta.17) (2022-04-21)
+
+
+### Bug Fixes
+
+* **tab:** add optional parameter accessor to get index ([d06d2a2](https://github.com/mapcss/atomic-ui-react/commit/d06d2a230fd68ceff1d53f77343cfab5eb827db9))
+
 # [1.0.0-beta.16](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.15...1.0.0-beta.16) (2022-04-20)
 
 
