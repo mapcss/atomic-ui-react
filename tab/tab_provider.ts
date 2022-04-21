@@ -167,12 +167,13 @@ export default function TabProvider(
 
       const ref = createRef<HTMLElement>();
       refs.current.push(ref);
-      const props: TabProps = {
+      // deno-lint-ignore no-explicit-any
+      const props: TabProps<any> = {
         id: joinChars([id, TAB_PREFIX, currentIndex], "-"),
         tabPanelId: joinChars([id, TAB_PANEL_PREFIX, currentIndex], "-"),
         onClick,
         onKeyDown,
-        tabRef: ref,
+        ref,
         isSelected: currentIndex === index,
       };
       return cloneElement(tabEl, props);

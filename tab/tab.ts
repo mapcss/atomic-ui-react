@@ -1,6 +1,11 @@
 // This module is browser compatible.
 
-import { createElement, RefObject, useMemo } from "react";
+import {
+  createElement,
+  ForwardedRef,
+  forwardRef as _forwardRef,
+  useMemo,
+} from "react";
 import { TAB, TYPE } from "./constant.ts";
 import useTabAria, { Param } from "./use_tab_aria.ts";
 
@@ -9,8 +14,6 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
    * @default `button`
    */
   as?: As;
-
-  tabRef?: RefObject<HTMLElement>;
 
   /** Dynamic rendering props with context. */
   renderProps?: (
@@ -22,16 +25,16 @@ export type Props<As extends keyof JSX.IntrinsicElements = "button"> =
   & _Props<As>
   & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
 
-export default function Tab<As extends keyof JSX.IntrinsicElements = "button">(
+function _Tab<As extends keyof JSX.IntrinsicElements = "button">(
   {
     as,
     isSelected,
     isDisabled,
     tabPanelId,
     renderProps,
-    tabRef,
     ...rest
   }: Props<As>,
+  ref: ForwardedRef<As>,
 ): JSX.Element {
   const props = useMemo(
     () =>
@@ -50,12 +53,14 @@ export default function Tab<As extends keyof JSX.IntrinsicElements = "button">(
   const aria = useTabAria({ isSelected, tabPanelId, isDisabled });
 
   return createElement(as ?? "button", {
-    ref: tabRef,
+    ref,
     ...aria,
     ...tabIndexProps,
     ...rest,
     ...props,
   });
 }
-
-Tab[TYPE] = TAB;
+const Tab = _forwardRef(_Tab);
+// deno-lint-ignore no-explicit-any
+(Tab as any)[TYPE] = TAB;
+export default Tab;
