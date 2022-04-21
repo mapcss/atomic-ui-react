@@ -4,8 +4,11 @@
 import { isFunction } from "./deps.ts";
 
 export type Lazyable<T, U extends (...args: any[]) => T = () => T> = T | U;
-export const isBrowser = !("Deno" in globalThis);
 
+/** Whether this environment is Browser or not.
+ * This is compatible with Node.js
+ */
+export const isBrowser = !("Deno" in globalThis) && !("process" in globalThis);
 export function lazyEval<T, U extends (...args: any[]) => T = () => T>(
   lazyable: Lazyable<T, U>,
 ): T {
