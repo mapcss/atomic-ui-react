@@ -15,6 +15,7 @@ import {
   useState,
 } from "react";
 import { isNumber, joinChars } from "../deps.ts";
+import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Props as TabProps } from "./tab.ts";
 import { Props as TabPanelProps } from "./tab_panel.ts";
 import { Props as TabListProps } from "./tab_list.ts";
@@ -90,11 +91,14 @@ export default function TabProvider(
     ],
   );
 
+  const { isFirstMount } = useIsFirstMount();
   useEffect(() => {
     onChange?.(state);
   }, [onChange, state]);
 
   useEffect(() => {
+    if (isFirstMount) return;
+
     focus(index);
   }, [index]);
 
