@@ -61,6 +61,9 @@ type TransitionProps = {
   /** Classes immediately after the enter phase starts. */
   enterTo: string;
 
+  /** Classes the enter phase is ended. */
+  entered: string;
+
   /** Classes during the entire leave phase. */
   leave: string;
 
@@ -69,6 +72,9 @@ type TransitionProps = {
 
   /** Classes to immediately after the leave phase starts. */
   leaveFrom: string;
+
+  leaved: string;
+  /** Classes the leave phase is ended. */
 };
 type Transition = keyof TransitionProps;
 type UseTransitionReturnValue = {

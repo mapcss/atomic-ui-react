@@ -5,10 +5,12 @@ import {
   ENTER,
   ENTER_FROM,
   ENTER_TO,
+  ENTERED,
   INIT,
   LEAVE,
   LEAVE_FROM,
   LEAVE_TO,
+  LEAVED,
   START,
   WAIT,
 } from "./constant.ts";
@@ -18,14 +20,14 @@ const ENTER_TRANSITION_MAP: TransitionLifecycleMap = {
   [INIT]: [ENTER_FROM],
   [START]: [ENTER_FROM, ENTER],
   [WAIT]: [ENTER, ENTER_TO],
-  [END]: [],
+  [END]: [ENTERED],
 };
 
 const LEAVE_TRANSITION_MAP: TransitionLifecycleMap = {
   [INIT]: [LEAVE_FROM],
   [START]: [LEAVE_FROM, LEAVE],
   [WAIT]: [LEAVE, LEAVE_TO],
-  [END]: [],
+  [END]: [LEAVED],
 };
 
 /** Compute transition duration from `CSSStyleDeclaration` */

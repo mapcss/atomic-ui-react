@@ -4,9 +4,11 @@ import {
   ENTER,
   ENTER_FROM,
   ENTER_TO,
+  ENTERED,
   LEAVE,
   LEAVE_FROM,
   LEAVE_TO,
+  LEAVED,
 } from "./constant.ts";
 
 export type TransitionProps = {
@@ -19,6 +21,9 @@ export type TransitionProps = {
   /** Classes immediately after the enter phase starts. */
   [ENTER_TO]: string;
 
+  /** Classes the enter phase is ended. */
+  [ENTERED]: string;
+
   /** Classes during the entire leave phase. */
   [LEAVE]: string;
 
@@ -27,5 +32,8 @@ export type TransitionProps = {
 
   /** Classes to immediately after the leave phase starts. */
   [LEAVE_FROM]: string;
+
+  /** Classes the leave phase is ended. */
+  [LEAVED]: string;
 };
 export type Transition = keyof TransitionProps;

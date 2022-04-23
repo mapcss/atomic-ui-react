@@ -1,7 +1,8 @@
 // This module is browser compatible.
 
-import { RefObject, useMemo } from "react";
+import { DependencyList, RefObject, useMemo } from "react";
 import { joinChars } from "../deps.ts";
+import { isRefObject, Lazyable, lazyEval } from "../util.ts";
 import { Transition, TransitionProps } from "./types.ts";
 import useTransitionLifeCycle, {
   TransitionLifecycle,
@@ -10,12 +11,16 @@ import useTransitionLifeCycle, {
 import { getDuration, getTransitionMap } from "./util.ts";
 import { END } from "./constant.ts";
 
+export type ElementLike<T extends Element = Element> =
+  | Lazyable<T | undefined | null>
+  | RefObject<T | undefined>;
+
 export type Param<T extends Element = Element> = {
   /** Target to monitor end of transitions.
    * Specify `Element` or equivalent.
    * The duration and delay of the transition are taken from the actual DOM and used to calculate the length of the transition.
    */
-  target: RefObject<T | undefined>;
+  target: ElementLike<T>;
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
@@ -57,12 +62,14 @@ export default function useTransition<T extends Element>(
   transitionProps: Readonly<
     Partial<TransitionProps>
   >,
+  deps: DependencyList,
 ): ReturnValue {
   const transitionLifeCycle = useTransitionLifeCycle(
     () => {
-      return target.current ? getDuration(target.current) : 0;
+      const maybeElement = resolveElement(target);
+      return maybeElement ? getDuration(maybeElement) : 0;
     },
-    [isShow],
+    deps,
   );
 
   const isCompleted = useMemo<boolean>(() => transitionLifeCycle === END, [
@@ -90,4 +97,14 @@ export default function useTransition<T extends Element>(
     currentTransitions,
     lifecycle: transitionLifeCycle,
   };
+}
+
+export function resolveElement<E extends Element>(
+  elementLike: ElementLike<E>,
+): E | undefined | null {
+  if (isRefObject(elementLike)) {
+    return elementLike.current;
+  }
+
+  return lazyEval(elementLike);
 }
