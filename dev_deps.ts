@@ -4,6 +4,7 @@ export {
   fn,
   useFakeTimer,
 } from "https://deno.land/x/unitest@v1.0.0-beta.82/mod.ts";
+export { FakeTime } from "https://deno.land/std@0.136.0/testing/time.ts";
 
 import jsdom from "https://esm.sh/jsdom@19.0.0?pin=v76";
 

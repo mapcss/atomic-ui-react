@@ -11,3 +11,8 @@ export { default as useId } from "./use_id.ts";
 export { default as useOnMount } from "./use_on_mount.ts";
 export type { Param as UseOnMountParam } from "./use_on_mount.ts";
 export type { ReturnValue as UseIsFirstMountReturnValue } from "./use_is_first_mount.ts";
+export { default as useTimeout } from "./use_timeout.ts";
+export type {
+  Handler as TimeoutHandler,
+  Option as UseTimeoutOption,
+} from "./use_timeout.ts";
