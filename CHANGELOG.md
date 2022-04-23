@@ -1,3 +1,10 @@
+# [1.0.0-beta.20](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.19...1.0.0-beta.20) (2022-04-23)
+
+
+### Features
+
+* **hooks:** add `useTimeout` hooks that safe `setTimeout` with effect ([431471e](https://github.com/mapcss/atomic-ui-react/commit/431471e1760fc4b1404a803adf9d8f816f0ad23b))
+
 # [1.0.0-beta.19](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.18...1.0.0-beta.19) (2022-04-21)
 
 
