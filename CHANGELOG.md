@@ -1,3 +1,20 @@
+# [1.0.0-beta.21](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.20...1.0.0-beta.21) (2022-04-23)
+
+
+### Bug Fixes
+
+* **hooks:** rename `useOnMount` to `useLifecycle` ([431d15b](https://github.com/mapcss/atomic-ui-react/commit/431d15b1c506d116d451fd2164b9cd1537dd534a))
+
+
+### Features
+
+* **transition:** add `entered` and `leaved` transition props ([03d3161](https://github.com/mapcss/atomic-ui-react/commit/03d3161aceb88c9190f1b0aa08e78b749cae99fd))
+
+
+### Performance Improvements
+
+* **transition:** remove unnessesary deps from hooks for avoid re-culculation ([d8d93f8](https://github.com/mapcss/atomic-ui-react/commit/d8d93f803b320cf971d4637e27f18982d13a533f))
+
 # [1.0.0-beta.20](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.19...1.0.0-beta.20) (2022-04-23)
 
 
