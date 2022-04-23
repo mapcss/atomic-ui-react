@@ -173,7 +173,7 @@ export default () => {
   const { className } = useTransition({ isShow, target: ref }, {
     enter: "transition duration-300",
     enterFrom: "opacity-0",
-  });
+  }, [isShow]);
   return <div ref={ref} className={className}></div>;
 };
 ```
