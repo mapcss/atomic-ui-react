@@ -1,7 +1,7 @@
 import { DependencyList, useMemo, useState } from "react";
 import { isNumber } from "../deps.ts";
 import { Lazyable, lazyEval } from "../util.ts";
-import useOnMount from "../hooks/use_on_mount.ts";
+import useLifecycle from "../hooks/use_lifecycle.ts";
 import { END, INIT, START, WAIT } from "./constant.ts";
 import { Transition } from "./types.ts";
 
@@ -52,9 +52,9 @@ export default function useTransitionLifecycle(
 ): TransitionLifecycle {
   const [state, setState] = useState<TransitionPhase>(0);
 
-  useOnMount({
+  useLifecycle({
     onBeforeMount: () => setState(0),
-    onAfterMount: () => {
+    onAfterMounted: () => {
       setState(1);
 
       let tid: number;
@@ -72,7 +72,7 @@ export default function useTransitionLifecycle(
         }
       };
     },
-  }, { deps });
+  }, deps);
 
   const transitionLifeCycle = useMemo<TransitionLifecycle>(() => {
     return TRANSITION_PHASE_MAP[state];
