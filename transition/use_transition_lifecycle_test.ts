@@ -36,11 +36,11 @@ it(
 
 it(
   useTransitionLifecycleTests,
-  "should not rerender when deps or duration is not updated",
+  "should not rerender when deps are not updated",
   function () {
     const { time } = this;
     const { result, rerender } = renderHook(
-      ({ duration }) => useTransitionLifecycle(duration, []),
+      ({ duration }) => useTransitionLifecycle(duration, [duration]),
       { initialProps: { duration: 300 } },
     );
 
