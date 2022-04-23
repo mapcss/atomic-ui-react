@@ -98,6 +98,7 @@ export default function TransitionProvider<P>(
   const returnValue = useTransition(
     { target: ref, isShow },
     transitionProps,
+    [isShow, JSON.stringify(transitionProps)],
   );
   const { className, isCompleted } = returnValue;
   const cls = useMemo<string>(
@@ -109,14 +110,12 @@ export default function TransitionProvider<P>(
           : undefined;
       return joinChars([className, _], " ");
     },
-    [className, children],
+    [className],
   );
+
   const mergedProps = useMemo<Partial<P>>(
     () => ({ ...children.props, className: cls, ref }),
-    [
-      cls,
-      children,
-    ],
+    [cls],
   );
 
   const _isShowable = useMemo<boolean>(
@@ -126,15 +125,11 @@ export default function TransitionProvider<P>(
 
   useEffect(() => {
     onChange?.(returnValue);
-  }, [onChange, returnValue]);
+  }, [JSON.stringify(onChange), JSON.stringify(returnValue)]);
 
-  const child = useMemo<ReactElement>(() => {
-    return render({
-      isShowable: _isShowable,
-      children,
-      mergedProps,
-    });
-  }, [_isShowable, children, mergedProps, render]);
-
-  return child;
+  return render({
+    isShowable: _isShowable,
+    children,
+    mergedProps,
+  });
 }
