@@ -1,6 +1,6 @@
 import useTimeout from "./use_timeout.ts";
 import { expect, FakeTime, fn } from "../dev_deps.ts";
-import { act, renderHook } from "@testing-library/react-hooks";
+import { renderHook } from "@testing-library/react-hooks";
 
 Deno.test("useTimeout: should not call on use is false", () => {
   const mock = fn();
