@@ -31,3 +31,12 @@ export function hasRefObject<T>(
 ): element is ReactElement & Attributes & { ref?: RefObject<T> } {
   return isObject(element.ref);
 }
+
+/** Utility for checking the child is under the parent or not. */
+export function containElement(
+  parent: Element | null | undefined | RefObject<Element>,
+  maybeChild: Element,
+): boolean {
+  const el = isRefObject(parent) ? parent.current : parent;
+  return el?.contains(maybeChild) ?? false;
+}
