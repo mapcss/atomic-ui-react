@@ -11,6 +11,7 @@ import {
   useRef,
 } from "react";
 import { isNil, isNumber, isString, joinChars } from "../deps.ts";
+import { hasRef, hasRefObject } from "../util.ts";
 import useTransition, { Param, ReturnValue } from "./use_transition.ts";
 import { isShowable } from "./util.ts";
 import { TransitionProps } from "./types.ts";
@@ -94,7 +95,15 @@ export default function TransitionProvider<P>(
       Props<P>
     >,
 ): ReactElement {
-  const ref = useRef<Element>(null);
+  const _ref = useRef<Element>(null);
+  const ref = hasRef<Element>(children) && !isNil(children.ref)
+    ? hasRefObject(children) ? children.ref : (() => {
+      throw Error(
+        "[atomic-ui] Supported ref is only RefObject now. Remove ref from child",
+      );
+    })()
+    : _ref;
+
   const returnValue = useTransition(
     { target: ref, isShow },
     transitionProps,
