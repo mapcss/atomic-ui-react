@@ -1,3 +1,10 @@
+# [1.0.0-beta.24](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.23...1.0.0-beta.24) (2022-04-24)
+
+
+### Features
+
+* **transition:** add `immediate` flag to handle first mount transition behavior ([8cf381c](https://github.com/mapcss/atomic-ui-react/commit/8cf381c57b2256d4fc6349c9daec9455142c54ad)), closes [#4](https://github.com/mapcss/atomic-ui-react/issues/4)
+
 # [1.0.0-beta.23](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.22...1.0.0-beta.23) (2022-04-24)
 
 
