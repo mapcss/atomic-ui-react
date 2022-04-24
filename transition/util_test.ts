@@ -6,8 +6,8 @@ import {
   setupJSDOM,
 } from "../dev_deps.ts";
 
-Deno.test("getDuration", () => {
-  setupJSDOM();
+Deno.test("getDuration", async () => {
+  await setupJSDOM();
   const reset = defineGlobalThis("getComputedStyle", () => {
     const css = { transitionDuration: "3s" } as CSSStyleDeclaration;
     return css;
@@ -21,10 +21,14 @@ Deno.test("getDuration", () => {
 
 Deno.test("isShowable", () => {
   const table: ParamReturn<typeof isShowable>[] = [
-    [true, true, true],
-    [true, false, true],
-    [false, true, false],
-    [false, false, true],
+    [true, { isCompleted: true, isActivated: true }, true],
+    [true, { isCompleted: true, isActivated: false }, true],
+    [true, { isCompleted: false, isActivated: true }, true],
+    [true, { isCompleted: false, isActivated: false }, true],
+    [false, { isCompleted: true, isActivated: true }, false],
+    [false, { isCompleted: true, isActivated: false }, false],
+    [false, { isCompleted: false, isActivated: true }, true],
+    [false, { isCompleted: false, isActivated: false }, false],
   ];
   table.forEach(([isShow, isCompleted, result]) =>
     expect(isShowable(isShow, isCompleted)).toBe(result)

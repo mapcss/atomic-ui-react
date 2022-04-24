@@ -3,13 +3,16 @@
 import { DependencyList, RefObject, useMemo } from "react";
 import { joinChars } from "../deps.ts";
 import { isRefObject, Lazyable, lazyEval } from "../util.ts";
+import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Transition, TransitionProps } from "./types.ts";
 import useTransitionLifeCycle, {
   TransitionLifecycle,
   TransitionLifecycleMap,
 } from "./use_transition_lifecycle.ts";
 import { getDuration, getTransitionMap } from "./util.ts";
-import { END } from "./constant.ts";
+import { END, INACTIVE } from "./constant.ts";
+
+export type TransitionStatus = TransitionLifecycle | typeof INACTIVE;
 
 export type ElementLike<T extends Element = Element> =
   | Lazyable<T | undefined | null>
@@ -24,21 +27,33 @@ export type Param<T extends Element = Element> = {
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
+
+  /** Whether do transitions immediately(on first mount) or not.
+   * - `true` - do transition on first mount.
+   * - `false` - do not transition on first mount.
+   * @default false
+   */
+  immediate?: boolean;
 };
 
-export type ReturnValue = {
-  /** The className from adapted currently transition. */
-  className: string;
+export type ReturnValue =
+  & {
+    /** The className from adapted currently transition. */
+    className: string;
 
-  /** Whether transition lifecycle is completed or not. */
-  isCompleted: boolean;
+    /** Whether transition lifecycle is completed or not. */
+    isCompleted: boolean;
 
-  /** List of currently adapted transition. */
-  currentTransitions: Transition[];
+    /** List of currently adapted transition. */
+    currentTransitions: Transition[];
+    /** Current transition lifecycle */
 
-  /** Current transition lifecycle */
-  lifecycle: TransitionLifecycle;
-};
+    status: TransitionStatus;
+  }
+  & ({ isActivated: true; lifecycle: TransitionLifecycle } | {
+    isActivated: false;
+    lifecycle: undefined;
+  });
 
 /** Monitors the mount lifecycle and returns the appropriate transition status.
  * ```tsx
@@ -58,22 +73,28 @@ export type ReturnValue = {
  * ```
  */
 export default function useTransition<T extends Element>(
-  { target, isShow }: Readonly<Param<T>>,
+  { target, isShow, immediate = false }: Readonly<Param<T>>,
   transitionProps: Readonly<
     Partial<TransitionProps>
   >,
   deps: DependencyList,
 ): ReturnValue {
-  const transitionLifeCycle = useTransitionLifeCycle(
-    () => {
-      const maybeElement = resolveElement(target);
-      return maybeElement ? getDuration(maybeElement) : 0;
+  const { isFirstMount } = useIsFirstMount();
+  const use = !isFirstMount || (immediate && isFirstMount);
+
+  const [isActivated, transitionLifecycle] = useTransitionLifeCycle(
+    {
+      duration: () => {
+        const maybeElement = resolveElement(target);
+        return maybeElement ? getDuration(maybeElement) : 0;
+      },
+      use,
     },
     deps,
   );
 
-  const isCompleted = useMemo<boolean>(() => transitionLifeCycle === END, [
-    transitionLifeCycle,
+  const isCompleted = useMemo<boolean>(() => transitionLifecycle === END, [
+    transitionLifecycle,
   ]);
 
   const transitionLifecycleMap = useMemo<TransitionLifecycleMap>(
@@ -82,8 +103,14 @@ export default function useTransition<T extends Element>(
   );
 
   const currentTransitions = useMemo<Transition[]>(
-    () => transitionLifecycleMap[transitionLifeCycle],
-    [transitionLifeCycle, transitionLifecycleMap],
+    () =>
+      isActivated === false ? [] : transitionLifecycleMap[transitionLifecycle],
+    [isActivated, transitionLifecycle, JSON.stringify(transitionLifecycleMap)],
+  );
+
+  const status = useMemo<TransitionStatus>(
+    () => isActivated ? transitionLifecycle : INACTIVE,
+    [isActivated, transitionLifecycle],
   );
 
   const className = useMemo<string>(() => {
@@ -94,8 +121,10 @@ export default function useTransition<T extends Element>(
   return {
     className,
     isCompleted,
+    isActivated,
+    status,
     currentTransitions,
-    lifecycle: transitionLifeCycle,
+    lifecycle: transitionLifecycle as never, // for conditional types,
   };
 }
 

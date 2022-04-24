@@ -10,6 +10,7 @@ export const LEAVE = "leave";
 export const LEAVE_FROM = `${LEAVE}${FROM}` as const;
 export const LEAVE_TO = `${LEAVE}${TO}` as const;
 export const LEAVED = `${LEAVE}d` as const;
+export const INACTIVE = "inactive";
 export const INIT = "init";
 export const START = "start";
 export const WAIT = "wait";

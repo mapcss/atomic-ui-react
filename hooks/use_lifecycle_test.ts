@@ -115,6 +115,7 @@ it(
             mockFn("beforeUnmount");
           },
         },
+        undefined,
         [],
       )
     );
@@ -148,6 +149,7 @@ it(
             mockFn("beforeUnmount");
           },
         },
+        undefined,
         [dep],
       ), {
       initialProps: {
@@ -158,5 +160,37 @@ it(
     expect(mockFn).toHaveBeenCalledTimes(3);
     rerender({ dep: true });
     expect(mockFn).toHaveBeenCalledTimes(6);
+  },
+);
+
+it(
+  describeTests,
+  "should not call when use is false",
+  function () {
+    const { time } = this;
+    const mockFn = fn();
+
+    renderHook(() =>
+      useLifecycle(
+        {
+          onBeforeMount: () => {
+            mockFn("beforeMount");
+          },
+          onMounted: () => {
+            mockFn("mounted");
+          },
+          onAfterMounted: () => {
+            mockFn("afterMounted");
+          },
+          onBeforeUnMount: () => {
+            mockFn("beforeUnmount");
+          },
+        },
+        { use: false },
+        [],
+      )
+    );
+    time.next();
+    expect(mockFn).toHaveBeenCalledTimes(0);
   },
 );

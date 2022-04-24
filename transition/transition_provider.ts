@@ -70,7 +70,7 @@ export type Props<P = any> =
      */
     render?: Render<P>;
   }
-  & Pick<Param, "isShow">
+  & Pick<Param, "isShow" | "immediate">
   & Partial<TransitionProps>;
 
 /** Component to automatically adapt transitions to the root child.
@@ -90,10 +90,16 @@ export type Props<P = any> =
  * ```
  */
 export default function TransitionProvider<P>(
-  { children, isShow, onChange, render = defaultRender, ...transitionProps }:
-    Readonly<
-      Props<P>
-    >,
+  {
+    children,
+    isShow,
+    immediate,
+    onChange,
+    render = defaultRender,
+    ...transitionProps
+  }: Readonly<
+    Props<P>
+  >,
 ): ReactElement {
   const _ref = useRef<Element>(null);
   const ref = hasRef<Element>(children) && !isNil(children.ref)
@@ -105,11 +111,11 @@ export default function TransitionProvider<P>(
     : _ref;
 
   const returnValue = useTransition(
-    { target: ref, isShow },
+    { target: ref, isShow, immediate },
     transitionProps,
-    [isShow, JSON.stringify(transitionProps)],
+    [isShow, immediate, JSON.stringify(transitionProps)],
   );
-  const { className, isCompleted } = returnValue;
+  const { className, isCompleted, isActivated } = returnValue;
   const cls = useMemo<string>(
     () => {
       const _className = children.props.className;
@@ -128,8 +134,8 @@ export default function TransitionProvider<P>(
   );
 
   const _isShowable = useMemo<boolean>(
-    () => isShowable(isShow, isCompleted),
-    [isShow, isCompleted],
+    () => isShowable(isShow, { isCompleted, isActivated }),
+    [isShow, isCompleted, isActivated],
   );
 
   useEffect(() => {

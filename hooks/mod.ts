@@ -15,4 +15,8 @@ export type {
   Option as UseTimeoutOption,
 } from "./use_timeout.ts";
 export { default as useLifecycle } from "./use_lifecycle.ts";
-export type { Param as UseLifecycleParam } from "./use_lifecycle.ts";
+export type {
+  Option as UseLifecycleOption,
+  Param as UseLifecycleParam,
+} from "./use_lifecycle.ts";
+export type { Useable } from "./types.ts";

@@ -14,6 +14,7 @@ import {
   START,
   WAIT,
 } from "./constant.ts";
+import { ReturnValue } from "./use_transition.ts";
 import { TransitionLifecycleMap } from "./use_transition_lifecycle.ts";
 
 const ENTER_TRANSITION_MAP: TransitionLifecycleMap = {
@@ -68,12 +69,16 @@ export function getTransitionMap(isEnter: boolean): TransitionLifecycleMap {
  *
  * ```ts
  * import { isShowable } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
- * isShowable(true, true) // true
- * isShowable(true, false) // true
- * isShowable(false, true) // false
- * isShowable(false, false) // true
+ * isShowable(true, {isActivated: false, isCompleted: false })
  * ```
  */
-export function isShowable(isShow: boolean, isCompleted: boolean): boolean {
+export function isShowable(
+  isShow: boolean,
+  { isActivated, isCompleted }: Pick<
+    ReturnValue,
+    "isActivated" | "isCompleted"
+  >,
+): boolean {
+  if (!isActivated) return isShow;
   return isShow || !isCompleted;
 }

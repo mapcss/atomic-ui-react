@@ -17,10 +17,50 @@ Deno.test("render as SSR", () => {
       `<div class="test">test</div>`,
     ],
     [
-      <TransitionProvider enter="transition" isShow={false}>
+      <TransitionProvider
+        enter="transition"
+        enterFrom="opacity-0"
+        isShow
+        immediate
+      >
         <div>test</div>
       </TransitionProvider>,
-      `<div class="">test</div>`,
+      `<div class="opacity-0">test</div>`,
+    ],
+    [
+      <TransitionProvider
+        enter="transition"
+        enterFrom="opacity-0"
+        isShow
+        immediate
+      >
+        <div className="test">test</div>
+      </TransitionProvider>,
+      `<div class="opacity-0 test">test</div>`,
+    ],
+    [
+      <TransitionProvider leaveFrom="opacity-0" isShow={false}>
+        <div>test</div>
+      </TransitionProvider>,
+      ``,
+    ],
+    [
+      <TransitionProvider isShow={false} immediate>
+        <div className="test">test</div>
+      </TransitionProvider>,
+      `<div class="test">test</div>`,
+    ],
+    [
+      <TransitionProvider leaveFrom="opacity-0" isShow={false} immediate>
+        <div>test</div>
+      </TransitionProvider>,
+      `<div class="opacity-0">test</div>`,
+    ],
+    [
+      <TransitionProvider leaveFrom="opacity-0" isShow={false} immediate>
+        <div className="test">test</div>
+      </TransitionProvider>,
+      `<div class="opacity-0 test">test</div>`,
     ],
   ];
 
