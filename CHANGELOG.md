@@ -1,3 +1,10 @@
+# [1.0.0-beta.23](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.22...1.0.0-beta.23) (2022-04-24)
+
+
+### Bug Fixes
+
+* **transition:** if child has `ref`, refer it ([cb67012](https://github.com/mapcss/atomic-ui-react/commit/cb6701228cbd2115302420398282af6be5c8215d)), closes [#3](https://github.com/mapcss/atomic-ui-react/issues/3)
+
 # [1.0.0-beta.22](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.21...1.0.0-beta.22) (2022-04-24)
 
 
