@@ -2,7 +2,7 @@ import Switch from "./switch.ts";
 import { expect, fn, setupJSDOM } from "../dev_deps.ts";
 
 Deno.test("Switch as default element", async () => {
-  setupJSDOM();
+  await setupJSDOM();
   const { render, fireEvent } = await import(
     "@testing-library/react"
   )
@@ -23,7 +23,7 @@ Deno.test("Switch as default element", async () => {
 });
 
 Deno.test("Switch as div element", async () => {
-  setupJSDOM();
+  await setupJSDOM();
   const { render } = await import(
     "@testing-library/react"
   )
