@@ -5,7 +5,7 @@ export {
 } from "https://deno.land/x/unitest@v1.0.0-beta.82/mod.ts";
 export { FakeTime } from "https://deno.land/std@0.136.0/testing/time.ts";
 export { describe, it } from "https://deno.land/std@0.136.0/testing/bdd.ts";
-
+export { assertSnapshot } from "https://deno.land/std@0.136.0/testing/snapshot.ts";
 export async function setupJSDOM(): Promise<void> {
   const { JSDOM } = await import("https://esm.sh/jsdom@19.0.0?pin=v76").then((
     module,
@@ -35,23 +35,6 @@ export function setupRaf(): () => void {
   };
 
   return reset;
-}
-
-export function setupGetComputedStyle() {
-  if (!window.getComputedStyle) {
-    const getComputedStyle = (
-      el: HTMLElement,
-      pseudoElt?: string | null | undefined,
-    ): CSSStyleDeclaration => {
-      if (pseudoElt) {
-        throw Error("pseudoElt is not implemented.");
-      }
-      return el.style;
-    };
-    Object.defineProperty(window, "getComputedStyle", {
-      value: getComputedStyle,
-    });
-  }
 }
 
 // deno-lint-ignore no-explicit-any
