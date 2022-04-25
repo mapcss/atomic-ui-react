@@ -1,47 +1,47 @@
 // This module is browser compatible.
-// deno-lint-ignore-file no-explicit-any
 
 import {
   cloneElement,
   createElement,
   Fragment,
   ReactElement,
+  RefObject,
   useEffect,
   useMemo,
   useRef,
 } from "react";
-import { isNil, isNumber, isString, joinChars } from "../deps.ts";
+import { isNil, ValueOf } from "../deps.ts";
 import { hasRef, hasRefObject } from "../util.ts";
 import useTransition, { Param, ReturnValue } from "./use_transition.ts";
-import { isShowable } from "./util.ts";
+import { cleanTokens, isShowable } from "./util.ts";
 import { TransitionProps } from "./types.ts";
 
-const defaultRender: Render<any> = (
-  { isShowable, children, mergedProps },
+const defaultRender: Render = (
+  { isShowable, children, ref },
 ): ReactElement => {
-  return isShowable
-    ? cloneElement(children, mergedProps)
-    : createElement(Fragment);
+  return isShowable ? cloneElement(children, { ref }) : createElement(Fragment);
 };
 
 /** Context of rendering
  * @typeParam P - Any Props
  */
-export type RenderContext<P> = {
+export type RenderContext<E extends Element = Element> = {
   /** Root child adapting transitions. */
   children: ReactElement;
 
-  /** Props that deep merged with children root props and transition props */
-  mergedProps: Partial<P>;
+  /** The root child `RefObject` */
+  ref: RefObject<E>;
 
   /** Whether transition is completed and `isShow` state is `false` or not. */
   isShowable: boolean;
 };
-export type Render<P> = (context: RenderContext<P>) => ReactElement;
+export type Render<E extends Element = Element> = (
+  context: RenderContext<E>,
+) => ReactElement;
 
-export type Props<P = any> =
+export type Props<E extends Element = Element> =
   & {
-    /** Root child adapting transitions. */
+    /** The root child adapting transitions. */
     children: ReactElement;
 
     /** Call on change transition states. */
@@ -68,7 +68,7 @@ export type Props<P = any> =
      * ```
      * @default {@link defaultRender}
      */
-    render?: Render<P>;
+    render?: Render<E>;
   }
   & Pick<Param, "isShow" | "immediate">
   & Partial<TransitionProps>;
@@ -89,7 +89,7 @@ export type Props<P = any> =
  * };
  * ```
  */
-export default function TransitionProvider<P>(
+export default function TransitionProvider<E extends Element = Element>(
   {
     children,
     isShow,
@@ -98,11 +98,11 @@ export default function TransitionProvider<P>(
     render = defaultRender,
     ...transitionProps
   }: Readonly<
-    Props<P>
+    Props<E>
   >,
 ): ReactElement {
-  const _ref = useRef<Element>(null);
-  const ref = hasRef<Element>(children) && !isNil(children.ref)
+  const _ref = useRef<E>(null);
+  const ref = hasRef<E>(children) && !isNil(children.ref)
     ? hasRefObject(children) ? children.ref : (() => {
       throw Error(
         "[atomic-ui] Supported ref is only RefObject now. Remove ref from child",
@@ -115,23 +115,24 @@ export default function TransitionProvider<P>(
     transitionProps,
     [isShow, immediate, JSON.stringify(transitionProps)],
   );
-  const { className, isCompleted, isActivated } = returnValue;
-  const cls = useMemo<string>(
-    () => {
-      const _className = children.props.className;
-      const _ =
-        isNil(_className) || isString(_className) || isNumber(_className)
-          ? _className
-          : undefined;
-      return joinChars([className, _], " ");
-    },
-    [className],
-  );
 
-  const mergedProps = useMemo<Partial<P>>(
-    () => ({ ...children.props, className: cls, ref }),
-    [cls],
-  );
+  const allTransitions = useMemo<string[]>(() =>
+    cleanTokens(
+      Object.values(transitionProps) as ValueOf<TransitionProps>[],
+    ), [JSON.stringify(transitionProps)]);
+
+  const { isCompleted, isActivated, classNames } = returnValue;
+
+  useEffect(() => {
+    const classList = ref.current?.classList;
+    if (!classList) return;
+    try {
+      classList.remove(...allTransitions);
+      classList.add(...classNames);
+    } catch {
+      // noop
+    }
+  }, [JSON.stringify(allTransitions), JSON.stringify(classNames)]);
 
   const _isShowable = useMemo<boolean>(
     () => isShowable(isShow, { isCompleted, isActivated }),
@@ -145,6 +146,6 @@ export default function TransitionProvider<P>(
   return render({
     isShowable: _isShowable,
     children,
-    mergedProps,
+    ref,
   });
 }

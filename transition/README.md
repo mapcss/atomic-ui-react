@@ -43,7 +43,7 @@ Component to automatically adapt transitions to the root child.
 #### Props
 
 ```ts
-import { ReactElement } from "react";
+import { ReactElement, RefObject } from "react";
 /** Named transition lifecycle
  * - `init`: Initializing
  * - `start`: Starting
@@ -79,7 +79,10 @@ type TransitionProps = {
 type Transition = keyof TransitionProps;
 type UseTransitionReturnValue = {
   /** The className from adapted currently transition. */
-  className: string;
+  className: string | undefined;
+
+  /** The className tokens adapted currently transition. */
+  classNames: string[];
 
   /** Whether transition lifecycle is completed or not. */
   isCompleted: boolean;
@@ -90,18 +93,18 @@ type UseTransitionReturnValue = {
   /** Current transition lifecycle */
   lifecycle: TransitionLifecycle;
 };
-type TransitionRenderContext<P = any> = {
+type TransitionRenderContext<E extends Element = Element> = {
   /** Root child adapting transitions. */
   children: ReactElement;
 
-  /** Props that deep merged with children root props and transition props */
-  mergedProps: Partial<P>;
+  /** The root child `RefObject` */
+  ref: RefObject<E>;
 
   /** Whether transition is completed and `isShow` state is `false` or not. */
   isShowable: boolean;
 };
-type TransitionRender<P> = (
-  context: TransitionRenderContext<P>,
+type TransitionRender<E extends Element = Element> = (
+  context: TransitionRenderContext<E>,
 ) => ReactElement;
 type TransitionProviderProps<P> = {
   /** Root child adapting transitions. */

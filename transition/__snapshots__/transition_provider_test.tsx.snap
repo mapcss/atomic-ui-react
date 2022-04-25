@@ -1,0 +1,43 @@
+export const snapshot = {};
+
+snapshot[`TransitionProvider > if isShow is true at first mount, it should render to DOM 1`] = `'<div data-testid="test" class="test">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 1`] = `'<div class="test opacity-0">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 2`] = `'<div class="test opacity-0 transition">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 3`] = `'<div class="test transition opacity-100">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 4`] = `'<div class="test text-red-500">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 5`] = `'<div class="test text-red-500">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 6`] = `'<div class="test opacity-80">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 7`] = `'<div class="test opacity-80 transition duration">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 8`] = `'<div class="test transition duration opacity-30">test</div>'`;
+
+snapshot[`TransitionProvider > should be match snapshot 9`] = `""`;
+
+snapshot[`TransitionProvider > should be match snapshot 10`] = `""`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 1`] = `'<div class="test opacity-0">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 2`] = `'<div class="test opacity-0 transition">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 3`] = `'<div class="test transition opacity-100">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 4`] = `'<div class="test text-red-500">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 5`] = `'<div class="test text-red-500">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 6`] = `'<div class="test opacity-80">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 7`] = `'<div class="test opacity-80 transition duration">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 8`] = `'<div class="test transition duration opacity-30">children</div>'`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 9`] = `""`;
+
+snapshot[`TransitionProvider > should add transition props to forwardable child component 10`] = `""`;
