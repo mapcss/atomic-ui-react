@@ -106,7 +106,7 @@ type TransitionRenderContext<E extends Element = Element> = {
 type TransitionRender<E extends Element = Element> = (
   context: TransitionRenderContext<E>,
 ) => ReactElement;
-type TransitionProviderProps<P> = {
+type TransitionProviderProps<E extends Element = Element> = {
   /** Root child adapting transitions. */
   children: ReactElement;
 
@@ -118,7 +118,7 @@ type TransitionProviderProps<P> = {
 
   /** Controls the rendering element. Called just before rendering it returns the element to actually render.
    */
-  render?: TransitionRender<P>;
+  render?: TransitionRender<E>;
 
   /** Whether do transitions immediately(on first mount) or not.
    * - `true` - do transition on first mount.
