@@ -90,6 +90,12 @@ type UseTransitionReturnValue = {
   /** Whether transition lifecycle is completed or not. */
   isCompleted: boolean;
 
+  /** Non-duplicated token and space transition props
+   * It guarantee that there is no empty string or spaces only
+   * characters.
+   */
+  cleanTransitionProps: Partial<TransitionProps>;
+
   /** List of currently adapted transition. */
   currentTransitions: Transition[];
 

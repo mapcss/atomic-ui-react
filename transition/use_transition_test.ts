@@ -1,11 +1,15 @@
 import { renderHook } from "@testing-library/react-hooks";
-import useTransition, { resolveElement } from "./use_transition.ts";
+import useTransition, {
+  cleanRecordToken,
+  resolveElement,
+} from "./use_transition.ts";
 import {
   describe,
   expect,
   FakeTime,
   it,
   mockGetComputedStyle,
+  ParamReturn,
   setupJSDOM,
   setupRaf,
 } from "../dev_deps.ts";
@@ -23,6 +27,26 @@ it(resolveElementTest, "should return element or undefined/null", () => {
   expect(resolveElement(() => el)).toEqual(el);
   expect(resolveElement(() => undefined)).toBe(undefined);
   expect(resolveElement({ current: el })).toEqual(el);
+});
+
+it("cleanRecordToken: should return undefined or non-duplicated token and space", () => {
+  const table: ParamReturn<typeof cleanRecordToken>[] = [
+    [{}, {}],
+    [{ enter: "" }, { enter: undefined }],
+    [{ enter: "test" }, { enter: "test" }],
+    [{ a: "     " }, { a: undefined }],
+    [{ a: "test", b: "test" }, { a: "test", b: "test" }],
+    [{ a: " test ", b: " te st " }, { a: "test", b: "te st" }],
+    [{ a: "a b a b ab ac ", b: "     ", c: "ac ab a b" }, {
+      a: "a b ab ac",
+      b: undefined,
+      c: "ac ab a b",
+    }],
+  ];
+
+  table.forEach(([record, result]) =>
+    expect(cleanRecordToken(record)).toEqual(result)
+  );
 });
 
 const describeTests = describe({
@@ -76,6 +100,16 @@ it(
       expect(result.current.classNames).toEqual(["enterFrom"]);
       expect(result.current.currentTransitions).toEqual(["enterFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
+      expect(result.current.cleanTransitionProps).toEqual({
+        enter: "enter",
+        enterFrom: "enterFrom",
+        enterTo: "enterTo dirty class name",
+        entered: "entered",
+        leave: "leave",
+        leaveFrom: "leaveFrom",
+        leaveTo: "leaveTo",
+        leaved: "leaved",
+      });
 
       time.next();
       expect(result.current.status).toBe("start");
