@@ -1,7 +1,6 @@
 // This module is browser compatible.
 
 import { DependencyList, RefObject, useMemo } from "react";
-import { filterTruthy } from "../deps.ts";
 import { isRefObject, Lazyable, lazyEval } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
@@ -10,7 +9,7 @@ import useTransitionLifeCycle, {
   TransitionLifecycle,
   TransitionLifecycleMap,
 } from "./use_transition_lifecycle.ts";
-import { getDuration, getTransitionMap } from "./util.ts";
+import { cleanTokens, getDuration, getTransitionMap } from "./util.ts";
 import { END, INACTIVE } from "./constant.ts";
 
 export type TransitionStatus = TransitionLifecycle | typeof INACTIVE;
@@ -130,7 +129,7 @@ export default function useTransition<T extends Element>(
 
   const classNames = useMemo<string[]>(() => {
     const transitions = currentTransitions.map((key) => transitionProps[key]);
-    return filterTruthy(transitions);
+    return cleanTokens(transitions);
   }, [JSON.stringify(currentTransitions)]);
 
   const className = useMemo<string | undefined>(() => {

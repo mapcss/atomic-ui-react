@@ -57,7 +57,7 @@ it(
         {
           enter: "enter",
           enterFrom: "enterFrom",
-          enterTo: "enterTo",
+          enterTo: "enterTo  dirty class  name  name",
           entered: "entered",
           leave: "leave",
           leaveFrom: "leaveFrom",
@@ -86,8 +86,14 @@ it(
 
       time.next();
       expect(result.current.status).toBe("wait");
-      expect(result.current.className).toBe("enter enterTo");
-      expect(result.current.classNames).toEqual(["enter", "enterTo"]);
+      expect(result.current.className).toBe("enter enterTo dirty class name");
+      expect(result.current.classNames).toEqual([
+        "enter",
+        "enterTo",
+        "dirty",
+        "class",
+        "name",
+      ]);
       expect(result.current.currentTransitions).toEqual(["enter", "enterTo"]);
       expect(result.current.isCompleted).toBeFalsy();
 
