@@ -20,3 +20,4 @@ export type {
   Param as UseLifecycleParam,
 } from "./use_lifecycle.ts";
 export type { Useable } from "./types.ts";
+export { default as useMutated } from "./use_mutated.ts";
