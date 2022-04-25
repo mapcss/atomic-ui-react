@@ -9,7 +9,12 @@ import useTransitionLifeCycle, {
   TransitionLifecycle,
   TransitionLifecycleMap,
 } from "./use_transition_lifecycle.ts";
-import { cleanTokens, getDuration, getTransitionMap } from "./util.ts";
+import {
+  cleanTokens,
+  getDuration,
+  getTransitionMap,
+  isShowable as _isShowable,
+} from "./util.ts";
 import { END, INACTIVE } from "./constant.ts";
 
 export type TransitionStatus = TransitionLifecycle | typeof INACTIVE;
@@ -43,6 +48,9 @@ export type ReturnValue =
 
     /** The className tokens adapted currently transition. */
     classNames: string[];
+
+    /** Whether transition is completed and `isShow` state is `false` or not. */
+    isShowable: boolean;
 
     /** Whether transition lifecycle is completed or not. */
     isCompleted: boolean;
@@ -127,6 +135,11 @@ export default function useTransition<T extends Element>(
     [isActivated, transitionLifecycle],
   );
 
+  const isShowable = useMemo<boolean>(
+    () => _isShowable(isShow, { isCompleted, isActivated }),
+    [isShow, isCompleted, isActivated],
+  );
+
   const classNames = useMemo<string[]>(() => {
     const transitions = currentTransitions.map((key) => transitionProps[key]);
     return cleanTokens(transitions);
@@ -142,6 +155,7 @@ export default function useTransition<T extends Element>(
     classNames,
     isCompleted,
     isActivated,
+    isShowable,
     status,
     currentTransitions,
     lifecycle: transitionLifecycle as never, // for conditional types,

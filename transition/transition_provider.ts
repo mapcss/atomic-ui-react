@@ -13,30 +13,29 @@ import {
 import { isNil, ValueOf } from "../deps.ts";
 import { hasRef, hasRefObject } from "../util.ts";
 import useTransition, { Param, ReturnValue } from "./use_transition.ts";
-import { cleanTokens, isShowable } from "./util.ts";
+import { cleanTokens } from "./util.ts";
 import { TransitionProps } from "./types.ts";
 
 const defaultRender: Render = (
-  { isShowable, children, ref },
+  { children, ref },
+  { isShowable },
 ): ReactElement => {
   return isShowable ? cloneElement(children, { ref }) : createElement(Fragment);
 };
 
-/** Context of rendering
- * @typeParam P - Any Props
- */
-export type RenderContext<E extends Element = Element> = {
+export type RenderParam<E extends Element = Element> = {
   /** Root child adapting transitions. */
   children: ReactElement;
 
   /** The root child `RefObject` */
   ref: RefObject<E>;
-
-  /** Whether transition is completed and `isShow` state is `false` or not. */
-  isShowable: boolean;
 };
+
+/** Context of rendering */
+export type RenderContext = ReturnValue;
 export type Render<E extends Element = Element> = (
-  context: RenderContext<E>,
+  param: RenderParam<E>,
+  context: RenderContext,
 ) => ReactElement;
 
 export type Props<E extends Element = Element> =
@@ -54,7 +53,7 @@ export type Props<E extends Element = Element> =
      * export default () => {
      *   return (
      *     <TransitionProvider
-     *       render={({ children, isShowable, ref }) => {
+     *       render={({ children, ref }, { isShowable }) => {
      *         const style = isShowable ? {} : { visibility: "hidden" };
      *         // For greater safety, a deep merge is required.
      *         return cloneElement(children, { ref, style });
@@ -122,7 +121,7 @@ export default function TransitionProvider<E extends Element = Element>(
       Object.values(transitionProps) as ValueOf<TransitionProps>[],
     ), [transitionPropsStr]);
 
-  const { isCompleted, isActivated, classNames } = returnValue;
+  const { classNames } = returnValue;
 
   useEffect(() => {
     const classList = ref.current?.classList;
@@ -135,18 +134,12 @@ export default function TransitionProvider<E extends Element = Element>(
     }
   }, [JSON.stringify(allTransitions), JSON.stringify(classNames)]);
 
-  const _isShowable = useMemo<boolean>(
-    () => isShowable(isShow, { isCompleted, isActivated }),
-    [isShow, isCompleted, isActivated],
-  );
-
   useEffect(() => {
     onChange?.(returnValue);
   }, [JSON.stringify(onChange), JSON.stringify(returnValue)]);
 
   return render({
-    isShowable: _isShowable,
     children,
     ref,
-  });
+  }, returnValue);
 }

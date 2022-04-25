@@ -124,6 +124,7 @@ it(
       expect(result.current.classNames).toEqual(["leave", "leaveTo"]);
       expect(result.current.currentTransitions).toEqual(["leave", "leaveTo"]);
       expect(result.current.isCompleted).toBeFalsy();
+      expect(result.current.isShowable).toBeTruthy();
 
       time.next();
       expect(result.current.status).toBe("end");
@@ -131,6 +132,7 @@ it(
       expect(result.current.classNames).toEqual(["leaved"]);
       expect(result.current.currentTransitions).toEqual(["leaved"]);
       expect(result.current.isCompleted).toBeTruthy();
+      expect(result.current.isShowable).toBeFalsy();
     } catch (e) {
       throw e;
     } finally {

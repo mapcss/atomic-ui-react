@@ -84,6 +84,9 @@ type UseTransitionReturnValue = {
   /** The className tokens adapted currently transition. */
   classNames: string[];
 
+  /** Whether transition is completed and `isShow` state is `false` or not. */
+  isShowable: boolean;
+
   /** Whether transition lifecycle is completed or not. */
   isCompleted: boolean;
 
@@ -103,8 +106,16 @@ type TransitionRenderContext<E extends Element = Element> = {
   /** Whether transition is completed and `isShow` state is `false` or not. */
   isShowable: boolean;
 };
+type TransitionRenderParam<E extends Element = Element> = {
+  /** Root child adapting transitions. */
+  children: ReactElement;
+
+  /** The root child `RefObject` */
+  ref: RefObject<E>;
+};
 type TransitionRender<E extends Element = Element> = (
-  context: TransitionRenderContext<E>,
+  param: TransitionRenderParam<E>,
+  context: UseTransitionReturnValue,
 ) => ReactElement;
 type TransitionProviderProps<E extends Element = Element> = {
   /** Root child adapting transitions. */
