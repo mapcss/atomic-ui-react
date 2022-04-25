@@ -73,48 +73,56 @@ it(
     try {
       expect(result.current.status).toBe("init");
       expect(result.current.className).toBe("enterFrom");
+      expect(result.current.classNames).toEqual(["enterFrom"]);
       expect(result.current.currentTransitions).toEqual(["enterFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("start");
       expect(result.current.className).toBe("enterFrom enter");
+      expect(result.current.classNames).toEqual(["enterFrom", "enter"]);
       expect(result.current.currentTransitions).toEqual(["enterFrom", "enter"]);
       expect(result.current.isCompleted).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("wait");
       expect(result.current.className).toBe("enter enterTo");
+      expect(result.current.classNames).toEqual(["enter", "enterTo"]);
       expect(result.current.currentTransitions).toEqual(["enter", "enterTo"]);
       expect(result.current.isCompleted).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("end");
       expect(result.current.className).toBe("entered");
+      expect(result.current.classNames).toEqual(["entered"]);
       expect(result.current.currentTransitions).toEqual(["entered"]);
       expect(result.current.isCompleted).toBeTruthy();
 
       rerender({ isShow: false });
       expect(result.current.status).toBe("init");
       expect(result.current.className).toBe("leaveFrom");
+      expect(result.current.classNames).toEqual(["leaveFrom"]);
       expect(result.current.currentTransitions).toEqual(["leaveFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("start");
       expect(result.current.className).toBe("leaveFrom leave");
+      expect(result.current.classNames).toEqual(["leaveFrom", "leave"]);
       expect(result.current.currentTransitions).toEqual(["leaveFrom", "leave"]);
       expect(result.current.isCompleted).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("wait");
       expect(result.current.className).toBe("leave leaveTo");
+      expect(result.current.classNames).toEqual(["leave", "leaveTo"]);
       expect(result.current.currentTransitions).toEqual(["leave", "leaveTo"]);
       expect(result.current.isCompleted).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("end");
       expect(result.current.className).toBe("leaved");
+      expect(result.current.classNames).toEqual(["leaved"]);
       expect(result.current.currentTransitions).toEqual(["leaved"]);
       expect(result.current.isCompleted).toBeTruthy();
     } catch (e) {
@@ -161,7 +169,8 @@ it(
     );
     try {
       expect(result.current.status).toBe("inactive");
-      expect(result.current.className).toBe("");
+      expect(result.current.className).toBeUndefined();
+      expect(result.current.classNames).toEqual([]);
       expect(result.current.currentTransitions).toEqual([]);
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isActivated).toBeFalsy();
@@ -169,7 +178,8 @@ it(
 
       time.next();
       expect(result.current.status).toBe("inactive");
-      expect(result.current.className).toBe("");
+      expect(result.current.className).toBeUndefined();
+      expect(result.current.classNames).toEqual([]);
       expect(result.current.currentTransitions).toEqual([]);
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isActivated).toBeFalsy();

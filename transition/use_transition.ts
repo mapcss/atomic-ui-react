@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { DependencyList, RefObject, useMemo } from "react";
-import { joinChars } from "../deps.ts";
+import { filterTruthy } from "../deps.ts";
 import { isRefObject, Lazyable, lazyEval } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
@@ -39,8 +39,11 @@ export type Param<T extends Element = Element> = {
 
 export type ReturnValue =
   & {
-    /** The className from adapted currently transition. */
-    className: string;
+    /** The className adapted currently transition. */
+    className: string | undefined;
+
+    /** The className tokens adapted currently transition. */
+    classNames: string[];
 
     /** Whether transition lifecycle is completed or not. */
     isCompleted: boolean;
@@ -125,13 +128,19 @@ export default function useTransition<T extends Element>(
     [isActivated, transitionLifecycle],
   );
 
-  const className = useMemo<string>(() => {
+  const classNames = useMemo<string[]>(() => {
     const transitions = currentTransitions.map((key) => transitionProps[key]);
-    return joinChars(transitions, " ");
-  }, [currentTransitions]);
+    return filterTruthy(transitions);
+  }, [JSON.stringify(currentTransitions)]);
+
+  const className = useMemo<string | undefined>(() => {
+    const _className = classNames.join(" ");
+    return _className === "" ? undefined : _className;
+  }, [JSON.stringify(classNames)]);
 
   return {
     className,
+    classNames,
     isCompleted,
     isActivated,
     status,
