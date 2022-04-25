@@ -150,7 +150,7 @@ it(
             leaveTo: "leaveTo",
             leaved: "leaved",
           },
-          [isShow, immediate],
+          [],
         ),
       {
         initialProps: {
@@ -175,9 +175,112 @@ it(
       expect(result.current.isActivated).toBeFalsy();
 
       rerender();
+      expect(result.current.status).toBe("inactive");
+
+      rerender({ isShow: false, immediate: false });
       expect(result.current.status).toBe("init");
-      expect(result.current.lifecycle).toBe("init");
-      expect(result.current.isActivated).toBeTruthy();
+    } catch (e) {
+      throw e;
+    } finally {
+      reset();
+    }
+  },
+);
+
+it(
+  describeTests,
+  "should not enabled until deps of immediate is updated",
+  function () {
+    const { time, target } = this;
+    const reset = mockGetComputedStyle(() => target.style);
+    const { result, rerender } = renderHook(
+      ({ isShow, immediate }) =>
+        useTransition(
+          {
+            target,
+            isShow,
+            immediate,
+          },
+          {
+            enter: "enter",
+            enterFrom: "enterFrom",
+            enterTo: "enterTo",
+            entered: "entered",
+            leave: "leave",
+            leaveFrom: "leaveFrom",
+            leaveTo: "leaveTo",
+            leaved: "leaved",
+          },
+          [],
+        ),
+      {
+        initialProps: {
+          isShow: true,
+          immediate: false,
+        },
+      },
+    );
+    try {
+      expect(result.current.status).toBe("inactive");
+
+      time.next();
+      expect(result.current.status).toBe("inactive");
+
+      rerender();
+      expect(result.current.status).toBe("inactive");
+
+      rerender({ isShow: true, immediate: true });
+      expect(result.current.status).toBe("init");
+    } catch (e) {
+      throw e;
+    } finally {
+      reset();
+    }
+  },
+);
+
+it(
+  describeTests,
+  "should not enabled until deps of transition props are updated",
+  function () {
+    const { time, target } = this;
+    const reset = mockGetComputedStyle(() => target.style);
+    const { result, rerender } = renderHook(
+      ({ enter }) =>
+        useTransition(
+          {
+            target,
+            isShow: true,
+          },
+          {
+            enter,
+            enterFrom: "enterFrom",
+            enterTo: "enterTo",
+            entered: "entered",
+            leave: "leave",
+            leaveFrom: "leaveFrom",
+            leaveTo: "leaveTo",
+            leaved: "leaved",
+          },
+          [],
+        ),
+      {
+        initialProps: {
+          enter: "",
+        },
+      },
+    );
+    try {
+      expect(result.current.status).toBe("inactive");
+
+      time.next();
+      expect(result.current.status).toBe("inactive");
+
+      rerender();
+      expect(result.current.status).toBe("inactive");
+
+      rerender({ enter: "enter" });
+      expect(result.current.status).toBe("init");
     } catch (e) {
       throw e;
     } finally {

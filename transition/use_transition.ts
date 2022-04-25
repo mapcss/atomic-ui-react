@@ -4,6 +4,7 @@ import { DependencyList, RefObject, useMemo } from "react";
 import { joinChars } from "../deps.ts";
 import { isRefObject, Lazyable, lazyEval } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
+import useMutated from "../hooks/use_mutated.ts";
 import { Transition, TransitionProps } from "./types.ts";
 import useTransitionLifeCycle, {
   TransitionLifecycle,
@@ -80,7 +81,18 @@ export default function useTransition<T extends Element>(
   deps: DependencyList,
 ): ReturnValue {
   const { isFirstMount } = useIsFirstMount();
-  const use = !isFirstMount || (immediate && isFirstMount);
+  const hasMutate = useMutated([
+    isShow,
+    immediate,
+    JSON.stringify(transitionProps),
+  ]);
+
+  const use = useMemo<boolean>(() => {
+    if (immediate) return true;
+    if (isFirstMount) return false;
+
+    return hasMutate;
+  }, [hasMutate]);
 
   const [isActivated, transitionLifecycle] = useTransitionLifeCycle(
     {
@@ -90,7 +102,7 @@ export default function useTransition<T extends Element>(
       },
       use,
     },
-    deps,
+    [use, JSON.stringify(deps)],
   );
 
   const isCompleted = useMemo<boolean>(() => transitionLifecycle === END, [
