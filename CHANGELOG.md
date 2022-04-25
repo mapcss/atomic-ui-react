@@ -1,3 +1,18 @@
+# [1.0.0-beta.26](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.25...1.0.0-beta.26) (2022-04-25)
+
+
+### Bug Fixes
+
+* **transition:** dirty class name to clean waht is non-duplicated, clean space token ([d4949c8](https://github.com/mapcss/atomic-ui-react/commit/d4949c81dd1dac7c326826c1e65ab7665109608a))
+
+
+### Features
+
+* **transition:** add `isShowable` filed to `useTransition` return value ([9efe580](https://github.com/mapcss/atomic-ui-react/commit/9efe5804095ceaec7e08a47c6aa3320dd77a430b))
+* **transition:** export utility for dirty class name ([c02034f](https://github.com/mapcss/atomic-ui-react/commit/c02034f6fd13d3f97d62ebc16bb744f518f0874a))
+* **transition:** return `classNames` that is array of transition tokens ([2eda2b6](https://github.com/mapcss/atomic-ui-react/commit/2eda2b649b210fad965cdd030c31a4c5471c3a00))
+* **transition:** transition provider should mutate DOM className directly ([000c75e](https://github.com/mapcss/atomic-ui-react/commit/000c75e48d09ff4f2706743e5f485e4b33993f31)), closes [#7](https://github.com/mapcss/atomic-ui-react/issues/7)
+
 # [1.0.0-beta.25](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.24...1.0.0-beta.25) (2022-04-25)
 
 
