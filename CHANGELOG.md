@@ -1,3 +1,15 @@
+# [1.0.0-beta.25](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.24...1.0.0-beta.25) (2022-04-25)
+
+
+### Bug Fixes
+
+* **transition:** occur transition when parent is updated ([aa42ee1](https://github.com/mapcss/atomic-ui-react/commit/aa42ee1fdf2964c0a2ef3a1c85fb81e7b37c4f73)), closes [#6](https://github.com/mapcss/atomic-ui-react/issues/6)
+
+
+### Features
+
+* **hooks:** add `useMutated` hooks that observe deps update ([c915eb8](https://github.com/mapcss/atomic-ui-react/commit/c915eb8078cccb78f8874f92c7aa9f4e4006eb54))
+
 # [1.0.0-beta.24](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.23...1.0.0-beta.24) (2022-04-24)
 
 
