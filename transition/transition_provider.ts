@@ -54,10 +54,10 @@ export type Props<E extends Element = Element> =
      * export default () => {
      *   return (
      *     <TransitionProvider
-     *       render={({ children, mergedProps, isShowable }) => {
+     *       render={({ children, isShowable, ref }) => {
      *         const style = isShowable ? {} : { visibility: "hidden" };
      *         // For greater safety, a deep merge is required.
-     *         return cloneElement(children, { ...mergedProps, style });
+     *         return cloneElement(children, { ref, style });
      *       }}
      *       isShow
      *     >
@@ -110,16 +110,17 @@ export default function TransitionProvider<E extends Element = Element>(
     })()
     : _ref;
 
+  const transitionPropsStr = JSON.stringify(transitionProps);
   const returnValue = useTransition(
     { target: ref, isShow, immediate },
     transitionProps,
-    [isShow, immediate, JSON.stringify(transitionProps)],
+    [isShow, immediate, transitionPropsStr],
   );
 
   const allTransitions = useMemo<string[]>(() =>
     cleanTokens(
       Object.values(transitionProps) as ValueOf<TransitionProps>[],
-    ), [JSON.stringify(transitionProps)]);
+    ), [transitionPropsStr]);
 
   const { isCompleted, isActivated, classNames } = returnValue;
 
