@@ -19,5 +19,5 @@ export type {
   ReturnValue as UseTransitionLifecycleReturnValue,
   TransitionLifecycle,
 } from "./use_transition_lifecycle.ts";
-export { getDuration, isShowable } from "./util.ts";
+export { cleanTokens, getDuration, isShowable, tokenize } from "./util.ts";
 export type { Transition, TransitionProps } from "./types.ts";
