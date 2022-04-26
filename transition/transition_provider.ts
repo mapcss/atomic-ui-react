@@ -103,13 +103,7 @@ export default function TransitionProvider<E extends Element = Element>(
   >,
 ): ReactElement {
   const _ref = useRef<E>(null);
-  const ref = hasRef<E>(children) && !isNil(children.ref)
-    ? hasRefObject(children) ? children.ref : (() => {
-      throw Error(
-        "[atomic-ui] Supported ref is only RefObject now. Remove ref from child",
-      );
-    })()
-    : _ref;
+  const ref = resolveRef<E>(children) ?? _ref;
 
   const transitionPropsStr = JSON.stringify(transitionProps);
   const returnValue = useTransition(
@@ -144,4 +138,15 @@ export default function TransitionProvider<E extends Element = Element>(
     children,
     ref,
   }, { ...returnValue, isShow, immediate });
+}
+
+function resolveRef<E>(
+  children: ReactElement,
+): RefObject<E> | undefined | never {
+  if (!hasRef<E>(children) || isNil(children.ref)) return;
+
+  if (hasRefObject(children)) return children.ref;
+  throw Error(
+    "[atomic-ui] Supported ref is only RefObject.",
+  );
 }

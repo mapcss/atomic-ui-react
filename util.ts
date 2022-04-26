@@ -26,9 +26,13 @@ export function hasRef<T>(
   return "ref" in element;
 }
 
+interface RefObjectAttributes<T> extends Attributes {
+  ref?: RefObject<T>;
+}
+
 export function hasRefObject<T>(
   element: ReactElement & RefAttributes<T>,
-): element is ReactElement & Attributes & { ref?: RefObject<T> } {
+): element is ReactElement & RefObjectAttributes<T> {
   return isObject(element.ref);
 }
 
