@@ -18,9 +18,11 @@ import { TransitionProps } from "./types.ts";
 
 const defaultRender: Render = (
   { children, ref },
-  { isShowable },
+  { isShowable, cleanTransitionProps: { leaved }, isActivated, isShow },
 ): ReactElement => {
-  return isShowable ? cloneElement(children, { ref }) : createElement(Fragment);
+  return (isActivated && (isShowable || leaved)) || (!isActivated && isShow)
+    ? cloneElement(children, { ref })
+    : createElement(Fragment);
 };
 
 export type RenderParam<E extends Element = Element> = {
@@ -32,11 +34,13 @@ export type RenderParam<E extends Element = Element> = {
 };
 
 /** Context of rendering */
-export type RenderContext = ReturnValue;
+export type RenderContext = ReturnValue & Required<WithoutTarget>;
 export type Render<E extends Element = Element> = (
   param: RenderParam<E>,
   context: RenderContext,
 ) => ReactElement;
+
+type WithoutTarget = Pick<Param, "isShow" | "immediate">;
 
 export type Props<E extends Element = Element> =
   & {
@@ -53,10 +57,8 @@ export type Props<E extends Element = Element> =
      * export default () => {
      *   return (
      *     <TransitionProvider
-     *       render={({ children, ref }, { isShowable }) => {
-     *         const style = isShowable ? {} : { visibility: "hidden" };
-     *         // For greater safety, a deep merge is required.
-     *         return cloneElement(children, { ref, style });
+     *       render={({ children, ref }) => {
+     *         return cloneElement(children, { ref });
      *       }}
      *       isShow
      *     >
@@ -69,7 +71,7 @@ export type Props<E extends Element = Element> =
      */
     render?: Render<E>;
   }
-  & Pick<Param, "isShow" | "immediate">
+  & WithoutTarget
   & Partial<TransitionProps>;
 
 /** Component to automatically adapt transitions to the root child.
@@ -92,7 +94,7 @@ export default function TransitionProvider<E extends Element = Element>(
   {
     children,
     isShow,
-    immediate,
+    immediate = false,
     onChange,
     render = defaultRender,
     ...transitionProps
@@ -141,5 +143,5 @@ export default function TransitionProvider<E extends Element = Element>(
   return render({
     children,
     ref,
-  }, returnValue);
+  }, { ...returnValue, isShow, immediate });
 }

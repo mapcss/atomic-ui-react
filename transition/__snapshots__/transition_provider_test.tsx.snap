@@ -18,9 +18,9 @@ snapshot[`TransitionProvider > should be match snapshot 7`] = `'<div class="test
 
 snapshot[`TransitionProvider > should be match snapshot 8`] = `'<div class="test transition duration opacity-30">test</div>'`;
 
-snapshot[`TransitionProvider > should be match snapshot 9`] = `""`;
+snapshot[`TransitionProvider > should be match snapshot 9`] = `'<div class="test hidden">test</div>'`;
 
-snapshot[`TransitionProvider > should be match snapshot 10`] = `""`;
+snapshot[`TransitionProvider > should be match snapshot 10`] = `'<div class="test hidden">test</div>'`;
 
 snapshot[`TransitionProvider > should add transition props to forwardable child component 1`] = `'<div class="test opacity-0">children</div>'`;
 
@@ -38,6 +38,6 @@ snapshot[`TransitionProvider > should add transition props to forwardable child 
 
 snapshot[`TransitionProvider > should add transition props to forwardable child component 8`] = `'<div class="test transition duration opacity-30">children</div>'`;
 
-snapshot[`TransitionProvider > should add transition props to forwardable child component 9`] = `""`;
+snapshot[`TransitionProvider > should add transition props to forwardable child component 9`] = `'<div class="test hidden">children</div>'`;
 
-snapshot[`TransitionProvider > should add transition props to forwardable child component 10`] = `""`;
+snapshot[`TransitionProvider > should add transition props to forwardable child component 10`] = `'<div class="test hidden">children</div>'`;
