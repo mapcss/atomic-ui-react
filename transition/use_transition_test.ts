@@ -100,6 +100,7 @@ it(
       expect(result.current.classNames).toEqual(["enterFrom"]);
       expect(result.current.currentTransitions).toEqual(["enterFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
+      expect(result.current.isFirst).toBeTruthy();
       expect(result.current.cleanTransitionProps).toEqual({
         enter: "enter",
         enterFrom: "enterFrom",
@@ -117,6 +118,7 @@ it(
       expect(result.current.classNames).toEqual(["enterFrom", "enter"]);
       expect(result.current.currentTransitions).toEqual(["enterFrom", "enter"]);
       expect(result.current.isCompleted).toBeFalsy();
+      expect(result.current.isFirst).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("wait");

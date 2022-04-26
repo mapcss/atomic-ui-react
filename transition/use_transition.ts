@@ -56,6 +56,11 @@ export type ReturnValue =
     /** Whether transition lifecycle is completed or not. */
     isCompleted: boolean;
 
+    /** Whether the first call for this hook or not.
+     * @remarks This is not a reactive value.
+     */
+    isFirst: boolean;
+
     /** Non-duplicated token and space transition props
      * It guarantee that there is no empty string or spaces only characters.
      */
@@ -96,7 +101,7 @@ export default function useTransition<T extends Element>(
   >,
   deps: DependencyList,
 ): ReturnValue {
-  const { isFirstMount } = useIsFirstMount();
+  const { isFirstMount: isFirst } = useIsFirstMount();
   const transitionPropsStr = JSON.stringify(transitionProps);
   const hasMutate = useMutated([
     isShow,
@@ -106,7 +111,7 @@ export default function useTransition<T extends Element>(
 
   const use = useMemo<boolean>(() => {
     if (immediate) return true;
-    if (isFirstMount) return false;
+    if (isFirst) return false;
 
     return hasMutate;
   }, [hasMutate]);
@@ -173,6 +178,7 @@ export default function useTransition<T extends Element>(
     isCompleted,
     isActivated,
     isShowable,
+    isFirst,
     status,
     currentTransitions,
     lifecycle: transitionLifecycle as never, // for conditional types,
