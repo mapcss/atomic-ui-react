@@ -1,3 +1,19 @@
+# [1.0.0-beta.28](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.27...1.0.0-beta.28) (2022-04-26)
+
+
+### Bug Fixes
+
+* **transition:** rename `cleanTransitionProps` to `cleanTransitionMap` ([6b58a4a](https://github.com/mapcss/atomic-ui-react/commit/6b58a4ad9b5fe3178bc1f3eb63ef0a38ef148216))
+
+
+### Features
+
+* **transition:** `useTransition` return `isFirst` field ([c6e589a](https://github.com/mapcss/atomic-ui-react/commit/c6e589ad0bdc71be9daa5fc649b51c2f2842247e))
+* **transition:** accept number to `duration` field ([6e00b5b](https://github.com/mapcss/atomic-ui-react/commit/6e00b5b3b2a67ba96e11f0126fd8527f6d1b5fb7))
+* **transition:** change role of `TransitionProvier` to as render props ([14fc72b](https://github.com/mapcss/atomic-ui-react/commit/14fc72b64fe360a1d7722c3f95e4d0efcbeab087))
+* **transition:** rename `target` to `duration` ([f2a026d](https://github.com/mapcss/atomic-ui-react/commit/f2a026df4492a5a8f4af3ee6b8e1b127a9abf2a9))
+* **transition:** rename `TransitionProvider` to `Transition` ([9befd74](https://github.com/mapcss/atomic-ui-react/commit/9befd74dee3328bbdcc2f8476be26022cb6671a7))
+
 # [1.0.0-beta.27](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.26...1.0.0-beta.27) (2022-04-26)
 
 
