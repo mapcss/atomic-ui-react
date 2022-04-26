@@ -1,3 +1,12 @@
+# [1.0.0-beta.27](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.26...1.0.0-beta.27) (2022-04-26)
+
+
+### Features
+
+* **transition:** add `cleanTransitionProps` to return ([222cfdf](https://github.com/mapcss/atomic-ui-react/commit/222cfdf5880c5ef843365ff15c637e8b80b7c3c9))
+* **transition:** improve default renderer if there is `leaved`, the DOM will keep ([abff521](https://github.com/mapcss/atomic-ui-react/commit/abff52179af157988ac16a6bae0e4c21510c41d6))
+* **transition:** return `cleanTransitionProps` by `useTransition` ([07c914c](https://github.com/mapcss/atomic-ui-react/commit/07c914ceacb51a326ebc64fb41d24e4fa363030e))
+
 # [1.0.0-beta.26](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.25...1.0.0-beta.26) (2022-04-25)
 
 
