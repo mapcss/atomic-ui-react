@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { DependencyList, RefObject, useMemo } from "react";
-import { isLength0, mapValues } from "../deps.ts";
+import { isLength0, isNumber, mapValues } from "../deps.ts";
 import { isRefObject, Lazyable, lazyEval } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
@@ -24,12 +24,14 @@ export type ElementLike<T extends Element = Element> =
   | Lazyable<T | undefined | null>
   | RefObject<T | undefined>;
 
-export type Param<T extends Element = Element> = {
+export type DurationLike<E extends Element = Element> = number | ElementLike<E>;
+
+export type Param<E extends Element = Element> = {
   /** Transition duration itself or it reference.
    * Specify `Element` or equivalent.
    * The duration and delay of the transition are taken from the actual DOM and used to calculate the length of the transition.
    */
-  duration: ElementLike<T>;
+  duration: DurationLike<E>;
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
@@ -118,10 +120,7 @@ export default function useTransition<T extends Element>(
 
   const [isActivated, transitionLifecycle] = useTransitionLifeCycle(
     {
-      duration: () => {
-        const maybeElement = resolveElement(duration);
-        return maybeElement ? getDuration(maybeElement) : 0;
-      },
+      duration: () => resolveDurationLike(duration),
       use,
     },
     [use, JSON.stringify(deps)],
@@ -204,4 +203,14 @@ export function cleanRecordToken<
     const cleanedTokens = cleanTokens([value]);
     return isLength0(cleanedTokens) ? undefined : cleanedTokens.join(" ");
   }) as T;
+}
+
+export function resolveDurationLike<E extends Element = Element>(
+  durationLike: DurationLike<E>,
+): number {
+  if (isNumber(durationLike)) {
+    return Number.isFinite(durationLike) ? durationLike : 0;
+  }
+  const maybeElement = resolveElement(durationLike);
+  return maybeElement ? getDuration(maybeElement) : 0;
 }

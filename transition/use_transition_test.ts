@@ -1,6 +1,7 @@
 import { renderHook } from "@testing-library/react-hooks";
 import useTransition, {
   cleanRecordToken,
+  resolveDurationLike,
   resolveElement,
 } from "./use_transition.ts";
 import {
@@ -17,6 +18,12 @@ import {
 const resolveElementTest = describe({
   name: "resolveElement",
   beforeAll: setupJSDOM,
+});
+
+Deno.test("resolveDurationLike", () => {
+  expect(resolveDurationLike(100)).toBe(100);
+  expect(resolveDurationLike(Infinity)).toBe(0);
+  expect(resolveDurationLike(0)).toBe(0);
 });
 
 it(resolveElementTest, "should return element or undefined/null", () => {
