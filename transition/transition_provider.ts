@@ -1,152 +1,68 @@
-// This module is browser compatible.
-
-import {
-  cloneElement,
-  createElement,
-  Fragment,
-  ReactElement,
-  RefObject,
-  useEffect,
-  useMemo,
-  useRef,
-} from "react";
-import { isNil, ValueOf } from "../deps.ts";
-import { hasRef, hasRefObject } from "../util.ts";
-import useTransition, { Param, ReturnValue } from "./use_transition.ts";
-import { cleanTokens } from "./util.ts";
+import { useEffect } from "react";
+import useTransition, {
+  Param,
+  ReturnValue as UseTransitionReturnValue,
+} from "./use_transition.ts";
 import { TransitionProps } from "./types.ts";
 
-const defaultRender: Render = (
-  { children, ref },
-  { isShowable, cleanTransitionProps: { leaved }, isActivated, isShow },
-): ReactElement => {
-  return (isActivated && (isShowable || leaved)) || (!isActivated && isShow)
-    ? cloneElement(children, { ref })
-    : createElement(Fragment);
-};
-
-export type RenderParam<E extends Element = Element> = {
-  /** Root child adapting transitions. */
-  children: ReactElement;
-
-  /** The root child `RefObject` */
-  ref: RefObject<E>;
-};
-
-/** Context of rendering */
-export type RenderContext = ReturnValue & Required<WithoutTarget>;
-export type Render<E extends Element = Element> = (
-  param: RenderParam<E>,
-  context: RenderContext,
-) => ReactElement;
-
-type WithoutTarget = Pick<Param, "isShow" | "immediate">;
-
-export type Props<E extends Element = Element> =
+export type Props =
   & {
     /** The root child adapting transitions. */
-    children: ReactElement;
+    children: (state: UseTransitionReturnValue) => JSX.Element;
 
     /** Call on change transition states. */
-    onChange?: (state: ReturnValue) => void;
-
-    /** Controls the rendering element. Called just before rendering, it returns the element to actually render.
-     * ```tsx
-     * import { cloneElement } from "react"
-     * import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
-     * export default () => {
-     *   return (
-     *     <TransitionProvider
-     *       render={({ children, ref }) => {
-     *         return cloneElement(children, { ref });
-     *       }}
-     *       isShow
-     *     >
-     *       <></>
-     *     </TransitionProvider>
-     *   );
-     * };
-     * ```
-     * @default {@link defaultRender}
-     */
-    render?: Render<E>;
+    onChange?: (state: UseTransitionReturnValue) => void;
   }
-  & WithoutTarget
+  & Param
   & Partial<TransitionProps>;
 
-/** Component to automatically adapt transitions to the root child.
+/** Transition as `children` function.
  * ```tsx
- * import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+ * import { useRef, useState } from "react";
+ * import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ *
  * export default () => {
+ *   const [isShow] = useState(false);
+ *   const ref = useRef<HTMLDivElement>(null);
  *   return (
  *     <TransitionProvider
- *       enter="transition duration-300"
  *       enterFrom="opacity-0"
- *       isShow
+ *       enter="transition"
+ *       leaveTo="opacity-0"
+ *       leave="transition"
+ *       leaved="opacity-0"
+ *       duration={ref}
+ *       isShow={isShow}
  *     >
- *       <div />
+ *       {({ className }) => {
+ *         return <div ref={ref} className={className}>transition</div>;
+ *       }}
  *     </TransitionProvider>
  *   );
  * };
  * ```
  */
-export default function TransitionProvider<E extends Element = Element>(
+export default function TransitionProvider(
   {
     children,
+    duration,
     isShow,
     immediate = false,
     onChange,
-    render = defaultRender,
     ...transitionProps
   }: Readonly<
-    Props<E>
+    Props
   >,
-): ReactElement {
-  const _ref = useRef<E>(null);
-  const ref = resolveRef<E>(children) ?? _ref;
-
-  const transitionPropsStr = JSON.stringify(transitionProps);
+): JSX.Element {
   const returnValue = useTransition(
-    { duration: ref, isShow, immediate },
+    { duration, isShow, immediate },
     transitionProps,
-    [isShow, immediate, transitionPropsStr],
+    [isShow, immediate, JSON.stringify(transitionProps)],
   );
-
-  const allTransitions = useMemo<string[]>(() =>
-    cleanTokens(
-      Object.values(transitionProps) as ValueOf<TransitionProps>[],
-    ), [transitionPropsStr]);
-
-  const { classNames } = returnValue;
-
-  useEffect(() => {
-    const classList = ref.current?.classList;
-    if (!classList) return;
-    try {
-      classList.remove(...allTransitions);
-      classList.add(...classNames);
-    } catch {
-      // noop
-    }
-  }, [JSON.stringify(allTransitions), JSON.stringify(classNames)]);
 
   useEffect(() => {
     onChange?.(returnValue);
   }, [JSON.stringify(onChange), JSON.stringify(returnValue)]);
 
-  return render({
-    children,
-    ref,
-  }, { ...returnValue, isShow, immediate });
-}
-
-function resolveRef<E>(
-  children: ReactElement,
-): RefObject<E> | undefined | never {
-  if (!hasRef<E>(children) || isNil(children.ref)) return;
-
-  if (hasRefObject(children)) return children.ref;
-  throw Error(
-    "[atomic-ui] Supported ref is only RefObject.",
-  );
+  return children(returnValue);
 }

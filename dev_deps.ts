@@ -6,6 +6,7 @@ export {
 export { FakeTime } from "https://deno.land/std@0.136.0/testing/time.ts";
 export { describe, it } from "https://deno.land/std@0.136.0/testing/bdd.ts";
 export { assertSnapshot } from "https://deno.land/std@0.136.0/testing/snapshot.ts";
+export { default as clsx } from "https://esm.sh/clsx@1.1.1?pin=v78";
 export async function setupJSDOM(): Promise<void> {
   const { JSDOM } = await import("https://esm.sh/jsdom@19.0.0?pin=v76").then((
     module,

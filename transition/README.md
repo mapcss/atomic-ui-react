@@ -12,28 +12,6 @@ Monitor component lifecycles and control transitions.
   className-based 3rd party modules such as
   [headlessui/transition](https://headlessui.dev/react/transition).
 
-## Example
-
-```tsx
-import { useState } from "react";
-import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
-
-export default () => {
-  const [state] = useState(false);
-  return (
-    <TransitionProvider
-      enter="transition duration-300"
-      enterFrom="opacity-0"
-      leave="transition transform duration-500"
-      leaveTo="-translate-x-full"
-      isShow={state}
-    >
-      <div />
-    </TransitionProvider>
-  );
-};
-```
-
 ## API
 
 ### TransitionProvider
@@ -149,20 +127,25 @@ type TransitionProviderProps<E extends Element = Element> = {
 #### Example
 
 ```tsx
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 export default () => {
-  const [state] = useState(false);
+  const [isShow] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
   return (
     <TransitionProvider
-      enter="transition duration-300"
       enterFrom="opacity-0"
-      leave="transition transform duration-500"
-      leaveTo="-translate-x-full"
-      isShow={state}
+      enter="transition"
+      leaveTo="opacity-0"
+      leave="transition"
+      leaved="opacity-0"
+      duration={ref}
+      isShow={isShow}
     >
-      <div />
+      {({ className }) => {
+        return <div ref={ref} className={className}>transition</div>;
+      }}
     </TransitionProvider>
   );
 };
