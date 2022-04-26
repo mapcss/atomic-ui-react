@@ -66,7 +66,7 @@ export type ReturnValue =
     /** Non-duplicated token and space transition props
      * It guarantee that there is no empty string or spaces only characters.
      */
-    cleanTransitionProps: Partial<TransitionMap>;
+    cleanTransitionMap: Partial<TransitionMap>;
 
     /** List of currently adapted transition. */
     currentTransitions: TransitionName[];
@@ -135,7 +135,7 @@ export default function useTransition<T extends Element>(
     [isShow],
   );
 
-  const cleanTransitionProps = useMemo<Partial<TransitionMap>>(
+  const cleanTransitionMap = useMemo<Partial<TransitionMap>>(
     () => cleanRecordToken(transitionProps),
     [transitionPropsStr],
   );
@@ -158,12 +158,12 @@ export default function useTransition<T extends Element>(
 
   const classNames = useMemo<string[]>(() => {
     const transitions = currentTransitions.map((key) =>
-      cleanTransitionProps[key]
+      cleanTransitionMap[key]
     );
     return cleanTokens(transitions);
   }, [
     JSON.stringify(currentTransitions),
-    JSON.stringify(cleanTransitionProps),
+    JSON.stringify(cleanTransitionMap),
   ]);
 
   const className = useMemo<string | undefined>(() => {
@@ -181,7 +181,7 @@ export default function useTransition<T extends Element>(
     status,
     currentTransitions,
     lifecycle: transitionLifecycle as never, // for conditional types,
-    cleanTransitionProps,
+    cleanTransitionMap,
   };
 }
 

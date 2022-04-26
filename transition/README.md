@@ -91,7 +91,7 @@ type UseTransitionReturnValue = {
    * It guarantee that there is no empty string or spaces only
    * characters.
    */
-  cleanTransitionProps: Partial<TransitionProps>;
+  cleanTransitionMap: Partial<TransitionProps>;
 
   /** List of currently adapted transition. */
   currentTransitions: Transition[];

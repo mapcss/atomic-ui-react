@@ -108,7 +108,7 @@ it(
       expect(result.current.currentTransitions).toEqual(["enterFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isFirst).toBeTruthy();
-      expect(result.current.cleanTransitionProps).toEqual({
+      expect(result.current.cleanTransitionMap).toEqual({
         enter: "enter",
         enterFrom: "enterFrom",
         enterTo: "enterTo dirty class name",

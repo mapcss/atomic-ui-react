@@ -19,7 +19,7 @@ import { TransitionMap } from "./types.ts";
 
 const defaultRender: Render = (
   { children, ref },
-  { isShowable, cleanTransitionProps: { leaved }, isActivated, isShow },
+  { isShowable, cleanTransitionMap: { leaved }, isActivated, isShow },
 ): ReactElement => {
   return (isActivated && (isShowable || leaved)) || (!isActivated && isShow)
     ? cloneElement(children, { ref })
