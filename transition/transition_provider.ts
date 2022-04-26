@@ -107,7 +107,7 @@ export default function TransitionProvider<E extends Element = Element>(
 
   const transitionPropsStr = JSON.stringify(transitionProps);
   const returnValue = useTransition(
-    { target: ref, isShow, immediate },
+    { duration: ref, isShow, immediate },
     transitionProps,
     [isShow, immediate, transitionPropsStr],
   );

@@ -183,7 +183,7 @@ import {
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 declare function useTransition<T extends Element>(
-  { target, isShow }: Readonly<UseTransitionParam<T>>,
+  { duration, isShow }: Readonly<UseTransitionParam<T>>,
   transitionProps: Readonly<Partial<TransitionProps>>,
 ): UseTransitionReturnValue;
 ```
@@ -197,7 +197,7 @@ import { useTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.
 export default () => {
   const [isShow] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
-  const { className } = useTransition({ isShow, target: ref }, {
+  const { className } = useTransition({ isShow, duration: ref }, {
     enter: "transition duration-300",
     enterFrom: "opacity-0",
   }, [isShow]);

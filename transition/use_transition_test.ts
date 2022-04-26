@@ -74,7 +74,7 @@ it(
     const { result, rerender } = renderHook(({ isShow }) =>
       useTransition(
         {
-          target,
+          duration: target,
           isShow,
           immediate: true,
         },
@@ -188,7 +188,7 @@ it(
       ({ isShow, immediate }) =>
         useTransition(
           {
-            target,
+            duration: target,
             isShow,
             immediate,
           },
@@ -251,7 +251,7 @@ it(
       ({ isShow, immediate }) =>
         useTransition(
           {
-            target,
+            duration: target,
             isShow,
             immediate,
           },
@@ -303,7 +303,7 @@ it(
       ({ enter }) =>
         useTransition(
           {
-            target,
+            duration: target,
             isShow: true,
           },
           {
@@ -351,7 +351,7 @@ it(
     const { result } = renderHook(() =>
       useTransition(
         {
-          target,
+          duration: target,
           isShow: true,
           immediate: true,
         },

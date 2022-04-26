@@ -25,11 +25,11 @@ export type ElementLike<T extends Element = Element> =
   | RefObject<T | undefined>;
 
 export type Param<T extends Element = Element> = {
-  /** Target to monitor end of transitions.
+  /** Transition duration itself or it reference.
    * Specify `Element` or equivalent.
    * The duration and delay of the transition are taken from the actual DOM and used to calculate the length of the transition.
    */
-  target: ElementLike<T>;
+  duration: ElementLike<T>;
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
@@ -85,7 +85,7 @@ export type ReturnValue =
  * export default () => {
  *   const [isShow] = useState(true)
  *   const ref = useRef<HTMLDivElement>(null)
- *   const { className } = useTransition({ isShow, target: ref }, {
+ *   const { className } = useTransition({ isShow, duration: ref }, {
  *     enter: "transition duration-300",
  *     enterFrom: "opacity-0",
  *   }, [isShow]);
@@ -95,7 +95,7 @@ export type ReturnValue =
  * ```
  */
 export default function useTransition<T extends Element>(
-  { target, isShow, immediate = false }: Readonly<Param<T>>,
+  { duration, isShow, immediate = false }: Readonly<Param<T>>,
   transitionProps: Readonly<
     Partial<TransitionProps>
   >,
@@ -119,7 +119,7 @@ export default function useTransition<T extends Element>(
   const [isActivated, transitionLifecycle] = useTransitionLifeCycle(
     {
       duration: () => {
-        const maybeElement = resolveElement(target);
+        const maybeElement = resolveElement(duration);
         return maybeElement ? getDuration(maybeElement) : 0;
       },
       use,
