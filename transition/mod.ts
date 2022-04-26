@@ -4,6 +4,13 @@ export { default as TransitionProvider } from "./transition_provider.ts";
 export type {
   Props as TransitionProviderProps,
 } from "./transition_provider.ts";
+export { default as Transition } from "./transition.ts";
+export type {
+  Props as TransitionProps,
+  Render as TransitionRender,
+  RenderContext as TransitionRenderContext,
+  RenderParam as TransitionRenderParam,
+} from "./transition.ts";
 
 export { default as useTransition } from "./use_transition.ts";
 export type {
@@ -18,4 +25,4 @@ export type {
   TransitionLifecycle,
 } from "./use_transition_lifecycle.ts";
 export { cleanTokens, getDuration, isShowable, tokenize } from "./util.ts";
-export type { Transition, TransitionProps } from "./types.ts";
+export type { TransitionMap, TransitionName } from "./types.ts";

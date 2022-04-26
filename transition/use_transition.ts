@@ -5,7 +5,7 @@ import { isLength0, isNumber, mapValues } from "../deps.ts";
 import { isRefObject, Lazyable, lazyEval } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
-import { Transition, TransitionProps } from "./types.ts";
+import { TransitionMap, TransitionName } from "./types.ts";
 import useTransitionLifeCycle, {
   TransitionLifecycle,
   TransitionLifecycleMap,
@@ -66,10 +66,10 @@ export type ReturnValue =
     /** Non-duplicated token and space transition props
      * It guarantee that there is no empty string or spaces only characters.
      */
-    cleanTransitionProps: Partial<TransitionProps>;
+    cleanTransitionProps: Partial<TransitionMap>;
 
     /** List of currently adapted transition. */
-    currentTransitions: Transition[];
+    currentTransitions: TransitionName[];
     /** Current transition lifecycle */
 
     status: TransitionStatus;
@@ -99,7 +99,7 @@ export type ReturnValue =
 export default function useTransition<T extends Element>(
   { duration, isShow, immediate = false }: Readonly<Param<T>>,
   transitionProps: Readonly<
-    Partial<TransitionProps>
+    Partial<TransitionMap>
   >,
   deps: DependencyList,
 ): ReturnValue {
@@ -135,12 +135,12 @@ export default function useTransition<T extends Element>(
     [isShow],
   );
 
-  const cleanTransitionProps = useMemo<Partial<TransitionProps>>(
+  const cleanTransitionProps = useMemo<Partial<TransitionMap>>(
     () => cleanRecordToken(transitionProps),
     [transitionPropsStr],
   );
 
-  const currentTransitions = useMemo<Transition[]>(
+  const currentTransitions = useMemo<TransitionName[]>(
     () =>
       isActivated === false ? [] : transitionLifecycleMap[transitionLifecycle],
     [isActivated, transitionLifecycle, JSON.stringify(transitionLifecycleMap)],

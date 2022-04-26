@@ -1,9 +1,11 @@
+// This module is browser compatible.
+
 import { useEffect } from "react";
 import useTransition, {
   Param,
   ReturnValue as UseTransitionReturnValue,
 } from "./use_transition.ts";
-import { TransitionProps } from "./types.ts";
+import { TransitionMap } from "./types.ts";
 
 export type Props =
   & {
@@ -14,7 +16,7 @@ export type Props =
     onChange?: (state: UseTransitionReturnValue) => void;
   }
   & Param
-  & Partial<TransitionProps>;
+  & Partial<TransitionMap>;
 
 /** Transition as `children` function.
  * ```tsx

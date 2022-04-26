@@ -12,6 +12,25 @@ Monitor component lifecycles and control transitions.
   className-based 3rd party modules such as
   [headlessui/transition](https://headlessui.dev/react/transition).
 
+## Example
+
+```tsx
+import { Transition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  return (
+    <Transition
+      enter="transition duration-300"
+      enterFrom="opacity-0"
+      leave="transition duration-300"
+      leaveTo="opacity-0"
+      isShow
+    >
+      <div />
+    </Transition>
+  );
+};
+```
+
 ## API
 
 ### TransitionProvider
