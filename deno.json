@@ -5,7 +5,7 @@
     "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"]
   },
   "tasks": {
-    "test": "deno test --import-map=test_import_map.json --allow-env --allow-net --no-check=remote --ignore=node_modules,_playground"
+    "test": "deno test --import-map=test_import_map.json --allow-env --allow-net --allow-read --no-check=remote --ignore=node_modules,_playground"
   },
   "fmt": {
     "files": {

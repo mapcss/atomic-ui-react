@@ -15,6 +15,7 @@ import {
   useState,
 } from "react";
 import { isNumber, joinChars } from "../deps.ts";
+import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Props as TabProps } from "./tab.ts";
 import { Props as TabPanelProps } from "./tab_panel.ts";
 import { Props as TabListProps } from "./tab_list.ts";
@@ -60,7 +61,7 @@ export default function TabProvider(
     onChange,
   } = props;
   const id = useId();
-  const refs = useRef<RefObject<HTMLElement>[]>([]);
+  const refs = useRef<RefObject<HTMLElement | undefined>[]>([]);
   refs.current.length = 0;
 
   let tabId = 0;
@@ -90,17 +91,20 @@ export default function TabProvider(
     ],
   );
 
+  const { isFirstMount } = useIsFirstMount();
   useEffect(() => {
     onChange?.(state);
   }, [onChange, state]);
 
   useEffect(() => {
+    if (isFirstMount) return;
+
     focus(index);
   }, [index]);
 
   const focus = (index: number): void => {
-    if (!isAriaDisabled(refs.current[index].current)) {
-      refs.current[index].current?.focus();
+    if (!isAriaDisabled(refs.current[index]?.current)) {
+      refs.current[index]?.current?.focus();
     }
   };
 
@@ -167,12 +171,13 @@ export default function TabProvider(
 
       const ref = createRef<HTMLElement>();
       refs.current.push(ref);
-      const props: TabProps = {
+      // deno-lint-ignore no-explicit-any
+      const props: TabProps<any> = {
         id: joinChars([id, TAB_PREFIX, currentIndex], "-"),
         tabPanelId: joinChars([id, TAB_PANEL_PREFIX, currentIndex], "-"),
         onClick,
         onKeyDown,
-        tabRef: ref,
+        ref,
         isSelected: currentIndex === index,
       };
       return cloneElement(tabEl, props);
@@ -200,6 +205,8 @@ export default function TabProvider(
   return createElement(Fragment, null, newChildren);
 }
 
-function isNotRefAriaDisabled(ref: RefObject<HTMLElement>): boolean {
+function isNotRefAriaDisabled(
+  ref: RefObject<HTMLElement | undefined>,
+): boolean {
   return !isAriaDisabled(ref.current);
 }

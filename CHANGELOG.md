@@ -1,3 +1,159 @@
+# [1.0.0-beta.27](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.26...1.0.0-beta.27) (2022-04-26)
+
+
+### Features
+
+* **transition:** add `cleanTransitionProps` to return ([222cfdf](https://github.com/mapcss/atomic-ui-react/commit/222cfdf5880c5ef843365ff15c637e8b80b7c3c9))
+* **transition:** improve default renderer if there is `leaved`, the DOM will keep ([abff521](https://github.com/mapcss/atomic-ui-react/commit/abff52179af157988ac16a6bae0e4c21510c41d6))
+* **transition:** return `cleanTransitionProps` by `useTransition` ([07c914c](https://github.com/mapcss/atomic-ui-react/commit/07c914ceacb51a326ebc64fb41d24e4fa363030e))
+
+# [1.0.0-beta.26](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.25...1.0.0-beta.26) (2022-04-25)
+
+
+### Bug Fixes
+
+* **transition:** dirty class name to clean waht is non-duplicated, clean space token ([d4949c8](https://github.com/mapcss/atomic-ui-react/commit/d4949c81dd1dac7c326826c1e65ab7665109608a))
+
+
+### Features
+
+* **transition:** add `isShowable` filed to `useTransition` return value ([9efe580](https://github.com/mapcss/atomic-ui-react/commit/9efe5804095ceaec7e08a47c6aa3320dd77a430b))
+* **transition:** export utility for dirty class name ([c02034f](https://github.com/mapcss/atomic-ui-react/commit/c02034f6fd13d3f97d62ebc16bb744f518f0874a))
+* **transition:** return `classNames` that is array of transition tokens ([2eda2b6](https://github.com/mapcss/atomic-ui-react/commit/2eda2b649b210fad965cdd030c31a4c5471c3a00))
+* **transition:** transition provider should mutate DOM className directly ([000c75e](https://github.com/mapcss/atomic-ui-react/commit/000c75e48d09ff4f2706743e5f485e4b33993f31)), closes [#7](https://github.com/mapcss/atomic-ui-react/issues/7)
+
+# [1.0.0-beta.25](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.24...1.0.0-beta.25) (2022-04-25)
+
+
+### Bug Fixes
+
+* **transition:** occur transition when parent is updated ([aa42ee1](https://github.com/mapcss/atomic-ui-react/commit/aa42ee1fdf2964c0a2ef3a1c85fb81e7b37c4f73)), closes [#6](https://github.com/mapcss/atomic-ui-react/issues/6)
+
+
+### Features
+
+* **hooks:** add `useMutated` hooks that observe deps update ([c915eb8](https://github.com/mapcss/atomic-ui-react/commit/c915eb8078cccb78f8874f92c7aa9f4e4006eb54))
+
+# [1.0.0-beta.24](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.23...1.0.0-beta.24) (2022-04-24)
+
+
+### Features
+
+* **transition:** add `immediate` flag to handle first mount transition behavior ([8cf381c](https://github.com/mapcss/atomic-ui-react/commit/8cf381c57b2256d4fc6349c9daec9455142c54ad)), closes [#4](https://github.com/mapcss/atomic-ui-react/issues/4)
+
+# [1.0.0-beta.23](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.22...1.0.0-beta.23) (2022-04-24)
+
+
+### Bug Fixes
+
+* **transition:** if child has `ref`, refer it ([cb67012](https://github.com/mapcss/atomic-ui-react/commit/cb6701228cbd2115302420398282af6be5c8215d)), closes [#3](https://github.com/mapcss/atomic-ui-react/issues/3)
+
+# [1.0.0-beta.22](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.21...1.0.0-beta.22) (2022-04-24)
+
+
+### Features
+
+* add utility for checking contain element under the parent element ([44fd773](https://github.com/mapcss/atomic-ui-react/commit/44fd773e157daaa6aec9c8babaf5f8f44c13f5c1))
+
+# [1.0.0-beta.21](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.20...1.0.0-beta.21) (2022-04-23)
+
+
+### Bug Fixes
+
+* **hooks:** rename `useOnMount` to `useLifecycle` ([431d15b](https://github.com/mapcss/atomic-ui-react/commit/431d15b1c506d116d451fd2164b9cd1537dd534a))
+
+
+### Features
+
+* **transition:** add `entered` and `leaved` transition props ([03d3161](https://github.com/mapcss/atomic-ui-react/commit/03d3161aceb88c9190f1b0aa08e78b749cae99fd))
+
+
+### Performance Improvements
+
+* **transition:** remove unnessesary deps from hooks for avoid re-culculation ([d8d93f8](https://github.com/mapcss/atomic-ui-react/commit/d8d93f803b320cf971d4637e27f18982d13a533f))
+
+# [1.0.0-beta.20](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.19...1.0.0-beta.20) (2022-04-23)
+
+
+### Features
+
+* **hooks:** add `useTimeout` hooks that safe `setTimeout` with effect ([431471e](https://github.com/mapcss/atomic-ui-react/commit/431471e1760fc4b1404a803adf9d8f816f0ad23b))
+
+# [1.0.0-beta.19](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.18...1.0.0-beta.19) (2022-04-21)
+
+
+### Bug Fixes
+
+* **tab:** prevent focus tab element at first mount ([31d34f2](https://github.com/mapcss/atomic-ui-react/commit/31d34f214b2db3d39e8d08dc594f75358d100055))
+
+
+### Features
+
+* **util:** add checking Node.js environment or not ([339f073](https://github.com/mapcss/atomic-ui-react/commit/339f073f330659f2d2e0d9da4334d442dbf3fcdb))
+
+# [1.0.0-beta.18](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.17...1.0.0-beta.18) (2022-04-21)
+
+
+### Features
+
+* **tab:** tab components to be generic forwawrd reffable component ([e7f8b13](https://github.com/mapcss/atomic-ui-react/commit/e7f8b132fd04366d897b89be96505faad87fe035))
+
+# [1.0.0-beta.17](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.16...1.0.0-beta.17) (2022-04-21)
+
+
+### Bug Fixes
+
+* **tab:** add optional parameter accessor to get index ([d06d2a2](https://github.com/mapcss/atomic-ui-react/commit/d06d2a230fd68ceff1d53f77343cfab5eb827db9))
+
+# [1.0.0-beta.16](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.15...1.0.0-beta.16) (2022-04-20)
+
+
+### Features
+
+* **transition:** add `onChange` handler to `TransitionProvider` that call on change transtion state ([a4e5e9f](https://github.com/mapcss/atomic-ui-react/commit/a4e5e9f4f3751ef457a5c5ec8077becad339e2bf))
+* **transition:** add `render` props to controll rendering actulal element ([c33c253](https://github.com/mapcss/atomic-ui-react/commit/c33c253d0b51d356516c5170c2c97492c5a5a9a3))
+* **transition:** export transition lifecycle on `useTransition` and `TransitionProvider` ([4b037fe](https://github.com/mapcss/atomic-ui-react/commit/4b037fe4cddecb565abd342ebd2ee6dbe0958221))
+
+# [1.0.0-beta.15](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.14...1.0.0-beta.15) (2022-04-19)
+
+
+### Features
+
+* **transition:** export transition shared types as global module ([0c230f0](https://github.com/mapcss/atomic-ui-react/commit/0c230f0f24e5f688b2ffe67517e0ceb4512599be))
+* **transition:** export transition utility to global ([2321e12](https://github.com/mapcss/atomic-ui-react/commit/2321e1290fb55d19198700607306a04961e14e92))
+* **transition:** rename `useTransitionTiming` to `useTransitionLifecycle`, export as global module ([6921b54](https://github.com/mapcss/atomic-ui-react/commit/6921b5406d045fcb09b73fff205b09ef22c6113d))
+* **transition:** rename field of `isRendered` to `isCompleted` ([db5de48](https://github.com/mapcss/atomic-ui-react/commit/db5de48c49b2c1a204c23ea49f8dd3156244083d))
+
+# [1.0.0-beta.14](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.13...1.0.0-beta.14) (2022-04-19)
+
+
+### Bug Fixes
+
+* **transition:** fix isRendered state logic, remove unnessesary state for performance ([59bb16c](https://github.com/mapcss/atomic-ui-react/commit/59bb16c58998039176171b73554697c2d8f1247b))
+
+# [1.0.0-beta.13](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.12...1.0.0-beta.13) (2022-04-18)
+
+
+### Features
+
+* **transition:** add `TransitionProvider` Component that full managed transition props under child ([835ac4c](https://github.com/mapcss/atomic-ui-react/commit/835ac4c3a6573c61f8fdd2fb471198dfc01917a0))
+* **transition:** rename props name of `show` to `isShow` and `isRendered` ([9a74592](https://github.com/mapcss/atomic-ui-react/commit/9a745928b42afcd98c2da9597120fed5a7d99403))
+
+# [1.0.0-beta.12](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.11...1.0.0-beta.12) (2022-04-18)
+
+
+### Bug Fixes
+
+* **transition:** change `useTransitionTiming` hooks interface ([da93d7e](https://github.com/mapcss/atomic-ui-react/commit/da93d7eb25f69fec5226c011e16bada88e723589))
+* **transition:** timer id should check data types ([80c830c](https://github.com/mapcss/atomic-ui-react/commit/80c830c4e478b4d0436df9e28faae0af4e93fb5d))
+
+
+### Features
+
+* **transition:** rename props name to `target` from `ref` ([fe58f08](https://github.com/mapcss/atomic-ui-react/commit/fe58f080830ec756fc35b5ec6d9bdaba3ee6bbdc))
+* **transition:** treat transition delay with transition duration ([13d7f72](https://github.com/mapcss/atomic-ui-react/commit/13d7f729b7fdaf31253268aedd38df15996cd5f1))
+* **util:** export pure utility functions ([eca7b60](https://github.com/mapcss/atomic-ui-react/commit/eca7b60b00507be67ad490d88d9868fd840f70b7))
+
 # [1.0.0-beta.11](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.10...1.0.0-beta.11) (2022-04-18)
 
 
