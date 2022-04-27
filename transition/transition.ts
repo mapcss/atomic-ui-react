@@ -9,21 +9,29 @@ import {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
-import { isNil, ValueOf } from "../deps.ts";
+import { isBoolean, isNil, ValueOf } from "../deps.ts";
 import { hasRef, hasRefObject } from "../util.ts";
-import useTransition, { ReturnValue } from "./use_transition.ts";
+import { Context, IsShowContext } from "./context.ts";
+import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
+import useTransition, {
+  ReturnValue as UseTransitionReturnValue,
+} from "./use_transition.ts";
+import useGroupTransition, {
+  ReturnValue as UseGroupTransitionReturnValue,
+} from "./use_group_transition.ts";
 import { Props as _Props } from "./transition_provider.ts";
 import { cleanTokens } from "./util.ts";
 import { TransitionMap } from "./types.ts";
 
 const defaultRender: Render = (
   { children, ref },
-  { isShowable, cleanTransitionMap: { leaved }, isActivated, isShow },
+  context,
 ): ReactElement => {
-  return (isActivated && (isShowable || leaved)) || (!isActivated && isShow)
-    ? cloneElement(children, { ref })
-    : createElement(Fragment);
+  const { isReady, isShowable, isRoot } = context;
+  const predict = isRoot ? isReady : isShowable;
+  return predict ? cloneElement(children, { ref }) : createElement(Fragment);
 };
 
 export type RenderParam<E extends Element = Element> = {
@@ -60,12 +68,16 @@ export type Props<E extends Element = Element> =
      * @default {@link defaultRender}
      */
     render?: Render<E>;
+
+    /** Whether this component is transition root or not. */
+    isRoot?: boolean;
   };
 
 /** Context of rendering */
 export type RenderContext =
-  & ReturnValue
-  & Required<Pick<Props, "isShow" | "immediate">>;
+  & UseTransitionReturnValue
+  & UseGroupTransitionReturnValue
+  & Required<Pick<Props, "isShow" | "immediate" | "isRoot">>;
 export type Render<E extends Element = Element> = (
   param: RenderParam<E>,
   context: RenderContext,
@@ -94,6 +106,7 @@ export default function Transition<E extends Element = Element>(
     immediate = false,
     onChange,
     render = defaultRender,
+    isRoot = isBoolean(isShow),
     ...transitionProps
   }: Readonly<Props<E>>,
 ): ReactElement {
@@ -106,6 +119,14 @@ export default function Transition<E extends Element = Element>(
     transitionProps,
     [isShow, immediate, transitionPropsStr],
   );
+  const childStateSet = useState<UseTransitionReturnValue | undefined>(
+    undefined,
+  );
+
+  const useGroupTransitionReturnValue = useGroupTransition(
+    returnValue,
+    childStateSet[0],
+  );
 
   const allTransitions = useMemo<string[]>(() =>
     cleanTokens(
@@ -114,7 +135,7 @@ export default function Transition<E extends Element = Element>(
 
   const { classNames } = returnValue;
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const classList = ref.current?.classList;
     if (!classList) return;
     try {
@@ -129,10 +150,24 @@ export default function Transition<E extends Element = Element>(
     onChange?.(returnValue);
   }, [JSON.stringify(onChange), JSON.stringify(returnValue)]);
 
-  return render({
-    children,
-    ref,
-  }, { ...returnValue, isShow, immediate });
+  return createElement(
+    IsShowContext.Provider,
+    { value: isShow },
+    createElement(
+      Context.Provider,
+      { value: childStateSet },
+      render({
+        children,
+        ref,
+      }, {
+        ...returnValue,
+        ...useGroupTransitionReturnValue,
+        isShow,
+        immediate,
+        isRoot,
+      }),
+    ),
+  );
 }
 
 function resolveRef<E>(
