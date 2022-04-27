@@ -1,3 +1,12 @@
+# [1.0.0-beta.29](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.28...1.0.0-beta.29) (2022-04-27)
+
+
+### Features
+
+* **transition:** add `mode` field that current transition mode ([cc96aa3](https://github.com/mapcss/atomic-ui-react/commit/cc96aa3236edbb352a401757e9c098008c1fa458))
+* **transition:** add transition child ([0ce4075](https://github.com/mapcss/atomic-ui-react/commit/0ce4075a28af9b44115bdecddadf9689bac84b55))
+* **transition:** add transition context and `isRoot` props ([cb333d8](https://github.com/mapcss/atomic-ui-react/commit/cb333d873b5f1131d065231f0d28af1e138bf410))
+
 # [1.0.0-beta.28](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.27...1.0.0-beta.28) (2022-04-26)
 
 
