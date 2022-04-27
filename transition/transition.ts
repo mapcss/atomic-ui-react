@@ -6,6 +6,7 @@ import {
   Fragment,
   ReactElement,
   RefObject,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -25,15 +26,6 @@ import { Props as _Props } from "./transition_provider.ts";
 import { cleanTokens } from "./util.ts";
 import { TransitionMap } from "./types.ts";
 
-const defaultRender: Render = (
-  { children, ref },
-  context,
-): ReactElement => {
-  const { isReady, isShowable, isRoot } = context;
-  const predict = isRoot ? isReady : isShowable;
-  return predict ? cloneElement(children, { ref }) : createElement(Fragment);
-};
-
 export type RenderParam<E extends Element = Element> = {
   /** Root child adapting transitions. */
   children: ReactElement;
@@ -42,8 +34,22 @@ export type RenderParam<E extends Element = Element> = {
   ref: RefObject<E>;
 };
 
+type ExclusiveOption =
+  | {
+    isShow: boolean;
+
+    /** Whether this component is transition root or not. */
+    isRoot?: true | never;
+  }
+  | {
+    isShow?: never;
+
+    /** Whether this component is transition root or not. */
+    isRoot: false;
+  };
+
 export type Props<E extends Element = Element> =
-  & Omit<_Props, "children" | "duration">
+  & Omit<_Props, "children" | "duration" | "isShow">
   & {
     /** The root child adapting transitions. */
     children: ReactElement;
@@ -68,10 +74,8 @@ export type Props<E extends Element = Element> =
      * @default {@link defaultRender}
      */
     render?: Render<E>;
-
-    /** Whether this component is transition root or not. */
-    isRoot?: boolean;
-  };
+  }
+  & ExclusiveOption;
 
 /** Context of rendering */
 export type RenderContext =
@@ -102,16 +106,34 @@ export type Render<E extends Element = Element> = (
 export default function Transition<E extends Element = Element>(
   {
     children,
-    isShow,
-    immediate = false,
+    isShow: _isShow,
+    immediate: _immediate,
     onChange,
     render = defaultRender,
-    isRoot = isBoolean(isShow),
+    isRoot: _isRoot,
     ...transitionProps
   }: Readonly<Props<E>>,
 ): ReactElement {
   const _ref = useRef<E>(null);
   const ref = resolveRef<E>(children) ?? _ref;
+
+  const sharedIsShow = useContext(IsShowContext);
+  const [_, setReturnValue] = useContext(Context);
+
+  const isRoot = useMemo<boolean>(() => _isRoot ?? isBoolean(_isShow), [
+    _isRoot,
+    _isShow,
+  ]);
+  const immediate = useMemo<boolean>(() => {
+    if (isBoolean(_immediate)) return _immediate;
+    return !isRoot;
+  }, [_immediate, isRoot]);
+  const isShow = useMemo<boolean>(() => {
+    if (!isRoot) return sharedIsShow;
+    if (isBoolean(_isShow)) return _isShow;
+
+    throw Error("Either isShow or isRoot required");
+  }, [isRoot, _isShow, sharedIsShow]);
 
   const transitionPropsStr = JSON.stringify(transitionProps);
   const returnValue = useTransition(
@@ -119,6 +141,12 @@ export default function Transition<E extends Element = Element>(
     transitionProps,
     [isShow, immediate, transitionPropsStr],
   );
+
+  useEffect(() => {
+    if (isRoot) return;
+    setReturnValue(returnValue);
+  }, [isRoot, JSON.stringify(returnValue)]);
+
   const childStateSet = useState<UseTransitionReturnValue | undefined>(
     undefined,
   );
@@ -150,24 +178,30 @@ export default function Transition<E extends Element = Element>(
     onChange?.(returnValue);
   }, [JSON.stringify(onChange), JSON.stringify(returnValue)]);
 
-  return createElement(
-    IsShowContext.Provider,
-    { value: isShow },
-    createElement(
-      Context.Provider,
-      { value: childStateSet },
-      render({
-        children,
-        ref,
-      }, {
-        ...returnValue,
-        ...useGroupTransitionReturnValue,
-        isShow,
-        immediate,
-        isRoot,
-      }),
-    ),
-  );
+  const child = render({
+    children,
+    ref,
+  }, {
+    ...returnValue,
+    ...useGroupTransitionReturnValue,
+    isShow,
+    immediate,
+    isRoot,
+  });
+
+  const wrapper = isRoot
+    ? createElement(
+      IsShowContext.Provider,
+      { value: isShow },
+      createElement(
+        Context.Provider,
+        { value: childStateSet },
+        child,
+      ),
+    )
+    : child;
+
+  return wrapper;
 }
 
 function resolveRef<E>(
@@ -180,3 +214,10 @@ function resolveRef<E>(
     "[atomic-ui] Supported ref is only RefObject.",
   );
 }
+
+const defaultRender: Render = (
+  { children, ref },
+  { isReady },
+): ReactElement => {
+  return isReady ? cloneElement(children, { ref }) : createElement(Fragment);
+};
