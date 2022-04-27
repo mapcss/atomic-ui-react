@@ -108,6 +108,7 @@ it(
       expect(result.current.currentTransitions).toEqual(["enterFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isFirst).toBeTruthy();
+      expect(result.current.mode).toBe("enter");
       expect(result.current.cleanTransitionMap).toEqual({
         enter: "enter",
         enterFrom: "enterFrom",
@@ -146,6 +147,7 @@ it(
       expect(result.current.classNames).toEqual(["entered"]);
       expect(result.current.currentTransitions).toEqual(["entered"]);
       expect(result.current.isCompleted).toBeTruthy();
+      expect(result.current.mode).toBe("enter");
 
       rerender({ isShow: false });
       expect(result.current.status).toBe("init");
@@ -153,6 +155,7 @@ it(
       expect(result.current.classNames).toEqual(["leaveFrom"]);
       expect(result.current.currentTransitions).toEqual(["leaveFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
+      expect(result.current.mode).toBe("leave");
 
       time.next();
       expect(result.current.status).toBe("start");
@@ -226,6 +229,7 @@ it(
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isActivated).toBeFalsy();
       expect(result.current.lifecycle).not.toBeDefined();
+      expect(result.current.mode).toBe(undefined);
 
       time.next();
       expect(result.current.status).toBe("inactive");
@@ -234,12 +238,15 @@ it(
       expect(result.current.currentTransitions).toEqual([]);
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isActivated).toBeFalsy();
+      expect(result.current.mode).toBe(undefined);
 
       rerender();
       expect(result.current.status).toBe("inactive");
+      expect(result.current.mode).toBe(undefined);
 
       rerender({ isShow: false, immediate: false });
       expect(result.current.status).toBe("init");
+      expect(result.current.mode).toBe("leave");
     } catch (e) {
       throw e;
     } finally {

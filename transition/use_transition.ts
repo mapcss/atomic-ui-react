@@ -1,7 +1,8 @@
 // This module is browser compatible.
 
-import { DependencyList, RefObject, useMemo } from "react";
+import { DependencyList, RefObject, useMemo, useState } from "react";
 import { isLength0, isNumber, mapValues } from "../deps.ts";
+import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
 import { isRefObject, Lazyable, lazyEval } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
@@ -16,7 +17,7 @@ import {
   getTransitionMap,
   isShowable as _isShowable,
 } from "./util.ts";
-import { END, INACTIVE } from "./constant.ts";
+import { END, ENTER, INACTIVE, LEAVE } from "./constant.ts";
 
 export type TransitionStatus = TransitionLifecycle | typeof INACTIVE;
 
@@ -74,9 +75,18 @@ export type ReturnValue =
 
     status: TransitionStatus;
   }
-  & ({ isActivated: true; lifecycle: TransitionLifecycle } | {
+  & ({
+    isActivated: true;
+    lifecycle: TransitionLifecycle;
+
+    /** Current transition mode.
+     * If it is not activated, return `undefined`
+     */
+    mode: typeof ENTER | typeof LEAVE;
+  } | {
     isActivated: false;
     lifecycle: undefined;
+    mode: undefined;
   });
 
 /** Monitors the mount lifecycle and returns the appropriate transition status.
@@ -105,6 +115,7 @@ export default function useTransition<T extends Element>(
 ): ReturnValue {
   const { isFirstMount: isFirst } = useIsFirstMount();
   const transitionPropsStr = JSON.stringify(transitionProps);
+  const lazyIsShow = useLazyState(isShow);
   const hasMutate = useMutated([
     isShow,
     immediate,
@@ -131,8 +142,8 @@ export default function useTransition<T extends Element>(
   ]);
 
   const transitionLifecycleMap = useMemo<TransitionLifecycleMap>(
-    () => getTransitionMap(isShow),
-    [isShow],
+    () => getTransitionMap(lazyIsShow),
+    [lazyIsShow],
   );
 
   const cleanTransitionMap = useMemo<Partial<TransitionMap>>(
@@ -152,8 +163,8 @@ export default function useTransition<T extends Element>(
   );
 
   const isShowable = useMemo<boolean>(
-    () => _isShowable(isShow, { isCompleted, isActivated }),
-    [isShow, isCompleted, isActivated],
+    () => _isShowable(lazyIsShow, { isCompleted, isActivated }),
+    [lazyIsShow, isCompleted, isActivated],
   );
 
   const classNames = useMemo<string[]>(() => {
@@ -165,6 +176,11 @@ export default function useTransition<T extends Element>(
     JSON.stringify(currentTransitions),
     JSON.stringify(cleanTransitionMap),
   ]);
+
+  const mode = useMemo<typeof LEAVE | typeof ENTER | undefined>(
+    () => use ? lazyIsShow ? ENTER : LEAVE : undefined,
+    [lazyIsShow, use],
+  );
 
   const className = useMemo<string | undefined>(() => {
     const _className = classNames.join(" ");
@@ -180,7 +196,8 @@ export default function useTransition<T extends Element>(
     isFirst,
     status,
     currentTransitions,
-    lifecycle: transitionLifecycle as never, // for conditional types,
+    lifecycle: transitionLifecycle as never, // for conditional types
+    mode: mode as never, // for conditional types
     cleanTransitionMap,
   };
 }
@@ -213,4 +230,13 @@ export function resolveDurationLike<E extends Element = Element>(
   }
   const maybeElement = resolveElement(durationLike);
   return maybeElement ? getDuration(maybeElement) : 0;
+}
+
+function useLazyState(value: boolean, deps?: DependencyList): boolean {
+  const [state, setState] = useState(value);
+  useIsomorphicLayoutEffect(() => {
+    setState(value);
+  }, [value, JSON.stringify(deps)]);
+
+  return state;
 }

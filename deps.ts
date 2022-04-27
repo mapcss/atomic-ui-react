@@ -9,6 +9,7 @@ export {
   isNumber,
   isObject,
   isString,
+  isUndefined,
 } from "https://deno.land/x/isx@v1.0.0-beta.17/mod.ts";
 import { isNil } from "https://deno.land/x/isx@v1.0.0-beta.17/mod.ts";
 export { distinct } from "https://deno.land/std@0.136.0/collections/distinct.ts";
