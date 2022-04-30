@@ -1,9 +1,9 @@
 // This module is browser compatible.
 
-import { DependencyList, RefObject, useMemo, useState } from "react";
+import { DependencyList, useMemo, useState } from "react";
 import { isLength0, isNumber, mapValues } from "../deps.ts";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
-import { isRefObject, Lazyable, lazyEval } from "../util.ts";
+import { ElementLike, resolveElementLike } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
 import { TransitionMap, TransitionName } from "./types.ts";
@@ -20,10 +20,6 @@ import {
 import { END, ENTER, INACTIVE, LEAVE } from "./constant.ts";
 
 export type TransitionStatus = TransitionLifecycle | typeof INACTIVE;
-
-export type ElementLike<T extends Element = Element> =
-  | Lazyable<T | undefined | null>
-  | RefObject<T | undefined>;
 
 export type DurationLike<E extends Element = Element> = number | ElementLike<E>;
 
@@ -202,16 +198,6 @@ export default function useTransition<T extends Element>(
   };
 }
 
-export function resolveElement<E extends Element>(
-  elementLike: ElementLike<E>,
-): E | undefined | null {
-  if (isRefObject(elementLike)) {
-    return elementLike.current;
-  }
-
-  return lazyEval(elementLike);
-}
-
 export function cleanRecordToken<
   T extends Readonly<Record<PropertyKey, string | undefined>>,
 >(record: T): T {
@@ -228,7 +214,7 @@ export function resolveDurationLike<E extends Element = Element>(
   if (isNumber(durationLike)) {
     return Number.isFinite(durationLike) ? durationLike : 0;
   }
-  const maybeElement = resolveElement(durationLike);
+  const maybeElement = resolveElementLike(durationLike);
   return maybeElement ? getDuration(maybeElement) : 0;
 }
 

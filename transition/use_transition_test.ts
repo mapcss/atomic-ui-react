@@ -2,7 +2,6 @@ import { renderHook } from "@testing-library/react-hooks";
 import useTransition, {
   cleanRecordToken,
   resolveDurationLike,
-  resolveElement,
 } from "./use_transition.ts";
 import {
   describe,
@@ -15,25 +14,10 @@ import {
   setupRaf,
 } from "../dev_deps.ts";
 
-const resolveElementTest = describe({
-  name: "resolveElement",
-  beforeAll: setupJSDOM,
-});
-
 Deno.test("resolveDurationLike", () => {
   expect(resolveDurationLike(100)).toBe(100);
   expect(resolveDurationLike(Infinity)).toBe(0);
   expect(resolveDurationLike(0)).toBe(0);
-});
-
-it(resolveElementTest, "should return element or undefined/null", () => {
-  const el = globalThis.document.createElement("div");
-  expect(resolveElement(null)).toBe(null);
-  expect(resolveElement(undefined)).toBe(undefined);
-  expect(resolveElement(el)).toEqual(el);
-  expect(resolveElement(() => el)).toEqual(el);
-  expect(resolveElement(() => undefined)).toBe(undefined);
-  expect(resolveElement({ current: el })).toEqual(el);
 });
 
 it("cleanRecordToken: should return undefined or non-duplicated token and space", () => {
