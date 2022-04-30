@@ -1,3 +1,12 @@
+# [1.0.0-beta.31](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.30...1.0.0-beta.31) (2022-04-30)
+
+
+### Features
+
+* **hooks:** add `useOutside` hooks that handle outside element ([d5f245a](https://github.com/mapcss/atomic-ui-react/commit/d5f245af022d6aee46f2b55ccbcc4b6ccb161d4f))
+* **tooltip:** change `TooltipProvider` interface ([1de8767](https://github.com/mapcss/atomic-ui-react/commit/1de87679da1c16231e839b115bdc013f86a0ec23))
+* **tooltip:** export `TooltipProps` types ([5d024e2](https://github.com/mapcss/atomic-ui-react/commit/5d024e2436e7fbc32912197f1d4b89c775eb334f))
+
 # [1.0.0-beta.30](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.29...1.0.0-beta.30) (2022-04-30)
 
 
