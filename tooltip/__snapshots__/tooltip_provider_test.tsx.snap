@@ -1,0 +1,5 @@
+export const snapshot = {};
+
+snapshot[`TooltipProvider > should render markup 1`] = `'<div style="position:relative"></div>'`;
+
+snapshot[`TooltipProvider > should render markup 2`] = `"<span></span>"`;
