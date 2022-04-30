@@ -21,3 +21,8 @@ export type {
 } from "./use_lifecycle.ts";
 export type { Useable } from "./types.ts";
 export { default as useMutated } from "./use_mutated.ts";
+export { default as UseOutside } from "./use_outside.ts";
+export type {
+  Option as UseOutsideOption,
+  Param as UseOutsideParam,
+} from "./use_outside.ts";
