@@ -44,3 +44,18 @@ export function containElement(
   const el = isRefObject(parent) ? parent.current : parent;
   return el?.contains(maybeChild) ?? false;
 }
+
+/** `Element` or `Element` like */
+export type ElementLike<T extends Element = Element> =
+  | Lazyable<T | undefined | null>
+  | RefObject<T | undefined>;
+
+export function resolveElementLike<E extends Element>(
+  elementLike: ElementLike<E>,
+): E | undefined | null {
+  if (isRefObject(elementLike)) {
+    return elementLike.current;
+  }
+
+  return lazyEval(elementLike);
+}

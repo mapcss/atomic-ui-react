@@ -15,6 +15,7 @@ export async function setupJSDOM(): Promise<void> {
   const doc = new JSDOM(`<!DOCTYPE html>`);
   globalThis.document = doc.window.document;
   globalThis.HTMLIFrameElement = doc.window.HTMLIFrameElement;
+  globalThis.Node = doc.window.Node;
 }
 
 export function setupRaf(): () => void {
