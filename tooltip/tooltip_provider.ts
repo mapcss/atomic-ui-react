@@ -2,7 +2,9 @@
 // deno-lint-ignore-file no-explicit-any
 
 import {
+  ComponentProps,
   createElement,
+  ElementType,
   forwardRef,
   Ref,
   RefObject,
@@ -11,23 +13,36 @@ import {
 } from "react";
 import useTooltipState, { Param } from "./use_tooltip_state.ts";
 
+declare module "react" {
+  // deno-lint-ignore ban-types
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: Ref<T>) => ReactElement | null,
+  ): (props: P & RefAttributes<T>) => ReactElement | null;
+}
+
+type _Props<
+  As extends ElementType,
+  R extends Element = any,
+> = {
+  /**
+   * @default `div`
+   */
+  as?: As;
+
+  children: (
+    context: {
+      isShow: boolean;
+      ref: RefObject<R>;
+    },
+  ) => JSX.Element;
+};
+
 export type Props<
   As extends keyof JSX.IntrinsicElements,
   R extends Element = any,
 > =
-  & {
-    /**
-     * @default `div`
-     */
-    as?: As;
-    children: (
-      context: {
-        isShow: boolean;
-        ref: RefObject<R>;
-      },
-    ) => JSX.Element;
-  }
-  & JSX.IntrinsicElements[As]
+  & _Props<As, R>
+  & Omit<ComponentProps<As>, keyof _Props<As, R>>
   & Partial<Omit<Param, "target">>;
 
 function _TooltipProvider<As extends keyof JSX.IntrinsicElements>(
