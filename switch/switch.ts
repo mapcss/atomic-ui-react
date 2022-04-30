@@ -1,7 +1,20 @@
 // This module is browser compatible.
 
-import { createElement, MouseEventHandler, useMemo } from "react";
+import {
+  createElement,
+  ForwardedRef,
+  forwardRef,
+  MouseEventHandler,
+  useMemo,
+} from "react";
 import useAria, { Param } from "./use_switch_aria.ts";
+
+declare module "react" {
+  // deno-lint-ignore ban-types
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: Ref<T>) => ReactElement | null,
+  ): (props: P & RefAttributes<T>) => ReactElement | null;
+}
 
 type _Props<As extends keyof JSX.IntrinsicElements> = {
   /** The element the Switch should render as.
@@ -17,9 +30,10 @@ export type Props<As extends keyof JSX.IntrinsicElements> =
   & _Props<As>
   & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
 
-export default function Switch<
-  As extends keyof JSX.IntrinsicElements = "button",
->({ isChecked, onChange, onClick, as, ...rest }: Props<As>): JSX.Element {
+function _Switch<As extends keyof JSX.IntrinsicElements>(
+  { isChecked, onChange, onClick, as, ...rest }: Props<As>,
+  ref: ForwardedRef<As>,
+): JSX.Element {
   const _as = as ?? "button";
 
   const ariaProps = useAria({ isChecked });
@@ -30,6 +44,7 @@ export default function Switch<
     };
   }, [isChecked, onClick, onChange]);
   const props = useMemo(() => ({
+    ref,
     ...ariaProps,
     tabIndex: 0,
     onClick: handleClick,
@@ -43,3 +58,7 @@ export default function Switch<
     },
   );
 }
+
+const Switch = forwardRef(_Switch);
+
+export default Switch;
