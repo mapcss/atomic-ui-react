@@ -1,7 +1,7 @@
 // This module is browser compatible.
 // deno-lint-ignore-file no-explicit-any
 
-import { isFunction, isObject } from "./deps.ts";
+import { isFunction, isObject, isString } from "./deps.ts";
 import { Attributes, ReactElement, RefAttributes, RefObject } from "react";
 
 export type Lazyable<T, U extends (...args: any[]) => T = () => T> = T | U;
@@ -58,4 +58,11 @@ export function resolveElementLike<E extends Element>(
   }
 
   return lazyEval(elementLike);
+}
+
+export function resolveEventType<T extends string>(
+  value: T | Iterable<T>,
+): T[] {
+  const events = isString(value) ? [value] : Array.from(value);
+  return events;
 }

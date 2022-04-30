@@ -49,8 +49,8 @@ function _TooltipProvider<As extends keyof JSX.IntrinsicElements>(
   {
     as: _as,
     children,
-    enterEvents = ["mouseenter"],
-    leaveEvents = ["mouseleave"],
+    enterEvent = ["mouseenter"],
+    leaveEvent = ["mouseleave"],
     ...props
   }: Readonly<Props<As>>,
   ref: Ref<any>,
@@ -58,7 +58,7 @@ function _TooltipProvider<As extends keyof JSX.IntrinsicElements>(
   const as = useMemo(() => _as ?? "div", [_as]);
   const target = useRef<Element>(null);
   const [isShow] = useTooltipState(
-    { target, enterEvents, leaveEvents },
+    { target, enterEvent, leaveEvent },
     undefined,
     [],
   );

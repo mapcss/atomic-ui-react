@@ -1,10 +1,11 @@
 import { DependencyList, useEffect } from "react";
-import { ElementLike, resolveElementLike } from "../util.ts";
+import { ElementLike, resolveElementLike, resolveEventType } from "../util.ts";
 import { Useable } from "../hooks/types.ts";
 import useBoolean, { ReturnValue } from "../hooks/use_boolean.ts";
+
 export type Param = {
-  enterEvents: Iterable<string>;
-  leaveEvents: Iterable<string>;
+  enterEvent: string | Iterable<string>;
+  leaveEvent: string | Iterable<string>;
   target: ElementLike;
 };
 export type Option = {
@@ -12,7 +13,7 @@ export type Option = {
 } & Useable;
 
 export default function useTooltipState(
-  { enterEvents, leaveEvents, target }: Readonly<Param>,
+  { enterEvent, leaveEvent, target }: Readonly<Param>,
   { use = true, eventListenerOptions = { passive: true } }: Readonly<
     Partial<Option>
   > = {},
@@ -25,8 +26,8 @@ export default function useTooltipState(
     const el = resolveElementLike(target);
     if (!el) return;
 
-    const enters = Array.from(enterEvents);
-    const leaves = Array.from(leaveEvents);
+    const enters = resolveEventType(enterEvent);
+    const leaves = resolveEventType(leaveEvent);
 
     enters.forEach((type) => {
       el.addEventListener(type, on, eventListenerOptions);

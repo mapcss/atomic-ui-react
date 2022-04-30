@@ -1,9 +1,9 @@
 // This module is browser compatible.
 
 import { DependencyList, useEffect } from "react";
-import { isString, ValueOf } from "../deps.ts";
+import { ValueOf } from "../deps.ts";
 import { Useable } from "../hooks/types.ts";
-import { ElementLike, resolveElementLike } from "../util.ts";
+import { ElementLike, resolveElementLike, resolveEventType } from "../util.ts";
 
 export type Param<E extends Element = Element> = {
   target: ElementLike<E>;
@@ -35,7 +35,7 @@ export default function useOutside<E extends Element = Element>(
       }
     };
 
-    const events = isString(event) ? [event] : Array.from(event);
+    const events = resolveEventType(event);
 
     events.forEach((event) => {
       document.addEventListener(event, listener, eventListenerOptions);
