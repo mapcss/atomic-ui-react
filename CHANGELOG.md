@@ -1,3 +1,11 @@
+# [1.0.0-beta.30](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.29...1.0.0-beta.30) (2022-04-30)
+
+
+### Features
+
+* **switch:** switch to be ref forwardable component ([ed16c2e](https://github.com/mapcss/atomic-ui-react/commit/ed16c2e4c4bcb356f9dff31229009223c7ae5a30))
+* **tooltip:** add `Tooltip` and `TooltipProvider` components ([a4932ec](https://github.com/mapcss/atomic-ui-react/commit/a4932ecb2403cfe442085be0dff81a9f16b33d0e))
+
 # [1.0.0-beta.29](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.28...1.0.0-beta.29) (2022-04-27)
 
 
