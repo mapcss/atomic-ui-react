@@ -1,52 +1,63 @@
 // This module is browser compatible.
+// deno-lint-ignore-file no-explicit-any
 
 import {
   createElement,
-  DetailedHTMLProps,
-  HTMLAttributes,
+  forwardRef,
+  Ref,
   RefObject,
-  useEffect,
+  useMemo,
   useRef,
 } from "react";
-import useBoolean from "../hooks/use_boolean.ts";
+import useTooltipState, { Param } from "./use_tooltip_state.ts";
 
-// deno-lint-ignore no-explicit-any
-export type Props<R extends Element = any> = {
-  wrapper?: (
-    props: DetailedHTMLProps<
-      HTMLAttributes<HTMLElement>,
-      HTMLElement
-    >,
-  ) => JSX.Element;
-  children: (
-    context: {
-      isShow: boolean;
-      ref: RefObject<R>;
-    },
-  ) => JSX.Element;
-};
-export default function TooltipProvider(
+export type Props<
+  As extends keyof JSX.IntrinsicElements,
+  R extends Element = any,
+> =
+  & {
+    /**
+     * @default `div`
+     */
+    as?: As;
+    children: (
+      context: {
+        isShow: boolean;
+        ref: RefObject<R>;
+      },
+    ) => JSX.Element;
+  }
+  & JSX.IntrinsicElements[As]
+  & Partial<Omit<Param, "target">>;
+
+function _TooltipProvider<As extends keyof JSX.IntrinsicElements>(
   {
+    as: _as,
     children,
-    wrapper = (props) =>
-      createElement("div", { style: { position: "relative" }, ...props }),
-  }: Props,
+    enterEvents = ["mouseenter"],
+    leaveEvents = ["mouseleave"],
+    ...props
+  }: Readonly<Props<As>>,
+  ref: Ref<any>,
 ): JSX.Element {
-  const ref = useRef<Element>(null);
-  const [state, { on, off }] = useBoolean();
+  const as = useMemo(() => _as ?? "div", [_as]);
+  const target = useRef<Element>(null);
+  const [isShow] = useTooltipState(
+    { target, enterEvents, leaveEvents },
+    undefined,
+    [],
+  );
 
-  useEffect(() => {
-    if (!ref.current) return;
-
-    ref.current.addEventListener("mouseenter", on, { passive: true });
-    ref.current.addEventListener("mouseleave", off, { passive: true });
-
-    return () => {
-      if (!ref.current) return;
-      ref.current.removeEventListener("mouseenter", on);
-      ref.current.removeEventListener("mouseleave", off);
-    };
-  }, []);
-
-  return wrapper({ children: children({ isShow: state, ref }) });
+  return createElement(as, {
+    ref,
+    style: {
+      position: "relative",
+    },
+    ...props,
+    children: children({ isShow, ref: target }),
+  });
 }
+
+const TooltipProvider = forwardRef(_TooltipProvider);
+
+export default TooltipProvider;
