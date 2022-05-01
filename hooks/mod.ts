@@ -26,3 +26,8 @@ export type {
   Option as UseOutsideOption,
   Param as UseOutsideParam,
 } from "./use_outside.ts";
+export { default as useEventListener } from "./use_event_listener.ts";
+export type {
+  Option as UseEventListenerOption,
+  Param as UseEventListenerParam,
+} from "./use_event_listener.ts";
