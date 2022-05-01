@@ -1,3 +1,15 @@
+# [1.0.0-beta.32](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.31...1.0.0-beta.32) (2022-05-01)
+
+
+### Bug Fixes
+
+* **hooks:** rename `UseOutside` to `useOutside` ([78b54d3](https://github.com/mapcss/atomic-ui-react/commit/78b54d3a2703883a29bc543eb163933c93ad3757))
+
+
+### Features
+
+* **disclosure:** add `useDisclosure` and `DisclosureProvider` ([559f7d4](https://github.com/mapcss/atomic-ui-react/commit/559f7d4bb0f0891c4677805a4cd8b66c52d76bcf))
+
 # [1.0.0-beta.31](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.30...1.0.0-beta.31) (2022-04-30)
 
 
