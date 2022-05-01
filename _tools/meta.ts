@@ -80,6 +80,10 @@ export const packages: { name: string; entrypoint: string; rootDir: string }[] =
     entrypoint: join(PROJECT_ROOT, "tooltip", "mod.ts"),
     rootDir: join(PROJECT_ROOT, "tooltip"),
   }, {
+    name: "disclosure",
+    entrypoint: join(PROJECT_ROOT, "disclosure", "mod.ts"),
+    rootDir: join(PROJECT_ROOT, "disclosure"),
+  }, {
     name: "hooks",
     entrypoint: join(PROJECT_ROOT, "hooks", "mod.ts"),
     rootDir: join(PROJECT_ROOT, "hooks"),

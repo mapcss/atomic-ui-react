@@ -1,6 +1,8 @@
 export {
+  anyString,
   defineGlobalThis,
   expect,
+  anyFunction,
   fn,
 } from "https://deno.land/x/unitest@v1.0.0-beta.82/mod.ts";
 export { FakeTime } from "https://deno.land/std@0.136.0/testing/time.ts";
