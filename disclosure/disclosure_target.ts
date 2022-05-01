@@ -1,10 +1,11 @@
 // This module is browser compatible.
 
 import {
-  ComponentProps,
+  ComponentPropsWithRef,
   createElement,
   CSSProperties,
   forwardRef,
+  Ref,
   useContext,
   useMemo,
 } from "react";
@@ -25,7 +26,7 @@ type RenderContext<As extends keyof JSX.IntrinsicElements> =
   & Pick<Required<_Props<As>>, "as" | "closedStyle">;
 
 const defaultRender = <As extends keyof JSX.IntrinsicElements>(
-  props: ComponentProps<As>,
+  props: ComponentPropsWithRef<As>,
   { isOpen, as, closedStyle }: RenderContext<As>,
 ) => {
   if (isOpen) {
@@ -39,7 +40,7 @@ const defaultRender = <As extends keyof JSX.IntrinsicElements>(
 type Render<
   As extends keyof JSX.IntrinsicElements = keyof JSX.IntrinsicElements,
 > = (
-  props: ComponentProps<As>,
+  props: ComponentPropsWithRef<As>,
   context: RenderContext<As>,
 ) => JSX.Element;
 
@@ -59,15 +60,19 @@ type _Props<As extends keyof JSX.IntrinsicElements> = {
 
 export type Props<As extends keyof JSX.IntrinsicElements> =
   & _Props<As>
-  & ComponentProps<As>;
+  & ComponentPropsWithRef<As>;
 
-function _DisclosureTarget<As extends keyof JSX.IntrinsicElements = "div">(
+function _DisclosureTarget<
+  R extends HTMLElement,
+  As extends keyof JSX.IntrinsicElements = "div",
+>(
   {
     render = defaultRender,
     as: _as,
     closedStyle = { display: "none" },
     ...props
   }: Props<As>,
+  ref: Ref<R>,
 ): JSX.Element {
   const context = useContext(Context);
   if (!context) throw Error(ERROR_MSG);
@@ -75,7 +80,7 @@ function _DisclosureTarget<As extends keyof JSX.IntrinsicElements = "div">(
   const as = useMemo<As>(() => _as ?? "div" as As, [_as]);
   const [stateMap, dispatchMap] = context;
 
-  return render(props as ComponentProps<As>, {
+  return render({ ...props, ref } as ComponentPropsWithRef<As>, {
     ...stateMap,
     ...dispatchMap,
     as,
