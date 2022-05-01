@@ -1,3 +1,15 @@
+# [1.0.0-beta.34](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.33...1.0.0-beta.34) (2022-05-01)
+
+
+### Bug Fixes
+
+* **disclosure:** add second argument that accept ref ([468dc35](https://github.com/mapcss/atomic-ui-react/commit/468dc3519eeab3a076f7219c2361d1332134760c))
+
+
+### Features
+
+* **hooks:** add `useEventListener` hooks ([95d04bf](https://github.com/mapcss/atomic-ui-react/commit/95d04bfe7407f36e0fc75ba5bed0f3100ee4b68f))
+
 # [1.0.0-beta.33](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.32...1.0.0-beta.33) (2022-05-01)
 
 
