@@ -1,3 +1,10 @@
+# [1.0.0-beta.33](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.32...1.0.0-beta.33) (2022-05-01)
+
+
+### Features
+
+* **disclosure:** add `Disclosure`, `DisclosureTrigger` and `DisclosureTarget` components ([d8de229](https://github.com/mapcss/atomic-ui-react/commit/d8de2294507897974b4411fceae7267e89af0eee))
+
 # [1.0.0-beta.32](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.31...1.0.0-beta.32) (2022-05-01)
 
 
