@@ -8,11 +8,11 @@ import {
   ReactNode,
   Ref,
   useContext,
-  useEffect,
   useMemo,
   useRef,
 } from "react";
 import { isFunction } from "../deps.ts";
+import useEventListener from "../hooks/use_event_listener.ts";
 import Context from "./context.ts";
 import { EventLike, isRefObject, resolveEventType } from "../util.ts";
 import { ERROR_MSG } from "./constant.ts";
@@ -61,19 +61,18 @@ function _DisclosureTrigger<
     [JSON.stringify(event)],
   );
 
-  useEffect(() => {
-    if (!isRefObject<R>(ref) || !ref.current) return;
-
-    events.forEach((type) => {
-      ref.current?.addEventListener(type, toggle);
-    });
-
-    return () => {
-      events.forEach((type) => {
-        ref.current?.removeEventListener(type, toggle);
-      });
-    };
-  }, [JSON.stringify(events)]);
+  useEventListener(
+    {
+      target: () => {
+        if (!isRefObject<R>(ref) || !ref.current) return;
+        return ref.current;
+      },
+      event: events,
+      callback: toggle,
+    },
+    undefined,
+    [JSON.stringify(events)],
+  );
 
   const children = isFunction(_children)
     ? _children({ id, isOpen, toggle, ...rest })
