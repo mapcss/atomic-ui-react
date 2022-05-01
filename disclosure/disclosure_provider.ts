@@ -15,6 +15,10 @@ export type Props = {
   isDefaultOpen?: boolean;
 };
 
+/** Render props as `children`.
+ * Provides `id`, state, and dispatch required for disclosure.
+ * Low layer API for complete control over rendering.
+ */
 export default function DisclosureProvider(
   { children, isDefaultOpen = false }: Props,
 ): JSX.Element {

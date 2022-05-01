@@ -1,0 +1,9 @@
+export const snapshot = {};
+
+snapshot[`DisclosureTarget > should render with style when the internal \`isOpen\` is false 1`] = `'<div><div display="none">test</div></div>'`;
+
+snapshot[`DisclosureTarget > should render when the internal \`isOpen\` is true 1`] = `"<div><div>test</div></div>"`;
+
+snapshot[`DisclosureTarget > should overwrite default closed style 1`] = `'<div><div visibility="hidden">test</div></div>'`;
+
+snapshot[`DisclosureTarget > should overwrite render 1`] = `"<div></div>"`;

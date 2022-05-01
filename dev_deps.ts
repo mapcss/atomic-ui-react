@@ -1,4 +1,5 @@
 export {
+  anyBoolean,
   anyFunction,
   anyString,
   defineGlobalThis,

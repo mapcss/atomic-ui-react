@@ -60,6 +60,8 @@ export function resolveElementLike<E extends Element>(
   return lazyEval(elementLike);
 }
 
+export type EventLike<E extends string> = E | Iterable<E>;
+
 export function resolveEventType<T extends string>(
   value: T | Iterable<T>,
 ): T[] {
