@@ -1,4 +1,4 @@
-import DisclosureTrigger from "./disclosure_trigger.ts";
+import WithDisclosureTrigger from "./with_disclosure_trigger.ts";
 import Disclosure from "./disclosure.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
 import {
@@ -15,14 +15,20 @@ import {
 import { fireEvent, render } from "@testing-library/react";
 
 const describeTests = describe({
-  name: "DisclosureTrigger",
+  name: "WithDisclosureTrigger",
   async beforeEach() {
     await setupJSDOM();
   },
 });
 
 it(describeTests, "should throw error when it not wrap Context", () => {
-  expect(() => render(<DisclosureTrigger>test</DisclosureTrigger>)).toThrow();
+  expect(() =>
+    render(
+      <WithDisclosureTrigger>
+        <p>test</p>
+      </WithDisclosureTrigger>,
+    )
+  ).toThrow();
 });
 
 it(
@@ -30,7 +36,9 @@ it(
   "should trigger click event by default",
   (t) => {
     const { baseElement, getByTestId } = render(
-      <DisclosureTrigger data-testid="test">test</DisclosureTrigger>,
+      <WithDisclosureTrigger>
+        <p data-testid="test">test</p>
+      </WithDisclosureTrigger>,
       {
         wrapper: ({ children }) => {
           return (
@@ -59,12 +67,9 @@ it(
   "should change trigger event",
   (t) => {
     const { baseElement, getByTestId } = render(
-      <DisclosureTrigger
-        event={["mouseenter" as const, "mouseleave" as const]}
-        data-testid="test"
-      >
-        test
-      </DisclosureTrigger>,
+      <WithDisclosureTrigger on={["onMouseEnter", "onMouseLeave"]}>
+        <div data-testid="test">test</div>
+      </WithDisclosureTrigger>,
       {
         wrapper: ({ children }) => {
           return (
@@ -95,12 +100,13 @@ it(
   () => {
     const mockFn = fn();
     render(
-      <DisclosureTrigger>
-        {(context) => {
+      <WithDisclosureTrigger>
+        {(props, context) => {
+          mockFn(props);
           mockFn(context);
           return <></>;
         }}
-      </DisclosureTrigger>,
+      </WithDisclosureTrigger>,
       {
         wrapper: ({ children }) => {
           return (
@@ -113,6 +119,12 @@ it(
     );
 
     expect(mockFn).toHaveBeenCalledWith({
+      "aria-controls": anyString(),
+      "aria-expanded": anyBoolean(),
+      onClick: anyFunction(),
+      ref: null,
+    });
+    expect(mockFn).toHaveBeenCalledWith({
       id: anyString(),
       isOpen: anyBoolean(),
       toggle: anyFunction(),
@@ -124,18 +136,52 @@ it(
 
 it(
   describeTests,
+  "should pass event handler props as render children",
+  () => {
+    const mockFn = fn();
+    render(
+      <WithDisclosureTrigger on={["onAbort", "onChange"]}>
+        {(props) => {
+          mockFn(props);
+          return <></>;
+        }}
+      </WithDisclosureTrigger>,
+      {
+        wrapper: ({ children }) => {
+          return (
+            <SSRProvider>
+              <Disclosure>{children as never}</Disclosure>
+            </SSRProvider>
+          );
+        },
+      },
+    );
+
+    expect(mockFn).toHaveBeenCalledWith({
+      "aria-controls": anyString(),
+      "aria-expanded": anyBoolean(),
+      onAbort: anyFunction(),
+      onChange: anyFunction(),
+      ref: null,
+    });
+  },
+);
+
+it(
+  describeTests,
   "should render as children",
   (t) => {
     const { baseElement } = render(
-      <DisclosureTrigger>
-        {({ isOpen }) => {
+      <WithDisclosureTrigger>
+        {(props, { isOpen }) => {
           return (
             <span
+              {...props}
               className={isOpen ? "i-mdi-chevron-up" : "i-mdi-chevron-down"}
             />
           );
         }}
-      </DisclosureTrigger>,
+      </WithDisclosureTrigger>,
       {
         wrapper: ({ children }) => {
           return (

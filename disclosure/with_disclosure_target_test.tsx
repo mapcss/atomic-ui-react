@@ -1,7 +1,6 @@
-import DisclosureTarget from "./disclosure_target.ts";
+import WithDisclosureTarget from "./with_disclosure_target.ts";
 import Disclosure from "./disclosure.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
-import { createElement, Fragment } from "react";
 import {
   assertSnapshot,
   describe,
@@ -12,14 +11,20 @@ import {
 import { render } from "@testing-library/react";
 
 const describeTests = describe({
-  name: "DisclosureTarget",
+  name: "WithDisclosureTarget",
   async beforeEach() {
     await setupJSDOM();
   },
 });
 
 it(describeTests, "should throw error when it not wrap Context", () => {
-  expect(() => render(<DisclosureTarget>test</DisclosureTarget>)).toThrow();
+  expect(() =>
+    render(
+      <WithDisclosureTarget>
+        <p>test</p>
+      </WithDisclosureTarget>,
+    )
+  ).toThrow();
 });
 
 it(
@@ -27,7 +32,9 @@ it(
   "should render with style when the internal `isOpen` is false",
   (t) => {
     const { baseElement } = render(
-      <DisclosureTarget>test</DisclosureTarget>,
+      <WithDisclosureTarget>
+        <p>test</p>
+      </WithDisclosureTarget>,
       {
         wrapper: ({ children }) => {
           return (
@@ -45,7 +52,9 @@ it(
 
 it(describeTests, "should render when the internal `isOpen` is true", (t) => {
   const { baseElement } = render(
-    <DisclosureTarget>test</DisclosureTarget>,
+    <WithDisclosureTarget>
+      <p>test</p>
+    </WithDisclosureTarget>,
     {
       wrapper: ({ children }) => {
         return (
@@ -62,13 +71,13 @@ it(describeTests, "should render when the internal `isOpen` is true", (t) => {
 
 it(describeTests, "should overwrite default closed style", (t) => {
   const { baseElement } = render(
-    <DisclosureTarget
+    <WithDisclosureTarget
       closedStyle={{
         visibility: "hidden",
       }}
     >
-      test
-    </DisclosureTarget>,
+      <p>test</p>
+    </WithDisclosureTarget>,
     {
       wrapper: ({ children }) => {
         return (
@@ -83,14 +92,11 @@ it(describeTests, "should overwrite default closed style", (t) => {
   assertSnapshot(t, baseElement.innerHTML);
 });
 
-it(describeTests, "should overwrite render", (t) => {
+it(describeTests, "should merge style", (t) => {
   const { baseElement } = render(
-    <DisclosureTarget
-      render={(props, { as, isOpen }) =>
-        isOpen ? createElement(as, props) : createElement(Fragment)}
-    >
-      test
-    </DisclosureTarget>,
+    <WithDisclosureTarget>
+      <p style={{ font: "icon" }}>test</p>
+    </WithDisclosureTarget>,
     {
       wrapper: ({ children }) => {
         return (
