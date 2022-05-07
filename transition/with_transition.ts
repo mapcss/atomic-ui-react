@@ -5,6 +5,7 @@ import {
   Fragment,
   ReactElement,
   RefObject,
+  useEffect,
   useMemo,
   useRef,
 } from "react";
@@ -29,6 +30,9 @@ type _Props<E extends Element = Element> = {
       attributes: Omit<Attributes<any>, "children">,
       context: RenderContext,
     ) => ReactElement);
+
+  /** Call on change transition states. */
+  onChange?: (state: UseTransitionReturnValue) => void;
 
   /** Controls the rendering element. Called just before rendering, it returns the element to actually render.
    * ```tsx
@@ -70,11 +74,30 @@ export type Attributes<E extends Element = Element> = {
   ref: RefObject<E>;
 } & Pick<UseTransitionReturnValue, "className">;
 
+/** Component to automatically adapt transitions to the root child.
+ * ```tsx
+ * import { WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ * export default () => {
+ *   return (
+ *     <WithTransition
+ *       enter="transition duration-300"
+ *       enterFrom="opacity-0"
+ *       leave="transition duration-300"
+ *       leaveTo="opacity-0"
+ *       isShow
+ *     >
+ *       <div />
+ *     </WithTransition>
+ *   );
+ * };
+ * ```
+ */
 export default function WithTransition(
   {
     children,
     isShow,
     immediate = false,
+    onChange,
     render = defaultRender,
     ...transitionProps
   }: Readonly<Props>,
@@ -96,6 +119,10 @@ export default function WithTransition(
     immediate,
     isShow,
   }), [isShow, immediate, JSON.stringify(returnValue)]);
+
+  useEffect(() => {
+    onChange?.(returnValue);
+  }, [JSON.stringify(onChange), JSON.stringify(returnValue)]);
 
   if (isRenderProps) {
     return children({ ref, className: returnValue.className }, context);

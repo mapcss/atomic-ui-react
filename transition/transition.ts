@@ -22,7 +22,7 @@ import useTransition, {
 import useGroupTransition, {
   ReturnValue as UseGroupTransitionReturnValue,
 } from "./use_group_transition.ts";
-import { Props as _Props } from "./transition_provider.ts";
+import { Props as _Props } from "./with_transition.ts";
 import { cleanTokens } from "./util.ts";
 import { TransitionMap } from "./types.ts";
 
@@ -49,7 +49,7 @@ type ExclusiveOption =
   };
 
 export type Props<E extends Element = Element> =
-  & Omit<_Props, "children" | "duration" | "isShow">
+  & Omit<_Props, "children" | "duration" | "isShow" | "render">
   & {
     /** The root child adapting transitions. */
     children: ReactElement;

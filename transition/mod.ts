@@ -1,9 +1,5 @@
 // This module is browser compatible.
 
-export { default as TransitionProvider } from "./transition_provider.ts";
-export type {
-  Props as TransitionProviderProps,
-} from "./transition_provider.ts";
 export { default as Transition } from "./transition.ts";
 export type {
   Props as TransitionProps,

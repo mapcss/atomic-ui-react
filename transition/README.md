@@ -33,7 +33,7 @@ export default () => {
 
 ## API
 
-### TransitionProvider
+### WithTransition
 
 Component to automatically adapt transitions to the root child.
 
@@ -147,25 +147,23 @@ type TransitionProviderProps<E extends Element = Element> = {
 
 ```tsx
 import { useRef, useState } from "react";
-import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 export default () => {
   const [isShow] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
   return (
-    <TransitionProvider
+    <WithTransition
       enterFrom="opacity-0"
       enter="transition"
       leaveTo="opacity-0"
       leave="transition"
       leaved="opacity-0"
-      duration={ref}
       isShow={isShow}
     >
-      {({ className }) => {
+      {({ className, ref }) => {
         return <div ref={ref} className={className}>transition</div>;
       }}
-    </TransitionProvider>
+    </WithTransition>
   );
 };
 ```
