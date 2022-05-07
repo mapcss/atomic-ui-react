@@ -1,3 +1,20 @@
+# [1.0.0-beta.36](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.35...1.0.0-beta.36) (2022-05-07)
+
+
+### Bug Fixes
+
+* **transition:** remove hooks in render function for ensure order of hooks ([ef792b2](https://github.com/mapcss/atomic-ui-react/commit/ef792b28d4c7015cad4533cee2ae22698e8f68c7))
+
+
+### Features
+
+* **transition:** `isShowable` changed to consider `leaved` in transition map ([a14b06a](https://github.com/mapcss/atomic-ui-react/commit/a14b06a2f771fbdb97381976a39198d100dad41e))
+* **transition:** `WithTransition` is be forward refable ([b66be87](https://github.com/mapcss/atomic-ui-react/commit/b66be876c0e16ae1b1a9411cf2dc146b13c86722))
+* **transition:** add `WithTransition` components that rewrite `className` props automatically ([c68a334](https://github.com/mapcss/atomic-ui-react/commit/c68a3349e61bc6f5cb48b3d3c552b310cea40715))
+* **transition:** add render props as `children` to `WithTransition` component ([4d2a159](https://github.com/mapcss/atomic-ui-react/commit/4d2a159d8ad9600e4873ac6b021450c34d96439c))
+* **transition:** improve `immediate` condition with child transition component ([02a649d](https://github.com/mapcss/atomic-ui-react/commit/02a649da12b67de93457dc6430dbecd3d313fc09))
+* **transition:** remove `Transition` component, add group transition to `WithTransition` ([3a6dc00](https://github.com/mapcss/atomic-ui-react/commit/3a6dc003ef08501a4d37189564b5bf22c34df5e9))
+
 # [1.0.0-beta.35](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.34...1.0.0-beta.35) (2022-05-02)
 
 
