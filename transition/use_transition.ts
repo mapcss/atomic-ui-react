@@ -107,18 +107,18 @@ export type ReturnValue =
  */
 export default function useTransition<T extends Element>(
   { duration, isShow, immediate = false }: Readonly<Param<T>>,
-  transitionProps: Readonly<
+  transitionMap: Readonly<
     Partial<TransitionMap>
   >,
   deps: DependencyList,
 ): ReturnValue {
   const { isFirstMount: isFirst } = useIsFirstMount();
-  const transitionPropsStr = JSON.stringify(transitionProps);
+  const transitionMapStr = JSON.stringify(transitionMap);
   const lazyIsShow = useLazyState(isShow);
   const hasMutate = useMutated([
     isShow,
     immediate,
-    transitionPropsStr,
+    transitionMapStr,
   ]);
 
   const use = useMemo<boolean>(() => {
@@ -146,8 +146,8 @@ export default function useTransition<T extends Element>(
   );
 
   const cleanTransitionMap = useMemo<Partial<TransitionMap>>(
-    () => cleanRecordToken(transitionProps),
-    [transitionPropsStr],
+    () => cleanRecordToken(transitionMap),
+    [transitionMapStr],
   );
 
   const currentTransitions = useMemo<TransitionName[]>(
@@ -161,8 +161,8 @@ export default function useTransition<T extends Element>(
     [isActivated, transitionLifecycle],
   );
 
-  const hasLeaved = useMemo<boolean>(() => !!transitionProps.leaved, [
-    transitionProps.leaved,
+  const hasLeaved = useMemo<boolean>(() => !!transitionMap.leaved, [
+    transitionMap.leaved,
   ]);
 
   const isShowable = useMemo<boolean>(

@@ -129,7 +129,7 @@ function _WithTransition(
     immediate: _immediate,
     onChange,
     render = defaultRender,
-    ...transitionProps
+    ...transitionMap
   }: Readonly<Props>,
   __ref: Ref<Element>,
 ): JSX.Element {
@@ -162,8 +162,8 @@ function _WithTransition(
       immediate,
       duration: ref,
     },
-    transitionProps,
-    [isShow, immediate, JSON.stringify(transitionProps)],
+    transitionMap,
+    [isShow, immediate, JSON.stringify(transitionMap)],
   );
 
   useEffect(() => {
