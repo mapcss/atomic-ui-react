@@ -196,14 +196,12 @@ function _WithTransition(
     onChange?.(returnValue);
   }, [JSON.stringify(onChange), JSON.stringify(returnValue)]);
 
-  if (isRenderProps) {
-    return children({ ref, className: returnValue.className }, context);
-  }
-
-  const child = render(
-    { children, ref, className: returnValue.className },
-    context,
-  );
+  const child = isRenderProps
+    ? children({ ref, className: returnValue.className }, context)
+    : render(
+      { children, ref, className: returnValue.className },
+      context,
+    );
 
   const wrapper = isRoot
     ? createElement(
