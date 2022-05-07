@@ -152,7 +152,6 @@ it(
       leaveFrom: " opacity-80 ",
       leave: " transition duration",
       leaveTo: "opacity-30",
-      leaved: "hidden",
     };
     const { container, rerender } = render(
       <Transition
