@@ -70,20 +70,20 @@ export function getTransitionMap(isEnter: boolean): TransitionLifecycleMap {
  *
  * ```ts
  * import { isShowable } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
- * isShowable(true, {isActivated: false, isCompleted: false })
+ * isShowable(true, { isActivated: false, isCompleted: false, hasLeaved: true })
  * ```
  */
 export function isShowable(
   isShow: boolean,
-  { isActivated, isCompleted }: Readonly<
+  { isActivated, isCompleted, hasLeaved }: Readonly<
     Pick<
       ReturnValue,
       "isActivated" | "isCompleted"
-    >
+    > & { hasLeaved: boolean }
   >,
 ): boolean {
   if (!isActivated) return isShow;
-  return isShow || !isCompleted;
+  return isShow || !isCompleted || hasLeaved;
 }
 
 /** Returns space-separated, non-duplicate tokens.

@@ -103,6 +103,7 @@ it(
         leaveTo: "leaveTo",
         leaved: "leaved",
       });
+      expect(result.current.hasLeaved).toBeTruthy();
 
       time.next();
       expect(result.current.status).toBe("start");
@@ -162,7 +163,7 @@ it(
       expect(result.current.classNames).toEqual(["leaved"]);
       expect(result.current.currentTransitions).toEqual(["leaved"]);
       expect(result.current.isCompleted).toBeTruthy();
-      expect(result.current.isShowable).toBeFalsy();
+      expect(result.current.isShowable).toBeTruthy();
     } catch (e) {
       throw e;
     } finally {

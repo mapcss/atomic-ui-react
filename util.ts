@@ -1,7 +1,7 @@
 // This module is browser compatible.
 // deno-lint-ignore-file no-explicit-any
 
-import { isFunction, isObject, isString } from "./deps.ts";
+import { isFunction, isNil, isObject, isString } from "./deps.ts";
 import { Attributes, ReactElement, RefAttributes, RefObject } from "react";
 
 export type Lazyable<T, U extends (...args: any[]) => T = () => T> = T | U;
@@ -67,4 +67,15 @@ export function resolveEventType<T extends string>(
 ): T[] {
   const events = isString(value) ? [value] : Array.from(value);
   return events;
+}
+
+export function resolveRef<E>(
+  children: ReactElement,
+): RefObject<E> | undefined | never {
+  if (!hasRef<E>(children) || isNil(children.ref)) return;
+
+  if (hasRefObject(children)) return children.ref;
+  throw Error(
+    "[atomic-ui] Supported ref is only RefObject.",
+  );
 }

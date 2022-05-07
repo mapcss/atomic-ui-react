@@ -21,14 +21,18 @@ Deno.test("getDuration", async () => {
 
 Deno.test("isShowable", () => {
   const table: ParamReturn<typeof isShowable>[] = [
-    [true, { isCompleted: true, isActivated: true }, true],
-    [true, { isCompleted: true, isActivated: false }, true],
-    [true, { isCompleted: false, isActivated: true }, true],
-    [true, { isCompleted: false, isActivated: false }, true],
-    [false, { isCompleted: true, isActivated: true }, false],
-    [false, { isCompleted: true, isActivated: false }, false],
-    [false, { isCompleted: false, isActivated: true }, true],
-    [false, { isCompleted: false, isActivated: false }, false],
+    [true, { isCompleted: true, isActivated: true, hasLeaved: false }, true],
+    [true, { isCompleted: true, isActivated: false, hasLeaved: false }, true],
+    [true, { isCompleted: false, isActivated: true, hasLeaved: false }, true],
+    [true, { isCompleted: false, isActivated: false, hasLeaved: false }, true],
+    [false, { isCompleted: true, isActivated: true, hasLeaved: false }, false],
+    [false, { isCompleted: true, isActivated: false, hasLeaved: false }, false],
+    [false, { isCompleted: false, isActivated: true, hasLeaved: false }, true],
+    [
+      false,
+      { isCompleted: false, isActivated: false, hasLeaved: false },
+      false,
+    ],
   ];
   table.forEach(([isShow, isCompleted, result]) =>
     expect(isShowable(isShow, isCompleted)).toBe(result)

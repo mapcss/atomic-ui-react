@@ -55,6 +55,9 @@ export type ReturnValue =
     /** Whether transition lifecycle is completed or not. */
     isCompleted: boolean;
 
+    /** Whether has `leaved` in transition map or not. */
+    hasLeaved: boolean;
+
     /** Whether the first call for this hook or not.
      * @remarks This is not a reactive value.
      */
@@ -158,9 +161,18 @@ export default function useTransition<T extends Element>(
     [isActivated, transitionLifecycle],
   );
 
+  const hasLeaved = useMemo<boolean>(() => !!transitionProps.leaved, [
+    transitionProps.leaved,
+  ]);
+
   const isShowable = useMemo<boolean>(
-    () => _isShowable(lazyIsShow, { isCompleted, isActivated }),
-    [lazyIsShow, isCompleted, isActivated],
+    () =>
+      _isShowable(lazyIsShow, {
+        isCompleted,
+        isActivated,
+        hasLeaved,
+      }),
+    [lazyIsShow, isCompleted, isActivated, hasLeaved],
   );
 
   const classNames = useMemo<string[]>(() => {
@@ -190,6 +202,7 @@ export default function useTransition<T extends Element>(
     isActivated,
     isShowable,
     isFirst,
+    hasLeaved,
     status,
     currentTransitions,
     lifecycle: transitionLifecycle as never, // for conditional types
