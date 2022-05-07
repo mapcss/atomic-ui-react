@@ -14,7 +14,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { isNumber, joinChars } from "../deps.ts";
+import { isNumber } from "../deps.ts";
+import { joinChars } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import { Props as TabProps } from "./tab.ts";
 import { Props as TabPanelProps } from "./tab_panel.ts";

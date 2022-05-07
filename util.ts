@@ -1,7 +1,7 @@
 // This module is browser compatible.
 // deno-lint-ignore-file no-explicit-any
 
-import { isFunction, isNil, isObject, isString } from "./deps.ts";
+import { isFunction, isLength0, isNil, isObject, isString } from "./deps.ts";
 import { Attributes, ReactElement, RefAttributes, RefObject } from "react";
 
 export type Lazyable<T, U extends (...args: any[]) => T = () => T> = T | U;
@@ -78,4 +78,21 @@ export function resolveRef<E>(
   throw Error(
     "[atomic-ui] Supported ref is only RefObject.",
   );
+}
+
+export function cleanCharacter(value: string): string {
+  return value.trim().replaceAll(/\s+/g, " ");
+}
+
+export function joinChars(
+  characters: (string | number | undefined | null)[],
+  separator: string,
+): string | undefined {
+  const joined = (characters.filter((v) => !isNil(v))).map(
+    String,
+  )
+    .map(cleanCharacter).filter(Boolean)
+    .join(separator);
+
+  return isLength0(joined) ? undefined : joined;
 }

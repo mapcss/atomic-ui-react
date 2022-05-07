@@ -7,8 +7,8 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { isNil, isNumber, isString, joinChars } from "../deps.ts";
-import { resolveRef } from "../util.ts";
+import { isNil, isNumber, isString } from "../deps.ts";
+import { joinChars, resolveRef } from "../util.ts";
 import useTransition, {
   Param,
   ReturnValue as UseTransitionReturnValue,

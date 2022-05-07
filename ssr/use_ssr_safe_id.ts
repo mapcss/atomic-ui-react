@@ -1,8 +1,7 @@
 // This module is browser compatible.
 
 import { useContext, useMemo } from "react";
-import { isBrowser } from "../util.ts";
-import { joinChars } from "../deps.ts";
+import { isBrowser, joinChars } from "../util.ts";
 import _Context from "./context.ts";
 import { _DEFAULT_CONTEXT } from "./constant.ts";
 
