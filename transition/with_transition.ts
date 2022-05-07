@@ -147,23 +147,13 @@ const defaultRender: Render = (
   { children, ref, className: _className },
   { isShowable },
 ): ReactElement => {
-  const __className = useMemo<any>(() => children.props.className, [
-    children.props.className,
-  ]);
-
-  const className = useMemo<string | undefined>(
-    () => {
-      const isValid = isValidClassName(__className);
-
-      if (!isValid) {
-        console.warn("[atomic-ui] Invalid className is ignored.");
-      }
-
-      const characters = isValid ? [__className, _className] : [_className];
-      return joinChars(characters, " ");
-    },
-    [_className, __className],
-  );
+  const __className = children.props.className;
+  const isValid = isValidClassName(__className);
+  if (!isValid) {
+    console.warn("[atomic-ui] Invalid className is ignored.");
+  }
+  const characters = isValid ? [__className, _className] : [_className];
+  const className = joinChars(characters, " ");
 
   return isShowable
     ? cloneElement(children, { ref, className })
