@@ -2,15 +2,22 @@
 import {
   cloneElement,
   createElement,
+  forwardRef,
   Fragment,
   ReactElement,
+  Ref,
   RefObject,
   useEffect,
   useMemo,
   useRef,
 } from "react";
 import { isFunction, isNil, isNumber, isString } from "../deps.ts";
-import { joinChars, resolveRef } from "../util.ts";
+import {
+  getRef,
+  isRefObject as _isRefObject,
+  joinChars,
+  resolveRefObject,
+} from "../util.ts";
 import useTransition, {
   Param,
   ReturnValue as UseTransitionReturnValue,
@@ -92,7 +99,7 @@ export type Attributes<E extends Element = Element> = {
  * };
  * ```
  */
-export default function WithTransition(
+function _WithTransition(
   {
     children,
     isShow,
@@ -101,10 +108,15 @@ export default function WithTransition(
     render = defaultRender,
     ...transitionProps
   }: Readonly<Props>,
+  __ref: Ref<Element>,
 ): JSX.Element {
   const isRenderProps = isFunction(children);
+
   const _ref = useRef<Element>(null);
-  const ref = isRenderProps ? _ref : resolveRef<Element>(children) ?? _ref;
+  const ref =
+    resolveRefObject(__ref, isRenderProps ? undefined : getRef(children)) ??
+      _ref;
+
   const returnValue = useTransition(
     {
       isShow,
@@ -163,3 +175,6 @@ function isValidClassName(
 ): value is number | string | undefined | null {
   return [isString, isNumber, isNil].some((fn) => fn(value));
 }
+
+const WithTransition = forwardRef(_WithTransition);
+export default WithTransition;
