@@ -9,7 +9,9 @@ export type StateSet = [
 ];
 
 export const Context = createContext<StateSet>([undefined, noop]);
-export const RootContext = createContext({
-  isShow: false,
-  isRoot: true,
-});
+export const RootContext = createContext<
+  {
+    isShow: boolean;
+    isRoot: boolean;
+  } & ReturnValue | undefined
+>(undefined);

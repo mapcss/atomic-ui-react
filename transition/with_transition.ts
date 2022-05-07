@@ -144,17 +144,17 @@ function _WithTransition(
 
   const immediate = useMemo<boolean>(() => {
     if (isBoolean(_immediate)) return _immediate;
-    return !isRoot;
-  }, [_immediate, isRoot, rootContext.isShow]);
+    return rootContext?.isActivated ?? false;
+  }, [_immediate, isRoot, rootContext?.isActivated]);
 
   const [_, setReturnValue] = useContext(Context);
 
   const isShow = useMemo<boolean>(() => {
     if (isBoolean(_isShow)) return _isShow;
-    if (!isRoot) return rootContext.isShow;
+    if (!isRoot) return rootContext?.isShow ?? false;
 
     throw Error("Either isShow or isRoot required");
-  }, [isRoot, _isShow, rootContext.isShow]);
+  }, [isRoot, _isShow, rootContext?.isShow]);
 
   const returnValue = useTransition(
     {
@@ -208,7 +208,7 @@ function _WithTransition(
   const wrapper = isRoot
     ? createElement(
       RootContext.Provider,
-      { value: { isRoot, isShow } },
+      { value: { isRoot, isShow, ...returnValue } },
       createElement(
         Context.Provider,
         { value: childStateSet },
