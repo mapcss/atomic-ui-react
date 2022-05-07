@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import {
   cloneElement,
   createElement,
@@ -7,7 +8,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { isNil, isNumber, isString } from "../deps.ts";
+import { isFunction, isNil, isNumber, isString } from "../deps.ts";
 import { joinChars, resolveRef } from "../util.ts";
 import useTransition, {
   Param,
@@ -22,7 +23,12 @@ export type RenderContext =
 
 type _Props<E extends Element = Element> = {
   /** The root child adapting transitions. */
-  children: ReactElement;
+  children:
+    | ReactElement
+    | ((
+      attributes: Omit<Attributes<any>, "children">,
+      context: RenderContext,
+    ) => ReactElement);
 
   /** Controls the rendering element. Called just before rendering, it returns the element to actually render.
    * ```tsx
@@ -60,11 +66,9 @@ export type Attributes<E extends Element = Element> = {
   /** Root child adapting transitions. */
   children: ReactElement;
 
-  className: string | undefined;
-
   /** The root child `RefObject` */
   ref: RefObject<E>;
-};
+} & Pick<UseTransitionReturnValue, "className">;
 
 export default function WithTransition(
   {
@@ -73,9 +77,11 @@ export default function WithTransition(
     immediate = false,
     render = defaultRender,
     ...transitionProps
-  }: Props,
+  }: Readonly<Props>,
 ): JSX.Element {
-  const ref = useMergedRef<Element>(children);
+  const isRenderProps = isFunction(children);
+  const _ref = useRef<Element>(null);
+  const ref = isRenderProps ? _ref : resolveRef<Element>(children) ?? _ref;
   const returnValue = useTransition(
     {
       isShow,
@@ -85,55 +91,41 @@ export default function WithTransition(
     transitionProps,
     [isShow, immediate, JSON.stringify(transitionProps)],
   );
-
-  // deno-lint-ignore no-explicit-any
-  const _className = useMemo<any>(() => children.props.className, [
-    children.props.className,
-  ]);
-
-  const className = useMemo<string | undefined>(
-    () => {
-      const isValid = isValidClassName(_className);
-
-      if (!isValid) {
-        console.warn("[atomic-ui] Invalid className is ignored.");
-      }
-
-      const characters = isValid
-        ? [_className, returnValue.className]
-        : [returnValue.className];
-      return joinChars(characters, " ");
-    },
-    [returnValue.className, _className],
-  );
-
-  const attributes = useMemo<Attributes<Element>>(
-    () => ({ className, children, ref }),
-    [
-      className,
-      children,
-    ],
-  );
   const context = useMemo<RenderContext>(() => ({
     ...returnValue,
     immediate,
     isShow,
   }), [isShow, immediate, JSON.stringify(returnValue)]);
 
-  return render(attributes, context);
-}
+  if (isRenderProps) {
+    return children({ ref, className: returnValue.className }, context);
+  }
 
-function useMergedRef<E>(el: ReactElement): RefObject<E> | never {
-  const _ref = useRef<E>(null);
-  const ref = resolveRef<E>(el) ?? _ref;
-
-  return ref;
+  return render({ children, ref, className: returnValue.className }, context);
 }
 
 const defaultRender: Render = (
-  { children, ref, className },
+  { children, ref, className: _className },
   { isShowable },
 ): ReactElement => {
+  const __className = useMemo<any>(() => children.props.className, [
+    children.props.className,
+  ]);
+
+  const className = useMemo<string | undefined>(
+    () => {
+      const isValid = isValidClassName(__className);
+
+      if (!isValid) {
+        console.warn("[atomic-ui] Invalid className is ignored.");
+      }
+
+      const characters = isValid ? [__className, _className] : [_className];
+      return joinChars(characters, " ");
+    },
+    [_className, __className],
+  );
+
   return isShowable
     ? cloneElement(children, { ref, className })
     : createElement(Fragment);
