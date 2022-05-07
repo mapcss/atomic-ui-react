@@ -1,14 +1,12 @@
 // This module is browser compatible.
 
-export { default as Transition } from "./transition.ts";
+export { default as WithTransition } from "./with_transition.ts";
 export type {
-  Props as TransitionProps,
+  Attributes as TransitionAttributes,
+  Props as WithTransitionProps,
   Render as TransitionRender,
   RenderContext as TransitionRenderContext,
-  RenderParam as TransitionRenderParam,
-} from "./transition.ts";
-export { default as WithTransition } from "./with_transition.ts";
-export type { Props as WithTransitionProps } from "./with_transition.ts";
+} from "./with_transition.ts";
 
 export { default as useTransition } from "./use_transition.ts";
 export type {

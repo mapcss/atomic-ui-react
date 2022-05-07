@@ -15,10 +15,10 @@ Monitor component lifecycles and control transitions.
 ## Example
 
 ```tsx
-import { Transition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 export default () => {
   return (
-    <Transition
+    <WithTransition
       enter="transition duration-300"
       enterFrom="opacity-0"
       leave="transition duration-300"
@@ -26,7 +26,7 @@ export default () => {
       isShow
     >
       <div />
-    </Transition>
+    </WithTransition>
   );
 };
 ```
@@ -48,7 +48,7 @@ import { ReactElement, RefObject } from "react";
  * - `end`: Ended
  */
 type TransitionLifecycle = "init" | "start" | "wait" | "end";
-type TransitionProps = {
+type TransitionMap = {
   /** Classes during the entire enter phase. */
   enter: string;
 
@@ -73,7 +73,7 @@ type TransitionProps = {
   leaved: string;
   /** Classes the leave phase is ended. */
 };
-type Transition = keyof TransitionProps;
+type Transition = keyof TransitionMap;
 type UseTransitionReturnValue = {
   /** The className from adapted currently transition. */
   className: string | undefined;
@@ -91,7 +91,7 @@ type UseTransitionReturnValue = {
    * It guarantee that there is no empty string or spaces only
    * characters.
    */
-  cleanTransitionMap: Partial<TransitionProps>;
+  cleanTransitionMap: Partial<TransitionMap>;
 
   /** List of currently adapted transition. */
   currentTransitions: Transition[];
@@ -140,7 +140,7 @@ type TransitionProviderProps<E extends Element = Element> = {
    * @default false
    */
   immediate?: boolean;
-} & Partial<TransitionProps>;
+} & Partial<TransitionMap>;
 ```
 
 #### Example
@@ -177,14 +177,14 @@ Monitors the mount lifecycle and returns the appropriate transition status.
 ```ts
 import { RefObject } from "react";
 import {
-  TransitionProps,
+  TransitionMap,
   UseTransitionParam,
   UseTransitionReturnValue,
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 declare function useTransition<T extends Element>(
   { duration, isShow }: Readonly<UseTransitionParam<T>>,
-  transitionProps: Readonly<Partial<TransitionProps>>,
+  transitionMap: Readonly<Partial<TransitionMap>>,
 ): UseTransitionReturnValue;
 ```
 

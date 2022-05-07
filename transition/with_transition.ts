@@ -7,11 +7,13 @@ import {
   ReactElement,
   Ref,
   RefObject,
+  useContext,
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
-import { isFunction, isNil, isNumber, isString } from "../deps.ts";
+import { isBoolean, isFunction, isNil, isNumber, isString } from "../deps.ts";
 import {
   getRef,
   isRefObject as _isRefObject,
@@ -22,12 +24,31 @@ import useTransition, {
   Param,
   ReturnValue as UseTransitionReturnValue,
 } from "./use_transition.ts";
+import useGroupTransition, {
+  ReturnValue as UseGroupTransitionReturnValue,
+} from "./use_group_transition.ts";
+import { Context, RootContext } from "./context.ts";
 import { TransitionMap } from "./types.ts";
+
+type ExclusiveOption =
+  | {
+    isShow: boolean;
+
+    /** Whether this component is transition root or not. */
+    isRoot?: true | never;
+  }
+  | {
+    isShow?: never;
+
+    /** Whether this component is transition root or not. */
+    isRoot: false;
+  };
 
 /** Context of rendering */
 export type RenderContext =
   & UseTransitionReturnValue
-  & Required<Pick<Props, "isShow" | "immediate">>;
+  & Required<Pick<Props, "immediate">>
+  & UseGroupTransitionReturnValue;
 
 type _Props<E extends Element = Element> = {
   /** The root child adapting transitions. */
@@ -70,8 +91,9 @@ export type Render<E extends Element = Element> = (
 
 export type Props =
   & _Props
-  & Omit<Param, "duration">
-  & Partial<TransitionMap>;
+  & Omit<Param, "duration" | "isShow">
+  & Partial<TransitionMap>
+  & ExclusiveOption;
 
 export type Attributes<E extends Element = Element> = {
   /** Root child adapting transitions. */
@@ -102,8 +124,9 @@ export type Attributes<E extends Element = Element> = {
 function _WithTransition(
   {
     children,
-    isShow,
-    immediate = false,
+    isShow: _isShow,
+    isRoot = true,
+    immediate: _immediate,
     onChange,
     render = defaultRender,
     ...transitionProps
@@ -117,6 +140,22 @@ function _WithTransition(
     resolveRefObject(__ref, isRenderProps ? undefined : getRef(children)) ??
       _ref;
 
+  const rootContext = useContext(RootContext);
+
+  const immediate = useMemo<boolean>(() => {
+    if (isBoolean(_immediate)) return _immediate;
+    return !isRoot;
+  }, [_immediate, isRoot, rootContext.isShow]);
+
+  const [_, setReturnValue] = useContext(Context);
+
+  const isShow = useMemo<boolean>(() => {
+    if (isBoolean(_isShow)) return _isShow;
+    if (!isRoot) return rootContext.isShow;
+
+    throw Error("Either isShow or isRoot required");
+  }, [isRoot, _isShow, rootContext.isShow]);
+
   const returnValue = useTransition(
     {
       isShow,
@@ -126,11 +165,32 @@ function _WithTransition(
     transitionProps,
     [isShow, immediate, JSON.stringify(transitionProps)],
   );
+
+  useEffect(() => {
+    if (isRoot) return;
+    setReturnValue(returnValue);
+  }, [isRoot, JSON.stringify(returnValue)]);
+
+  const childStateSet = useState<UseTransitionReturnValue | undefined>(
+    undefined,
+  );
+
+  const useGroupTransitionReturnValue = useGroupTransition(
+    returnValue,
+    childStateSet[0],
+  );
+
   const context = useMemo<RenderContext>(() => ({
     ...returnValue,
+    ...useGroupTransitionReturnValue,
     immediate,
     isShow,
-  }), [isShow, immediate, JSON.stringify(returnValue)]);
+  }), [
+    isShow,
+    immediate,
+    JSON.stringify(returnValue),
+    JSON.stringify(useGroupTransitionReturnValue),
+  ]);
 
   useEffect(() => {
     onChange?.(returnValue);
@@ -140,12 +200,29 @@ function _WithTransition(
     return children({ ref, className: returnValue.className }, context);
   }
 
-  return render({ children, ref, className: returnValue.className }, context);
+  const child = render(
+    { children, ref, className: returnValue.className },
+    context,
+  );
+
+  const wrapper = isRoot
+    ? createElement(
+      RootContext.Provider,
+      { value: { isRoot, isShow } },
+      createElement(
+        Context.Provider,
+        { value: childStateSet },
+        child,
+      ),
+    )
+    : child;
+
+  return wrapper;
 }
 
 const defaultRender: Render = (
   { children, ref, className: _className },
-  { isShowable },
+  { isReady },
 ): ReactElement => {
   const __className = children.props.className;
   const isValid = isValidClassName(__className);
@@ -155,7 +232,7 @@ const defaultRender: Render = (
   const characters = isValid ? [__className, _className] : [_className];
   const className = joinChars(characters, " ");
 
-  return isShowable
+  return isReady
     ? cloneElement(children, { ref, className })
     : createElement(Fragment);
 };
