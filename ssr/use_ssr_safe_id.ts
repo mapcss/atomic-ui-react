@@ -16,7 +16,9 @@ export default function _useSSRSafeId(defaultId?: string): string {
   }
 
   return useMemo(
-    () => defaultId || joinChars(["atomic-ui", ctx.prefix, ++ctx.current], "-"),
+    () =>
+      (defaultId || joinChars(["atomic-ui", ctx.prefix, ++ctx.current], "-")) ??
+        "",
     [defaultId],
   );
 }

@@ -3,12 +3,12 @@ import { expect, ParamReturn } from "./dev_deps.ts";
 
 Deno.test("joinChars", () => {
   const table: ParamReturn<typeof joinChars>[] = [
-    [[""], " ", ""],
-    [[undefined], " ", ""],
-    [[undefined, undefined], " ", ""],
-    [[undefined, undefined, ""], " ", ""],
-    [[" "], " ", ""],
-    [[undefined, undefined, " "], " ", ""],
+    [[""], " ", undefined],
+    [[undefined], " ", undefined],
+    [[undefined, undefined], " ", undefined],
+    [[undefined, undefined, ""], " ", undefined],
+    [[" "], " ", undefined],
+    [[undefined, undefined, " "], " ", undefined],
     [["test"], " ", "test"],
     [[" test "], " ", "test"],
     [["test", "test2"], " ", "test test2"],

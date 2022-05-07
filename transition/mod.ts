@@ -11,6 +11,8 @@ export type {
   RenderContext as TransitionRenderContext,
   RenderParam as TransitionRenderParam,
 } from "./transition.ts";
+export { default as WithTransition } from "./with_transition.ts";
+export type { Props as WithTransitionProps } from "./with_transition.ts";
 
 export { default as useTransition } from "./use_transition.ts";
 export type {
