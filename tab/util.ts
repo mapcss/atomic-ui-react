@@ -58,3 +58,19 @@ export function getLastIndex(
     return index;
   }
 }
+
+export type TempIdReturnValue = {
+  readonly current: number;
+};
+
+export function tempId(): TempIdReturnValue {
+  let id = 0;
+
+  return {
+    get current(): number {
+      const _id = id;
+      id++;
+      return _id;
+    },
+  };
+}

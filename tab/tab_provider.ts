@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { isNumber } from "../deps.ts";
-import { DEFAULT_INDEX } from "./constant.ts";
+import { DEFAULT_INDEX, DEFAULT_IS_HORIZONTAL } from "./constant.ts";
 import useId from "../hooks/use_id.ts";
 import {
   HorizontalContext,
@@ -19,6 +19,7 @@ import {
   TabPanelCountContext,
   TabRefsContext,
 } from "./context.ts";
+import { tempId } from "./util.ts";
 
 export type Props = {
   /** The selected index if you want to use as a controlled component. */
@@ -47,13 +48,13 @@ export default function TabProvider(
     children,
     defaultIndex = DEFAULT_INDEX,
     selectedIndex,
-    isHorizontal = true,
+    isHorizontal = DEFAULT_IS_HORIZONTAL,
     onChange,
   } = props;
   const id = useId();
   const refs: RefObject<HTMLElement>[] = [];
-  const tabCount = reloadableId();
-  const tabPanelCount = reloadableId();
+  const tabCount = tempId();
+  const tabPanelCount = tempId();
 
   const isControl = useMemo<boolean>(() => isNumber(selectedIndex), [
     selectedIndex,
@@ -99,16 +100,4 @@ export default function TabProvider(
       ),
     ),
   );
-}
-
-function reloadableId() {
-  let id = 0;
-  const obj = {
-    get current(): number {
-      const _id = id;
-      id++;
-      return _id;
-    },
-  };
-  return obj;
 }

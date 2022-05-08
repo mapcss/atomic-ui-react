@@ -28,6 +28,7 @@ import {
   getNextIndex,
   getPrevIndex,
 } from "./util.ts";
+import { PANEL, TAB } from "./constant.ts";
 import { isAriaDisabled } from "./assert.ts";
 
 export type Props = {
@@ -66,10 +67,10 @@ function _WithTab<T extends HTMLElement>(
 
   const aria = useTabAria({
     isSelected,
-    tabPanelId: joinChars([id, "tab", "panel", currentIndex], "-"),
+    tabPanelId: joinChars([id, TAB, PANEL, currentIndex], "-"),
     isDisabled,
   });
-  const _id = joinChars([id, "tab", currentIndex], "-");
+  const _id = joinChars([id, TAB, currentIndex], "-");
 
   const onClick: MouseEventHandler = () => {
     if (isAriaDisabled(refs[currentIndex].current)) return;
