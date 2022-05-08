@@ -3,7 +3,7 @@
 import { DependencyList, useMemo, useState } from "react";
 import { isLength0, isNumber, mapValues } from "../deps.ts";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
-import { ElementLike, resolveElementLike } from "../util.ts";
+import { cleanTokens, ElementLike, resolveElementLike } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
 import { TransitionMap, TransitionName } from "./types.ts";
@@ -12,7 +12,6 @@ import useTransitionLifeCycle, {
   TransitionLifecycleMap,
 } from "./use_transition_lifecycle.ts";
 import {
-  cleanTokens,
   getDuration,
   getTransitionMap,
   isShowable as _isShowable,

@@ -1,6 +1,5 @@
 // This module is browser compatible.
 
-import { distinct, filterTruthy } from "../deps.ts";
 import {
   END,
   ENTER,
@@ -84,21 +83,4 @@ export function isShowable(
 ): boolean {
   if (!isActivated) return isShow;
   return isShow || !isCompleted || hasLeaved;
-}
-
-/** Returns space-separated, non-duplicate tokens.
- * Empty characters are not considered token.
- */
-export function cleanTokens(
-  value: Readonly<Iterable<string | undefined>>,
-): string[] {
-  const truthy = filterTruthy(Array.from(value));
-  return distinct(truthy.map(tokenize).flat());
-}
-
-/** Returns a space-separated string as tokens.
- * Duplicates are not eliminated.
- */
-export function tokenize(value: string): string[] {
-  return filterTruthy(value.split(" "));
 }
