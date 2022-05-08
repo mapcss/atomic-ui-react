@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { isLength0, not } from "../deps.ts";
 
 export function getNextIndex(

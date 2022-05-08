@@ -27,3 +27,5 @@ export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
 export function not<T extends (...args: any[]) => any>(fn: T) {
   return (...args: Parameters<T>): boolean => !fn(...args);
 }
+
+export function noop(): void {}

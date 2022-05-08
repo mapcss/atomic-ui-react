@@ -1,32 +1,37 @@
 // This module is browser compatible.
 
-import { createElement, ForwardedRef, forwardRef as _forwardRef } from "react";
-import { TAB_PANEL, TYPE } from "./constant.ts";
-import useTabPanelAria, { Param } from "./use_tab_panel_aria.ts";
+import {
+  cloneElement,
+  createElement,
+  forwardRef,
+  Fragment,
+  ReactElement,
+  Ref,
+  useContext,
+} from "react";
+import { joinChars } from "../util.ts";
+import useTabPanelAria from "./use_tab_panel_aria.ts";
+import { IdContext, IndexContext, TabPanelCountContext } from "./context.ts";
 
-type _Props<As extends keyof JSX.IntrinsicElements> = {
-  /**
-   * @default `div`
-   */
-  as?: As;
-} & Partial<Param>;
-
-export type Props<As extends keyof JSX.IntrinsicElements = "div"> =
-  & _Props<As>
-  & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
-
-function _TabPanel<As extends keyof JSX.IntrinsicElements>(
-  { as, tabId, ...rest }: Props<As>,
-  ref: ForwardedRef<As>,
+export type Props = {
+  children: ReactElement;
+};
+function _TabPanel<T>(
+  { children }: Props,
+  ref: Ref<T>,
 ): JSX.Element {
-  const _as = as ?? "div";
+  const id = useContext(IdContext);
+  const tabPanelCountRef = useContext(TabPanelCountContext);
+  const [index] = useContext(IndexContext);
+  const currentIndex = tabPanelCountRef.current;
+  const tabId = joinChars([id, currentIndex], "-");
   const aria = useTabPanelAria({ tabId });
 
-  return createElement(_as, { ref, ...aria, ...rest });
+  return index === currentIndex
+    ? cloneElement(children, { ref, ...aria })
+    : createElement(Fragment);
 }
 
-const TabPanel = _forwardRef(_TabPanel);
+const TabPanel = forwardRef(_TabPanel);
 
-// deno-lint-ignore no-explicit-any
-(TabPanel as any)[TYPE] = TAB_PANEL;
 export default TabPanel;

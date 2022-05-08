@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { useMemo } from "react";
 
 export type Param = {

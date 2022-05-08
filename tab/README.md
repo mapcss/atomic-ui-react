@@ -1,5 +1,6 @@
 # tab
 
+- No element
 - No style
 - WAI-ARIA ready
 - Provider and Pure Components
@@ -19,12 +20,22 @@ import {
 export default () => (
   <TabProvider>
     <TabList>
-      <Tab>Title 1</Tab>
-      <Tab>Title 2</Tab>
+      <div>
+        <Tab>
+          <button>Title 1</button>
+        </Tab>
+        <Tab>
+          <button>Title 2</button>
+        </Tab>
+      </div>
     </TabList>
 
-    <TabPanel>Content 1</TabPanel>
-    <TabPanel>Content 2</TabPanel>
+    <TabPanel>
+      <div>Content 1</div>
+    </TabPanel>
+    <TabPanel>
+      <div>Content 2</div>
+    </TabPanel>
   </TabProvider>
 );
 ```

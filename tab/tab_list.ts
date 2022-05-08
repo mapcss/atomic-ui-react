@@ -1,34 +1,23 @@
 // This module is browser compatible.
 
-import { createElement, ForwardedRef, forwardRef as _forwardRef } from "react";
-import { TAB_LIST, TYPE } from "./constant.ts";
-import useTabListAria, { Param } from "./use_tab_list_aria.ts";
+import { cloneElement, forwardRef, ReactElement, Ref, useContext } from "react";
+import useTabListAria from "./use_tab_list_aria.ts";
+import { HorizontalContext } from "./context.ts";
 
-type _Props<As extends keyof JSX.IntrinsicElements> = {
-  /**
-   * @default `div`
-   */
-  as?: As;
-} & Partial<Param>;
+export type Props = {
+  children: ReactElement;
+};
 
-export type Props<
-  As extends keyof JSX.IntrinsicElements = keyof JSX.IntrinsicElements,
-> =
-  & _Props<As>
-  & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
-
-function _TabList<As extends keyof JSX.IntrinsicElements>(
-  { as, isHorizontal, ...rest }: Props<As>,
-  ref: ForwardedRef<As>,
+function _TabList(
+  { children }: Props,
+  ref: Ref<Element>,
 ): JSX.Element {
-  const _as = as ?? "div";
+  const isHorizontal = useContext(HorizontalContext);
   const aria = useTabListAria({ isHorizontal });
 
-  return createElement(_as, { ref, ...aria, ...rest });
+  return cloneElement(children, { ref, ...aria });
 }
 
-const TabList = _forwardRef(_TabList);
+const TabList = forwardRef(_TabList);
 
-// deno-lint-ignore no-explicit-any
-(TabList as any)[TYPE] = TAB_LIST;
 export default TabList;

@@ -1,66 +1,153 @@
 // This module is browser compatible.
 
 import {
-  createElement,
-  ForwardedRef,
+  AllHTMLAttributes,
+  cloneElement,
   forwardRef as _forwardRef,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  ReactElement,
+  Ref,
+  RefObject,
+  useContext,
   useMemo,
+  useRef,
 } from "react";
-import { TAB, TYPE } from "./constant.ts";
 import useTabAria, { Param } from "./use_tab_aria.ts";
+import { joinChars, resolveRefObject } from "../util.ts";
+import {
+  HorizontalContext,
+  IdContext,
+  IndexContext,
+  TabCountContext,
+  TabRefsContext,
+} from "./context.ts";
+import {
+  getFirstIndex,
+  getLastIndex,
+  getNextIndex,
+  getPrevIndex,
+} from "./util.ts";
+import { isAriaDisabled } from "./assert.ts";
 
-type _Props<As extends keyof JSX.IntrinsicElements> = {
-  /** The element tag as.
-   * @default `button`
-   */
-  as?: As;
+export type Props = {
+  children: ReactElement;
+} & Partial<Pick<Param, "isDisabled">>;
 
-  /** Dynamic rendering props with context. */
-  renderProps?: (
-    context: Param,
-  ) => Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
-} & Partial<Param>;
-
-export type Props<As extends keyof JSX.IntrinsicElements = "button"> =
-  & _Props<As>
-  & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
-
-function _Tab<As extends keyof JSX.IntrinsicElements = "button">(
+function _Tab<T extends HTMLElement>(
   {
-    as,
-    isSelected,
     isDisabled,
-    tabPanelId,
-    renderProps,
-    ...rest
-  }: Props<As>,
-  ref: ForwardedRef<As>,
+    children,
+  }: Props,
+  _ref: Ref<T>,
 ): JSX.Element {
-  const props = useMemo(
-    () =>
-      renderProps?.({
-        isSelected: isSelected ?? false,
-        isDisabled: isDisabled ?? false,
-        tabPanelId: tabPanelId ?? "",
-      }) ?? {},
+  const id = useContext(IdContext);
+  const [index, setIndex] = useContext(IndexContext);
+  const tabCount = useContext(TabCountContext);
+  const refs = useContext(TabRefsContext);
+  const isHorizontal = useContext(HorizontalContext);
+  const currentIndex = tabCount.current;
+
+  const el = useRef<T>(null);
+  const ref = resolveRefObject<T>(_ref) ?? el;
+
+  if (ref) {
+    refs.push(ref);
+  }
+
+  const isSelected = useMemo<boolean>(() => index === currentIndex, [
+    index,
+  ]);
+
+  const tabIndex = useMemo<AllHTMLAttributes<Element>["tabIndex"]>(
+    () => isSelected ? 0 : -1,
     [isSelected],
   );
 
-  const tabIndexProps = useMemo(() => ({ tabIndex: isSelected ? 0 : -1 }), [
+  const aria = useTabAria({
     isSelected,
-  ]);
+    tabPanelId: joinChars([id, currentIndex], "-"),
+    isDisabled,
+  });
 
-  const aria = useTabAria({ isSelected, tabPanelId, isDisabled });
+  const onClick: MouseEventHandler = () => {
+    if (isAriaDisabled(refs[currentIndex].current)) return;
+    setIndex(currentIndex);
+  };
 
-  return createElement(as ?? "button", {
+  const arrowLeftUp = useMemo<"ArrowLeft" | "ArrowUp">(
+    () => isHorizontal ? "ArrowLeft" : "ArrowUp",
+    [isHorizontal],
+  );
+  const arrowRightDown = useMemo<"ArrowRight" | "ArrowDown">(
+    () => isHorizontal ? "ArrowRight" : "ArrowDown",
+    [isHorizontal],
+  );
+
+  const onKeyDown: KeyboardEventHandler = (ev) => {
+    switch (ev.code) {
+      case arrowLeftUp: {
+        const prevIndex = getPrevIndex(
+          currentIndex,
+          refs.map(isNotRefAriaDisabled),
+        );
+        updateOrFocus(index, prevIndex);
+        break;
+      }
+      case arrowRightDown: {
+        const nextIndex = getNextIndex(
+          currentIndex,
+          refs.map(isNotRefAriaDisabled),
+        );
+        updateOrFocus(index, nextIndex);
+        break;
+      }
+      case "Home":
+      case "PageUp": {
+        const firstIndex = getFirstIndex(
+          currentIndex,
+          refs.map(isNotRefAriaDisabled),
+        );
+        updateOrFocus(index, firstIndex);
+        break;
+      }
+      case "End":
+      case "PageDown": {
+        const lastIndex = getLastIndex(
+          currentIndex,
+          refs.map(isNotRefAriaDisabled),
+        );
+        updateOrFocus(index, lastIndex);
+        break;
+      }
+    }
+  };
+
+  const focus = (index: number): void => {
+    if (!isAriaDisabled(refs[index]?.current)) {
+      refs[index]?.current?.focus();
+    }
+  };
+
+  const updateOrFocus = (_: number, featureIndex: number): void => {
+    focus(featureIndex);
+    setIndex(featureIndex);
+  };
+
+  return cloneElement(children, {
     ref,
     ...aria,
-    ...tabIndexProps,
-    ...rest,
-    ...props,
+    id: currentIndex,
+    tabIndex,
+    onClick,
+    onKeyDown,
   });
 }
 const Tab = _forwardRef(_Tab);
-// deno-lint-ignore no-explicit-any
-(Tab as any)[TYPE] = TAB;
 export default Tab;
+
+function isNotRefAriaDisabled(
+  ref: RefObject<HTMLElement | undefined>,
+): boolean {
+  return !isAriaDisabled(ref.current);
+}
