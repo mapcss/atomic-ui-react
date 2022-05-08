@@ -155,7 +155,7 @@ export function mergeProps<T extends Props, U extends Props>(
   a: T,
   b: U,
 ): T & U {
-  const result: Props = a;
+  const result: Props = {};
   const keys = [
     ...Object.getOwnPropertyNames(a),
     ...Object.getOwnPropertyNames(b),
@@ -197,6 +197,8 @@ export function mergeProps<T extends Props, U extends Props>(
     }
     if (hasB) {
       result[key] = b[key];
+    } else {
+      result[key] = a[key];
     }
   }
 

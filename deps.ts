@@ -20,10 +20,6 @@ export function wrap<T>(val: T): T extends any[] ? T : T[] {
   return Array.isArray(val) ? val as never : [val] as never;
 }
 
-export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
-  return value.filter(Boolean) as never;
-}
-
 export function not<T extends (...args: any[]) => any>(fn: T) {
   return (...args: Parameters<T>): boolean => !fn(...args);
 }

@@ -11,7 +11,9 @@ import {
   useMemo,
 } from "react";
 import { joinChars } from "../util.ts";
-import useTabPanelAria from "./use_tab_panel_aria.ts";
+import useTabPanelAria, {
+  ReturnValue as UseTabPanelAriaReturnValue,
+} from "./use_tab_panel_aria.ts";
 import {
   DisabledIdsContext,
   IdContext,
@@ -28,20 +30,21 @@ export type RenderContext = {
   isShowable: boolean;
 };
 export type RenderAttributes<E extends Element = Element> = {
-  children: ReactElement;
   ref: Ref<E>;
-};
+} & UseTabPanelAriaReturnValue;
 
 export type Render<E extends Element = Element> = (
+  root: ReactElement,
   attributes: RenderAttributes<E>,
   context: RenderContext,
 ) => ReactElement;
 
 const defaultRender: Render = (
-  { children, ...props }: RenderAttributes,
+  root,
+  attrs: RenderAttributes,
   { isShowable }: RenderContext,
 ) => {
-  return isShowable ? cloneElement(children, props) : createElement(Fragment);
+  return isShowable ? cloneElement(root, attrs) : createElement(Fragment);
 };
 
 export type Props = {
@@ -71,7 +74,7 @@ function _WithTabPanel<T extends Element = Element>(
   const tabPanelId = joinChars([id, TAB, PANEL, index], "-");
   const aria = useTabPanelAria({ tabId, tabPanelId });
 
-  return render({ children, ref, ...aria }, {
+  return render(children, { ref, ...aria }, {
     selectedIndex,
     index,
     isDisabled,

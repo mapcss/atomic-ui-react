@@ -14,7 +14,7 @@ import {
   useRef,
 } from "react";
 import useTabAria, { Param } from "./use_tab_aria.ts";
-import { joinChars, resolveRefObject } from "../util.ts";
+import { joinChars, mergeProps, resolveRefObject } from "../util.ts";
 import {
   DisabledIdsContext,
   HorizontalContext,
@@ -141,13 +141,16 @@ function _WithTab<T extends HTMLElement>(
     setIndex(featureIndex);
   };
 
-  return cloneElement(children, {
-    ref,
-    ...aria,
-    tabIndex,
-    onClick,
-    onKeyDown,
-  });
+  return cloneElement(
+    children,
+    mergeProps(children.props, {
+      ref,
+      ...aria,
+      tabIndex,
+      onClick,
+      onKeyDown,
+    }),
+  );
 }
 const WithTab = _forwardRef(_WithTab);
 export default WithTab;
