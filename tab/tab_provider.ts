@@ -18,8 +18,10 @@ import {
   IndexContext,
   TabCountContext,
   TabPanelCountContext,
+  TabPanelRenderContext,
   TabRefsContext,
 } from "./context.ts";
+import { defaultRender, Render } from "./with_tab_panel.ts";
 import { tempId } from "./util.ts";
 
 export type Props = {
@@ -39,6 +41,8 @@ export type Props = {
    */
   isHorizontal?: boolean;
 
+  renderTabPanel?: Render;
+
   children: ReactNode;
 };
 
@@ -51,6 +55,7 @@ export default function TabProvider(
     selectedIndex,
     isHorizontal = DEFAULT_IS_HORIZONTAL,
     onChange,
+    renderTabPanel = defaultRender,
   } = props;
   const id = useId();
   const refs: RefObject<HTMLElement>[] = [];
@@ -98,7 +103,11 @@ export default function TabProvider(
               createElement(
                 DisabledIdsContext.Provider,
                 { value: disabledIds },
-                children,
+                createElement(
+                  TabPanelRenderContext.Provider,
+                  { value: renderTabPanel },
+                  children,
+                ),
               ),
             ),
           ),

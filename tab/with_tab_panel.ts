@@ -19,6 +19,7 @@ import {
   IdContext,
   IndexContext,
   TabPanelCountContext,
+  TabPanelRenderContext,
 } from "./context.ts";
 import { PANEL, TAB } from "./constant.ts";
 
@@ -39,7 +40,7 @@ export type Render<E extends Element = Element> = (
   context: RenderContext,
 ) => ReactElement;
 
-const defaultRender: Render = (
+export const defaultRender: Render = (
   root,
   attrs: RenderAttributes,
   { isShowable }: RenderContext,
@@ -53,13 +54,15 @@ export type Props = {
   render?: Render;
 };
 function _WithTabPanel<T extends Element = Element>(
-  { children, render = defaultRender }: Props,
+  { children, render: _render }: Props,
   ref: Ref<T>,
 ): JSX.Element {
   const id = useContext(IdContext);
   const tabPanelCount = useContext(TabPanelCountContext);
   const [selectedIndex] = useContext(IndexContext);
   const disabledIds = useContext(DisabledIdsContext);
+  const globalRender = useContext(TabPanelRenderContext);
+  const render = _render ?? globalRender;
 
   const index = tabPanelCount.current;
   const isDisabled = disabledIds.includes(index);
