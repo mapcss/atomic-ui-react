@@ -4,7 +4,6 @@ import { createContext, Dispatch, RefObject, SetStateAction } from "react";
 import { noop } from "../deps.ts";
 import { TempIdReturnValue } from "./util.ts";
 import { DEFAULT_IS_HORIZONTAL } from "./constant.ts";
-import { defaultRender, Render } from "./with_tab_panel.ts";
 
 export const TabCountContext = createContext<TempIdReturnValue>({
   current: 0,
@@ -21,4 +20,3 @@ export const TabRefsContext = createContext<
 >([]);
 export const HorizontalContext = createContext<boolean>(DEFAULT_IS_HORIZONTAL);
 export const DisabledIdsContext = createContext<number[]>([]);
-export const TabPanelRenderContext = createContext<Render>(defaultRender);
