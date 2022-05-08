@@ -21,14 +21,15 @@ function _TabPanel<T>(
   ref: Ref<T>,
 ): JSX.Element {
   const id = useContext(IdContext);
-  const tabPanelCountRef = useContext(TabPanelCountContext);
+  const tabPanelCount = useContext(TabPanelCountContext);
   const [index] = useContext(IndexContext);
-  const currentIndex = tabPanelCountRef.current;
-  const tabId = joinChars([id, currentIndex], "-");
+  const currentIndex = tabPanelCount.current;
+  const tabId = joinChars([id, "tab", currentIndex], "-");
+  const _id = joinChars([id, "tab", "panel", currentIndex], "-");
   const aria = useTabPanelAria({ tabId });
 
   return index === currentIndex
-    ? cloneElement(children, { ref, ...aria })
+    ? cloneElement(children, { ref, ...aria, id: _id })
     : createElement(Fragment);
 }
 

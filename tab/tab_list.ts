@@ -8,9 +8,9 @@ export type Props = {
   children: ReactElement;
 };
 
-function _TabList(
+function _TabList<T>(
   { children }: Props,
-  ref: Ref<Element>,
+  ref: Ref<T>,
 ): JSX.Element {
   const isHorizontal = useContext(HorizontalContext);
   const aria = useTabListAria({ isHorizontal });

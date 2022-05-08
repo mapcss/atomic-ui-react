@@ -66,9 +66,10 @@ function _Tab<T extends HTMLElement>(
 
   const aria = useTabAria({
     isSelected,
-    tabPanelId: joinChars([id, currentIndex], "-"),
+    tabPanelId: joinChars([id, "tab", "panel", currentIndex], "-"),
     isDisabled,
   });
+  const _id = joinChars([id, "tab", currentIndex], "-");
 
   const onClick: MouseEventHandler = () => {
     if (isAriaDisabled(refs[currentIndex].current)) return;
@@ -137,10 +138,10 @@ function _Tab<T extends HTMLElement>(
   return cloneElement(children, {
     ref,
     ...aria,
-    id: currentIndex,
     tabIndex,
     onClick,
     onKeyDown,
+    id: _id,
   });
 }
 const Tab = _forwardRef(_Tab);
