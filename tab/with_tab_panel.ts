@@ -3,10 +3,8 @@
 import {
   cloneElement,
   createElement,
-  forwardRef,
   Fragment,
   ReactElement,
-  Ref,
   useContext,
   useMemo,
 } from "react";
@@ -29,19 +27,16 @@ export type RenderContext = {
   isSelected: boolean;
   isShowable: boolean;
 };
-export type RenderAttributes<E extends Element = Element> = {
-  ref: Ref<E>;
-} & UseTabPanelAriaReturnValue;
 
-export type Render<E extends Element = Element> = (
+export type Render = (
   root: ReactElement,
-  attributes: RenderAttributes<E>,
+  attributes: UseTabPanelAriaReturnValue,
   context: RenderContext,
 ) => ReactElement;
 
 export const defaultRender: Render = (
   root,
-  attrs: RenderAttributes,
+  attrs: UseTabPanelAriaReturnValue,
   { isShowable }: RenderContext,
 ) => {
   return isShowable ? cloneElement(root, attrs) : createElement(Fragment);
@@ -52,9 +47,8 @@ export type Props = {
 
   render?: Render;
 };
-function _WithTabPanel<T extends Element = Element>(
+export default function WithTabPanel(
   { children, render = defaultRender }: Props,
-  ref: Ref<T>,
 ): JSX.Element {
   const id = useContext(IdContext);
   const tabPanelCount = useContext(TabPanelCountContext);
@@ -74,7 +68,7 @@ function _WithTabPanel<T extends Element = Element>(
   const tabPanelId = joinChars([id, TAB, PANEL, index], "-");
   const aria = useTabPanelAria({ tabId, tabPanelId });
 
-  return render(children, { ref, ...aria }, {
+  return render(children, aria, {
     selectedIndex,
     index,
     isDisabled,
@@ -82,7 +76,3 @@ function _WithTabPanel<T extends Element = Element>(
     isShowable,
   });
 }
-
-const WithTabPanel = forwardRef(_WithTabPanel);
-
-export default WithTabPanel;

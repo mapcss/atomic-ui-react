@@ -4,9 +4,7 @@ import {
   AllHTMLAttributes,
   cloneElement,
   DOMAttributes,
-  forwardRef,
   ReactElement,
-  Ref,
   RefObject,
   useCallback,
   useContext,
@@ -15,7 +13,7 @@ import {
 } from "react";
 import useTabAria, { Param } from "./use_tab_aria.ts";
 import { isNumber } from "../deps.ts";
-import { joinChars, mergeProps, resolveRefObject } from "../util.ts";
+import { joinChars, mergeProps } from "../util.ts";
 import {
   DisabledIdsContext,
   HorizontalContext,
@@ -54,14 +52,13 @@ export type Props = {
   handlers?: Iterable<Handler>;
 } & Partial<Pick<Param, "isDisabled">>;
 
-function _WithTab<T extends HTMLElement>(
+export default function WithTab(
   {
     isDisabled,
     children,
     keyboardHandler = "onKeyDown",
     handlers = ["onClick"],
   }: Readonly<Props>,
-  _ref: Ref<T>,
 ): JSX.Element {
   const id = useContext(IdContext);
   const [selectedIndex, setIndex] = useContext(IndexContext);
@@ -70,8 +67,8 @@ function _WithTab<T extends HTMLElement>(
   const isHorizontal = useContext(HorizontalContext);
   const disabledIds = useContext(DisabledIdsContext);
   const index = tabCount.current;
-  const el = useRef<T>(null);
-  const ref = resolveRefObject<T>(_ref) ?? el;
+  const el = useRef<HTMLElement>(null);
+  const ref = el;
 
   if (isDisabled) {
     disabledIds.push(index);
@@ -86,7 +83,7 @@ function _WithTab<T extends HTMLElement>(
     selectedIndex,
   ]);
 
-  const tabIndex = useMemo<AllHTMLAttributes<T>["tabIndex"]>(
+  const tabIndex = useMemo<AllHTMLAttributes<HTMLElement>["tabIndex"]>(
     () => isSelected ? 0 : -1,
     [isSelected],
   );
@@ -109,8 +106,8 @@ function _WithTab<T extends HTMLElement>(
   const updateAndFocus = useCallback((featureIndex: number): void => {
     if (!isAriaDisabled(refs[featureIndex]?.current)) {
       refs[featureIndex]?.current?.focus();
+      setIndex(featureIndex);
     }
-    setIndex(featureIndex);
   }, []);
 
   const keyboardHandlerMap = useKeyboard({
@@ -132,8 +129,6 @@ function _WithTab<T extends HTMLElement>(
     }),
   );
 }
-const WithTab = forwardRef(_WithTab);
-export default WithTab;
 
 function isNotRefAriaDisabled(
   ref: RefObject<HTMLElement | undefined>,
