@@ -34,7 +34,7 @@ export type Props = {
   children: ReactElement;
 } & Partial<Pick<Param, "isDisabled">>;
 
-function _Tab<T extends HTMLElement>(
+function _WithTab<T extends HTMLElement>(
   {
     isDisabled,
     children,
@@ -144,8 +144,8 @@ function _Tab<T extends HTMLElement>(
     id: _id,
   });
 }
-const Tab = _forwardRef(_Tab);
-export default Tab;
+const WithTab = _forwardRef(_WithTab);
+export default WithTab;
 
 function isNotRefAriaDisabled(
   ref: RefObject<HTMLElement | undefined>,

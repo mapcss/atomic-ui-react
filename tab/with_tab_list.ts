@@ -8,7 +8,7 @@ export type Props = {
   children: ReactElement;
 };
 
-function _TabList<T>(
+function _WithTabList<T>(
   { children }: Props,
   ref: Ref<T>,
 ): JSX.Element {
@@ -18,6 +18,6 @@ function _TabList<T>(
   return cloneElement(children, { ref, ...aria });
 }
 
-const TabList = forwardRef(_TabList);
+const WithTabList = forwardRef(_WithTabList);
 
-export default TabList;
+export default WithTabList;

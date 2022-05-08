@@ -16,7 +16,7 @@ import { IdContext, IndexContext, TabPanelCountContext } from "./context.ts";
 export type Props = {
   children: ReactElement;
 };
-function _TabPanel<T>(
+function _WithTabPanel<T>(
   { children }: Props,
   ref: Ref<T>,
 ): JSX.Element {
@@ -33,6 +33,6 @@ function _TabPanel<T>(
     : createElement(Fragment);
 }
 
-const TabPanel = forwardRef(_TabPanel);
+const WithTabPanel = forwardRef(_WithTabPanel);
 
-export default TabPanel;
+export default WithTabPanel;

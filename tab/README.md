@@ -11,31 +11,31 @@
 
 ```tsx
 import {
-  Tab,
-  TabList,
-  TabPanel,
   TabProvider,
+  WithTab,
+  WithTabList,
+  WithTabPanel,
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 export default () => (
   <TabProvider>
-    <TabList>
+    <WithTabList>
       <div>
-        <Tab>
+        <WithTab>
           <button>Title 1</button>
-        </Tab>
-        <Tab>
+        </WithTab>
+        <WithTab>
           <button>Title 2</button>
-        </Tab>
+        </WithTab>
       </div>
-    </TabList>
+    </WithTabList>
 
-    <TabPanel>
+    <WithTabPanel>
       <div>Content 1</div>
-    </TabPanel>
-    <TabPanel>
+    </WithTabPanel>
+    <WithTabPanel>
       <div>Content 2</div>
-    </TabPanel>
+    </WithTabPanel>
   </TabProvider>
 );
 ```
