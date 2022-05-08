@@ -1,3 +1,15 @@
+# [1.0.0-beta.38](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.37...1.0.0-beta.38) (2022-05-08)
+
+
+### Bug Fixes
+
+* **tab:** quit ref forwarding ([03e20e9](https://github.com/mapcss/atomic-ui-react/commit/03e20e98d2928fbd475f2d32b727031dc0de086a))
+
+
+### Features
+
+* **disclosure:** remove unused component, add `render` props to `WithDisclosureTarget` component ([dcfe1bc](https://github.com/mapcss/atomic-ui-react/commit/dcfe1bc6d07cbbde5800bf7fa809bafcd5c86020))
+
 # [1.0.0-beta.37](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.36...1.0.0-beta.37) (2022-05-08)
 
 
