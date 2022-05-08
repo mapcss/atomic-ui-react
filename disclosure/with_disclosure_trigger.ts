@@ -3,13 +3,12 @@
 import {
   cloneElement,
   DOMAttributes,
-  forwardRef,
   ReactElement,
-  Ref,
   useContext,
   useMemo,
 } from "react";
 import { isFunction } from "../deps.ts";
+import { mergeProps } from "../util.ts";
 import useAriaDisclosureTrigger, {
   ReturnValue,
 } from "./use_aria_disclosure_trigger.ts";
@@ -43,12 +42,11 @@ export type Props<H extends Handler, E extends Element = Element> = {
 
 type RenderContext = StateMap & DispatchMap;
 
-function _WithDisclosureTrigger<
+export default function WithDisclosureTrigger<
   E extends Element,
   H extends Handler = "onClick",
 >(
   { on = ["onClick"] as H[], type = "toggle", children }: Readonly<Props<H, E>>,
-  ref: Ref<E>,
 ): JSX.Element {
   const context = useContext(Context);
   if (!context) throw Error(ERROR_MSG);
@@ -65,14 +63,14 @@ function _WithDisclosureTrigger<
   }, [JSON.stringify(on), JSON.stringify(dispatch)]);
 
   if (isFunction(children)) {
-    return children({ ...aria, ...handlerMap, ref }, {
+    return children({ ...aria, ...handlerMap }, {
       ...stateMap,
       ...dispatchMap,
     });
   }
 
-  return cloneElement(children, { ...aria, ...handlerMap, ref });
+  return cloneElement(
+    children,
+    mergeProps(children.props, { ...aria, ...handlerMap }),
+  );
 }
-
-const WithDisclosureTrigger = forwardRef(_WithDisclosureTrigger);
-export default WithDisclosureTrigger;

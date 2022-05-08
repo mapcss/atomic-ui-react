@@ -3,42 +3,48 @@
 import {
   AllHTMLAttributes,
   cloneElement,
-  CSSProperties,
-  forwardRef,
   ReactElement,
-  Ref,
   useContext,
 } from "react";
 import { isFunction } from "../deps.ts";
+import { mergeProps } from "../util.ts";
 import { DispatchMap, StateMap } from "./use_disclosure.ts";
 import Context from "./context.ts";
 import { ERROR_MSG } from "./constant.ts";
 
 type RenderAttributes<T> = Required<Pick<AllHTMLAttributes<T>, "id">>;
-type RenderContext = StateMap & DispatchMap;
+
+type Render<T = unknown> = (
+  root: ReactElement,
+  attributes: RenderAttributes<T>,
+  context: StateMap,
+) => ReactElement;
+
+const defaultRender: Render = (root, attributes, { isOpen }) => {
+  return isOpen ? cloneElement(root, attributes) : cloneElement(
+    root,
+    mergeProps(root.props, { ...attributes, style: { display: "none" } }),
+  );
+};
 
 export type Props<T> = {
   children:
     | ReactElement
     | ((
       attributes: RenderAttributes<T>,
-      context: RenderContext,
-    ) => JSX.Element);
+      context: StateMap & DispatchMap,
+    ) => ReactElement);
 
-  /**
-   * @default { display: "none"}
-   */
-  closedStyle?: CSSProperties;
+  render?: Render<T>;
 };
 
-function _WithDisclosureTarget<
+export default function WithDisclosureTarget<
   E extends Element,
 >(
   {
-    closedStyle = { display: "none" },
     children,
+    render = defaultRender,
   }: Props<E>,
-  ref: Ref<E>,
 ): JSX.Element {
   const context = useContext(Context);
   if (!context) throw Error(ERROR_MSG);
@@ -49,13 +55,5 @@ function _WithDisclosureTarget<
     return children({ id }, { isOpen, id, ...dispatchMap });
   }
 
-  if (isOpen) {
-    return cloneElement(children, { id, ref });
-  }
-
-  const style = { ...children.props.style, ...closedStyle };
-  return cloneElement(children, { id, style, ref });
+  return render(children, { id }, { isOpen, id });
 }
-
-const WithDisclosureTarget = forwardRef(_WithDisclosureTarget);
-export default WithDisclosureTarget;

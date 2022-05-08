@@ -1,13 +1,11 @@
 // This module is browser compatible.
 
-import useDisclosure, { DispatchMap, StateMap } from "./use_disclosure.ts";
-export type Context = StateMap & DispatchMap;
+import { createElement, ReactNode } from "react";
+import Context from "./context.ts";
+import useDisclosure from "./use_disclosure.ts";
 
 export type Props = {
-  /** Render props as children. */
-  children: (
-    context: Context,
-  ) => JSX.Element;
+  children: ReactNode;
 
   /** Default state of `isOpen`.
    * @default false
@@ -15,19 +13,9 @@ export type Props = {
   isDefaultOpen?: boolean;
 };
 
-/** Render props as `children`.
- * Provides `id`, state, and dispatch required for disclosure.
- * Low layer API for complete control over rendering.
- */
 export default function DisclosureProvider(
-  { children, isDefaultOpen = false }: Props,
+  { children, isDefaultOpen }: Props,
 ): JSX.Element {
-  const [state, dispatcher] = useDisclosure(isDefaultOpen);
-
-  const _children = children({
-    ...state,
-    ...dispatcher,
-  });
-
-  return _children;
+  const stateSet = useDisclosure(isDefaultOpen);
+  return createElement(Context.Provider, { value: stateSet }, children);
 }

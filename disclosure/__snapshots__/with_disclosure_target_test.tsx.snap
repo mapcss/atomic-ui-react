@@ -4,6 +4,4 @@ snapshot[`WithDisclosureTarget > should render with style when the internal \`is
 
 snapshot[`WithDisclosureTarget > should render when the internal \`isOpen\` is true 1`] = `'<div><p id="atomic-ui-0">test</p></div>'`;
 
-snapshot[`WithDisclosureTarget > should overwrite default closed style 1`] = `'<div><p id="atomic-ui-0" style="visibility: hidden;">test</p></div>'`;
-
 snapshot[`WithDisclosureTarget > should merge style 1`] = `'<div><p style="font: icon; display: none;" id="atomic-ui-0">test</p></div>'`;

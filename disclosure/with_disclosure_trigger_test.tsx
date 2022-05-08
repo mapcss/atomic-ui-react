@@ -1,5 +1,5 @@
 import WithDisclosureTrigger from "./with_disclosure_trigger.ts";
-import Disclosure from "./disclosure.ts";
+import Disclosure from "./disclosure_provider.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
 import {
   anyBoolean,
@@ -122,7 +122,6 @@ it(
       "aria-controls": anyString(),
       "aria-expanded": anyBoolean(),
       onClick: anyFunction(),
-      ref: null,
     });
     expect(mockFn).toHaveBeenCalledWith({
       id: anyString(),
@@ -162,7 +161,6 @@ it(
       "aria-expanded": anyBoolean(),
       onAbort: anyFunction(),
       onChange: anyFunction(),
-      ref: null,
     });
   },
 );

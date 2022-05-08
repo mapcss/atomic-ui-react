@@ -1,5 +1,5 @@
 import WithDisclosureTarget from "./with_disclosure_target.ts";
-import Disclosure from "./disclosure.ts";
+import Disclosure from "./disclosure_provider.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
 import {
   assertSnapshot,
@@ -60,29 +60,6 @@ it(describeTests, "should render when the internal `isOpen` is true", (t) => {
         return (
           <SSRProvider>
             <Disclosure isDefaultOpen>{children as never}</Disclosure>
-          </SSRProvider>
-        );
-      },
-    },
-  );
-
-  assertSnapshot(t, baseElement.innerHTML);
-});
-
-it(describeTests, "should overwrite default closed style", (t) => {
-  const { baseElement } = render(
-    <WithDisclosureTarget
-      closedStyle={{
-        visibility: "hidden",
-      }}
-    >
-      <p>test</p>
-    </WithDisclosureTarget>,
-    {
-      wrapper: ({ children }) => {
-        return (
-          <SSRProvider>
-            <Disclosure>{children as never}</Disclosure>
           </SSRProvider>
         );
       },

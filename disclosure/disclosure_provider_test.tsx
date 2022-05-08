@@ -1,6 +1,6 @@
 import DisclosureProvider from "./disclosure_provider.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
-import { fireEvent, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { assertSnapshot, describe, it, setupJSDOM } from "../dev_deps.ts";
 
 const describeTests = describe({
@@ -11,30 +11,12 @@ const describeTests = describe({
 });
 
 it(describeTests, "should render as", (t) => {
-  const { baseElement, getByTestId } = render(
+  const { baseElement } = render(
     <DisclosureProvider>
-      {({ isOpen, id, toggle }) => (
-        <>
-          <button
-            data-testid="toggle"
-            aria-controls={id}
-            aria-expanded={isOpen}
-            onClick={toggle}
-          >
-            toggle
-          </button>
-
-          {isOpen && <p id={id}>test</p>}
-        </>
-      )}
+      <div>test</div>
     </DisclosureProvider>,
     { wrapper: SSRProvider as never },
   );
-
-  assertSnapshot(t, baseElement.innerHTML);
-
-  const el = getByTestId("toggle");
-  fireEvent.click(el);
 
   assertSnapshot(t, baseElement.innerHTML);
 });

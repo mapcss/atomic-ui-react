@@ -11,5 +11,3 @@ export { default as WithDisclosureTarget } from "./with_disclosure_target.ts";
 export type { Props as WithDisclosureTargetProps } from "./with_disclosure_target.ts";
 export { default as WithDisclosureTrigger } from "./with_disclosure_trigger.ts";
 export type { Props as WithDisclosureTriggerProps } from "./with_disclosure_trigger.ts";
-export { default as Disclosure } from "./disclosure.ts";
-export type { Props as DisclosureProps } from "./disclosure.ts";
