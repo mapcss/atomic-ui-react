@@ -3,7 +3,6 @@
 import {
   AllHTMLAttributes,
   cloneElement,
-  DOMAttributes,
   ReactElement,
   RefObject,
   useCallback,
@@ -11,7 +10,8 @@ import {
   useMemo,
 } from "react";
 import useTabAria, { Param } from "./use_tab_aria.ts";
-import { isNumber } from "../deps.ts";
+import { associateWith, isNumber } from "../deps.ts";
+import { AllHandlerMap } from "../types.ts";
 import { joinChars, mergeProps } from "../util.ts";
 import useSharedRef from "../hooks/use_shared_ref.ts";
 import {
@@ -31,33 +31,28 @@ import {
 import { PANEL, TAB } from "./constant.ts";
 import { isAriaDisabled } from "./assert.ts";
 
-type AllHandlerMap = Omit<
-  DOMAttributes<Element>,
-  "children" | "dangerouslySetInnerHTML"
->;
-
 type KeyboardHandler = keyof Pick<
   AllHandlerMap,
-  "onKeyDown" | "onKeyUp"
+  "onKeyDown" | "onKeyUp" | "onKeyPress"
 >;
 
-type Handler = Exclude<keyof AllHandlerMap, KeyboardHandler>;
+type Handler = keyof Omit<AllHandlerMap, KeyboardHandler>;
 type HandlerMap = { [k in Handler]?: () => void };
 
 export type Props = {
   children: ReactElement;
 
-  keyboardHandler?: KeyboardHandler | false;
+  onKey?: Iterable<KeyboardHandler>;
 
-  handlers?: Iterable<Handler>;
+  on?: Iterable<Handler>;
 } & Partial<Pick<Param, "isDisabled">>;
 
 export default function WithTab(
   {
     isDisabled,
     children,
-    keyboardHandler = "onKeyDown",
-    handlers = ["onClick"],
+    onKey = ["onKeyDown"],
+    on = ["onClick"],
   }: Readonly<Props>,
 ): JSX.Element {
   const id = useContext(IdContext);
@@ -93,10 +88,11 @@ export default function WithTab(
 
   const handlerMap = useMemo<HandlerMap>(
     () =>
-      Array.from(handlers).reduce((acc, cur) => {
-        return { ...acc, [cur]: () => updateAndFocus(index) };
-      }, {}),
-    [JSON.stringify(handlers), index],
+      associateWith(
+        Array.from(on),
+        () => () => updateAndFocus(index),
+      ),
+    [JSON.stringify(on), index],
   );
 
   const updateAndFocus = useCallback((featureIndex: number): void => {
@@ -110,7 +106,7 @@ export default function WithTab(
     isHorizontal,
     index,
     refs,
-    type: keyboardHandler,
+    handlers: onKey,
     onFire: updateAndFocus,
   });
 
@@ -133,12 +129,12 @@ function isNotRefAriaDisabled(
 }
 
 function useKeyboard(
-  { isHorizontal, index, refs, onFire, type }: {
+  { isHorizontal, index, refs, onFire, handlers }: {
     isHorizontal: boolean;
     index: number;
     refs: RefObject<HTMLElement>[];
     onFire: (featureIndex: number) => void;
-    type: KeyboardHandler | false;
+    handlers: Iterable<KeyboardHandler>;
   },
 ) {
   const cursorMap = useMemo<CursorMap>(
@@ -157,11 +153,7 @@ function useKeyboard(
     }
   }, [index, JSON.stringify(cursorMap)]);
 
-  if (!type) return {};
-
-  return {
-    [type]: handler,
-  };
+  return associateWith(Array.from(handlers), () => handler);
 }
 
 type CursorType = "first" | "last" | "next" | "prev";
