@@ -2,7 +2,18 @@
 // deno-lint-ignore-file no-explicit-any
 
 import { Attributes, ReactElement, Ref, RefAttributes, RefObject } from "react";
-import { isFunction, isLength0, isNil, isObject, isString } from "./deps.ts";
+import {
+  distinct,
+  isFunction,
+  isLength0,
+  isNil,
+  isObject,
+  isString,
+} from "./deps.ts";
+
+export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
+  return value.filter(Boolean) as never;
+}
 
 export type Lazyable<T, U extends (...args: any[]) => T = () => T> = T | U;
 
@@ -95,6 +106,23 @@ export function joinChars(
   return isLength0(joined) ? undefined : joined;
 }
 
+/** Returns space-separated, non-duplicate tokens.
+ * Empty characters are not considered token.
+ */
+export function cleanTokens(
+  value: Readonly<Iterable<string | undefined>>,
+): string[] {
+  const truthy = filterTruthy(Array.from(value));
+  return distinct(truthy.map(tokenize).flat());
+}
+
+/** Returns a space-separated string as tokens.
+ * Duplicates are not eliminated.
+ */
+export function tokenize(value: string): string[] {
+  return filterTruthy(value.split(" "));
+}
+
 export function getRef<E>(
   el: ReactElement,
 ): Ref<E> | undefined {
@@ -117,4 +145,78 @@ export function resolveRefObject<T>(
       throw Error(ERROR_MSG);
     }
   }
+}
+
+type Props = {
+  [key: string]: any;
+};
+
+export function mergeProps<T extends Props, U extends Props>(
+  a: T,
+  b: U,
+): T & U {
+  const result: Props = a;
+  const keys = [
+    ...Object.getOwnPropertyNames(a),
+    ...Object.getOwnPropertyNames(b),
+  ];
+
+  for (const key of keys) {
+    const hasA = Object.hasOwn(a, key);
+    const hasB = Object.hasOwn(b, key);
+
+    if (hasA && hasB) {
+      const recordA = a[key];
+      const recordB = b[key];
+
+      if (typeof recordA !== typeof recordB) {
+        result[key] = recordB;
+        continue;
+      }
+
+      if (isObject(recordA) && isObject(recordB)) {
+        result[key] = mergeProps(recordA, recordB);
+        continue;
+      }
+
+      if (key === "className" && isString(recordA) && isString(recordB)) {
+        result[key] = cleanTokens([recordA, recordB]).join(" ");
+        continue;
+      }
+
+      if (
+        isFunction(recordA) && isFunction(recordB) &&
+        isEventHandlerName(key)
+      ) {
+        result[key] = chain(recordA, recordB);
+        continue;
+      }
+
+      result[key] = recordB;
+      continue;
+    }
+    if (hasB) {
+      result[key] = b[key];
+    }
+  }
+
+  return result as T & U;
+}
+
+function isEventHandlerName(value: string): value is `on${string}` {
+  return value[0] === "o" &&
+    value[1] === "n" &&
+    value.charCodeAt(2) >= /* 'A' */ 65 &&
+    value.charCodeAt(2) <= /* 'Z' */ 90;
+}
+
+function chain(
+  // deno-lint-ignore ban-types
+  ...callbacks: Function[]
+): (...args: any[]) => void {
+  return (...args: any[]) => {
+    for (const callback of callbacks) {
+      callback(...args);
+    }
+  };
 }
