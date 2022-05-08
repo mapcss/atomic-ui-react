@@ -11,7 +11,12 @@ import {
 } from "react";
 import { joinChars } from "../util.ts";
 import useTabPanelAria from "./use_tab_panel_aria.ts";
-import { IdContext, IndexContext, TabPanelCountContext } from "./context.ts";
+import {
+  DisabledIdsContext,
+  IdContext,
+  IndexContext,
+  TabPanelCountContext,
+} from "./context.ts";
 import { PANEL, TAB } from "./constant.ts";
 
 export type Props = {
@@ -24,12 +29,15 @@ function _WithTabPanel<T>(
   const id = useContext(IdContext);
   const tabPanelCount = useContext(TabPanelCountContext);
   const [index] = useContext(IndexContext);
+  const disabledIds = useContext(DisabledIdsContext);
   const currentIndex = tabPanelCount.current;
+
+  const isDisabled = disabledIds.includes(currentIndex);
   const tabId = joinChars([id, TAB, currentIndex], "-");
   const _id = joinChars([id, TAB, PANEL, currentIndex], "-");
   const aria = useTabPanelAria({ tabId });
 
-  return index === currentIndex
+  return index === currentIndex && !isDisabled
     ? cloneElement(children, { ref, ...aria, id: _id })
     : createElement(Fragment);
 }

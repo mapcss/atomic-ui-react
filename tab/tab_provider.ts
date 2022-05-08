@@ -12,6 +12,7 @@ import { isNumber } from "../deps.ts";
 import { DEFAULT_INDEX, DEFAULT_IS_HORIZONTAL } from "./constant.ts";
 import useId from "../hooks/use_id.ts";
 import {
+  DisabledIdsContext,
   HorizontalContext,
   IdContext,
   IndexContext,
@@ -55,6 +56,7 @@ export default function TabProvider(
   const refs: RefObject<HTMLElement>[] = [];
   const tabCount = tempId();
   const tabPanelCount = tempId();
+  const disabledIds: number[] = [];
 
   const isControl = useMemo<boolean>(() => isNumber(selectedIndex), [
     selectedIndex,
@@ -93,7 +95,11 @@ export default function TabProvider(
             createElement(
               HorizontalContext.Provider,
               { value: isHorizontal },
-              children,
+              createElement(
+                DisabledIdsContext.Provider,
+                { value: disabledIds },
+                children,
+              ),
             ),
           ),
         ),

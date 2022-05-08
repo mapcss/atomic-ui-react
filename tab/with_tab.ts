@@ -16,6 +16,7 @@ import {
 import useTabAria, { Param } from "./use_tab_aria.ts";
 import { joinChars, resolveRefObject } from "../util.ts";
 import {
+  DisabledIdsContext,
   HorizontalContext,
   IdContext,
   IndexContext,
@@ -47,10 +48,14 @@ function _WithTab<T extends HTMLElement>(
   const tabCount = useContext(TabCountContext);
   const refs = useContext(TabRefsContext);
   const isHorizontal = useContext(HorizontalContext);
+  const disabledIds = useContext(DisabledIdsContext);
   const currentIndex = tabCount.current;
-
   const el = useRef<T>(null);
   const ref = resolveRefObject<T>(_ref) ?? el;
+
+  if (isDisabled) {
+    disabledIds.push(currentIndex);
+  }
 
   if (ref) {
     refs.push(ref);
@@ -73,7 +78,7 @@ function _WithTab<T extends HTMLElement>(
   const _id = joinChars([id, TAB, currentIndex], "-");
 
   const onClick: MouseEventHandler = () => {
-    if (isAriaDisabled(refs[currentIndex].current)) return;
+    if (isAriaDisabled(refs[currentIndex]?.current)) return;
     setIndex(currentIndex);
   };
 

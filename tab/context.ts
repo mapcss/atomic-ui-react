@@ -19,3 +19,4 @@ export const TabRefsContext = createContext<
   RefObject<HTMLElement>[]
 >([]);
 export const HorizontalContext = createContext<boolean>(DEFAULT_IS_HORIZONTAL);
+export const DisabledIdsContext = createContext<number[]>([]);
