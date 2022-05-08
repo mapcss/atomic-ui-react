@@ -30,15 +30,15 @@ function _WithTabPanel<T>(
   const tabPanelCount = useContext(TabPanelCountContext);
   const [index] = useContext(IndexContext);
   const disabledIds = useContext(DisabledIdsContext);
-  const currentIndex = tabPanelCount.current;
 
+  const currentIndex = tabPanelCount.current;
   const isDisabled = disabledIds.includes(currentIndex);
   const tabId = joinChars([id, TAB, currentIndex], "-");
-  const _id = joinChars([id, TAB, PANEL, currentIndex], "-");
-  const aria = useTabPanelAria({ tabId });
+  const tabPanelId = joinChars([id, TAB, PANEL, currentIndex], "-");
+  const aria = useTabPanelAria({ tabId, tabPanelId });
 
   return index === currentIndex && !isDisabled
-    ? cloneElement(children, { ref, ...aria, id: _id })
+    ? cloneElement(children, { ref, ...aria })
     : createElement(Fragment);
 }
 

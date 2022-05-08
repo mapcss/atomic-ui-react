@@ -74,8 +74,8 @@ function _WithTab<T extends HTMLElement>(
     isSelected,
     tabPanelId: joinChars([id, TAB, PANEL, currentIndex], "-"),
     isDisabled,
+    tabId: joinChars([id, TAB, currentIndex], "-"),
   });
-  const _id = joinChars([id, TAB, currentIndex], "-");
 
   const onClick: MouseEventHandler = () => {
     if (isAriaDisabled(refs[currentIndex]?.current)) return;
@@ -147,7 +147,6 @@ function _WithTab<T extends HTMLElement>(
     tabIndex,
     onClick,
     onKeyDown,
-    id: _id,
   });
 }
 const WithTab = _forwardRef(_WithTab);
