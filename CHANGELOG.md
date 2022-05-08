@@ -1,3 +1,26 @@
+# [1.0.0-beta.37](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.36...1.0.0-beta.37) (2022-05-08)
+
+
+### Bug Fixes
+
+* **tab:** fix `id` attribute and ARIA ([93a1ed1](https://github.com/mapcss/atomic-ui-react/commit/93a1ed1e0a2c15decbe67324a43a4470a1f83396))
+* **tab:** no render if `isDisabled` is `true` ([56c657f](https://github.com/mapcss/atomic-ui-react/commit/56c657fb5345a0b62503e046ba08703223213f7b))
+* **transition:** render props wrap context ([2ec9610](https://github.com/mapcss/atomic-ui-react/commit/2ec9610c93d544b869c82dc5fc205fbcad8bcfab))
+
+
+### Features
+
+* **tab:** add `events` and `keyboardEvent` props to `WithTab` component ([e75ee2b](https://github.com/mapcss/atomic-ui-react/commit/e75ee2b6d73b353795ceac705cb2cb353dafe176))
+* **tab:** add `id` to use aria return value ([4f43d5e](https://github.com/mapcss/atomic-ui-react/commit/4f43d5e2421e2d4cfc9a17349fef4d19d83256b4))
+* **tab:** add `render` props to `WithTabPanel` component ([eec3f62](https://github.com/mapcss/atomic-ui-react/commit/eec3f623ee38ff2dcc2579a0ec897b1df28e7233))
+* **tab:** add global renderer for tab panel ([8e91aed](https://github.com/mapcss/atomic-ui-react/commit/8e91aedf60c0ff332abd222348d8ed8d31125dc3))
+* **tab:** improve merging props by `mergeProps` ([cec5ebf](https://github.com/mapcss/atomic-ui-react/commit/cec5ebfe668a7ba8aa1030b06abf26001023fd7c))
+* **tab:** remove `renderTagPanel` props ([ba63d0a](https://github.com/mapcss/atomic-ui-react/commit/ba63d0a7dfb7a79bfa68123060340a0de4dd39f9))
+* **tab:** remove element from each component, provide props under the root only ([a0bb6a5](https://github.com/mapcss/atomic-ui-react/commit/a0bb6a596a5a3ad90af8ce8604c4775b64f8d68f))
+* **tab:** rename components, add `With` prefix ([b6e56d1](https://github.com/mapcss/atomic-ui-react/commit/b6e56d1e306a916087010542cba485b76c038d3f))
+* **tab:** rename props event to handler ([3724be2](https://github.com/mapcss/atomic-ui-react/commit/3724be2e40e58608ad013395579981e5bc427e3e))
+* **util:** add utility for props ([d1f8f03](https://github.com/mapcss/atomic-ui-react/commit/d1f8f039def07b5852dae2361a9c596fd7a85813))
+
 # [1.0.0-beta.36](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.35...1.0.0-beta.36) (2022-05-07)
 
 
