@@ -102,14 +102,10 @@ function _WithTab<T extends HTMLElement>(
       return { ...acc, [cur]: handler };
     }, {}), [JSON.stringify(events)]);
 
-  const focus = useCallback((index: number): void => {
-    if (!isAriaDisabled(refs[index]?.current)) {
-      refs[index]?.current?.focus();
+  const updateAndFocus = useCallback((featureIndex: number): void => {
+    if (!isAriaDisabled(refs[featureIndex]?.current)) {
+      refs[featureIndex]?.current?.focus();
     }
-  }, []);
-
-  const updateOrFocus = useCallback((featureIndex: number): void => {
-    focus(featureIndex);
     setIndex(featureIndex);
   }, []);
 
@@ -118,7 +114,7 @@ function _WithTab<T extends HTMLElement>(
     index,
     refs,
     type: keyboardEvent,
-    callback: updateOrFocus,
+    onFire: updateAndFocus,
   });
 
   return cloneElement(
@@ -142,71 +138,63 @@ function isNotRefAriaDisabled(
 }
 
 function useKeyboard(
-  { isHorizontal, index, refs, callback, type }: {
+  { isHorizontal, index, refs, onFire, type }: {
     isHorizontal: boolean;
     index: number;
     refs: RefObject<HTMLElement>[];
-    callback: (featureIndex: number) => void;
-    type: "onKeyDown" | "onKeyUp" | false;
+    onFire: (featureIndex: number) => void;
+    type: KeyboardHandler | false;
   },
 ) {
-  const arrowLeftUp = useMemo<"ArrowLeft" | "ArrowUp">(
-    () => isHorizontal ? "ArrowLeft" : "ArrowUp",
+  const cursorMap = useMemo<CursorMap>(
+    () => getCodeCursorTypeMap(isHorizontal),
     [isHorizontal],
-  );
-  const arrowRightDown = useMemo<"ArrowRight" | "ArrowDown">(
-    () => isHorizontal ? "ArrowRight" : "ArrowDown",
-    [isHorizontal],
-  );
-
-  const bindIndex = useCallback(
-    (code: KeyboardEvent["code"]) => {
-      switch (code) {
-        case arrowLeftUp: {
-          const prevIndex = getPrevIndex(
-            index,
-            refs.map(isNotRefAriaDisabled),
-          );
-          return prevIndex;
-        }
-        case arrowRightDown: {
-          const nextIndex = getNextIndex(
-            index,
-            refs.map(isNotRefAriaDisabled),
-          );
-          return nextIndex;
-        }
-        case "Home":
-        case "PageUp": {
-          const firstIndex = getFirstIndex(
-            index,
-            refs.map(isNotRefAriaDisabled),
-          );
-          return firstIndex;
-        }
-        case "End":
-        case "PageDown": {
-          const lastIndex = getLastIndex(
-            index,
-            refs.map(isNotRefAriaDisabled),
-          );
-          return lastIndex;
-        }
-      }
-    },
-    [index],
   );
 
   const handler = useCallback(({ code }: KeyboardEvent) => {
-    const maybeIndex = bindIndex(code);
+    const cursorType = cursorMap[code];
+    if (!cursorType) return;
+
+    const indexer = CursorTypeMap[cursorType];
+    const maybeIndex = indexer(index, refs.map(isNotRefAriaDisabled));
     if (isNumber(maybeIndex)) {
-      callback(maybeIndex);
+      onFire(maybeIndex);
     }
-  }, []);
+  }, [index, JSON.stringify(cursorMap)]);
 
   if (!type) return {};
 
   return {
     [type]: handler,
+  };
+}
+
+type CursorType = "first" | "last" | "next" | "prev";
+
+type CursorMap = { [k in string]?: CursorType };
+
+const CursorTypeMap = {
+  first: getFirstIndex,
+  last: getLastIndex,
+  prev: getPrevIndex,
+  next: getNextIndex,
+};
+
+const staticCodeCursorMap: CursorMap = {
+  Home: "first",
+  PageUp: "first",
+  End: "last",
+  PageDown: "last",
+};
+
+function getCodeCursorTypeMap(isHorizontal: boolean): CursorMap {
+  const dynamicCodeCursorMap: CursorMap = {
+    [isHorizontal ? "ArrowLeft" : "ArrowUp"]: "prev",
+    [isHorizontal ? "ArrowRight" : "ArrowDown"]: "next",
+  };
+
+  return {
+    ...dynamicCodeCursorMap,
+    ...staticCodeCursorMap,
   };
 }
