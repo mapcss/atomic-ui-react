@@ -33,29 +33,34 @@ import {
 import { PANEL, TAB } from "./constant.ts";
 import { isAriaDisabled } from "./assert.ts";
 
-type KeyboardHandler = keyof Pick<
+type AllHandlerMap = Omit<
   DOMAttributes<Element>,
+  "children" | "dangerouslySetInnerHTML"
+>;
+
+type KeyboardHandler = keyof Pick<
+  AllHandlerMap,
   "onKeyDown" | "onKeyUp"
 >;
+
+type Handler = Exclude<keyof AllHandlerMap, KeyboardHandler>;
+type HandlerMap = { [k in Handler]?: () => void };
 
 export type Props = {
   children: ReactElement;
 
-  keyboardEvent?: KeyboardHandler | false;
+  keyboardHandler?: KeyboardHandler | false;
 
-  events?: (keyof Omit<
-    DOMAttributes<Element>,
-    "children" | "dangerouslySetInnerHTML" | KeyboardHandler
-  >)[];
+  handlers?: Iterable<Handler>;
 } & Partial<Pick<Param, "isDisabled">>;
 
 function _WithTab<T extends HTMLElement>(
   {
     isDisabled,
     children,
-    keyboardEvent = "onKeyDown",
-    events = ["onClick"],
-  }: Props,
+    keyboardHandler = "onKeyDown",
+    handlers = ["onClick"],
+  }: Readonly<Props>,
   _ref: Ref<T>,
 ): JSX.Element {
   const id = useContext(IdContext);
@@ -67,6 +72,7 @@ function _WithTab<T extends HTMLElement>(
   const index = tabCount.current;
   const el = useRef<T>(null);
   const ref = resolveRefObject<T>(_ref) ?? el;
+
   if (isDisabled) {
     disabledIds.push(index);
   }
@@ -77,9 +83,10 @@ function _WithTab<T extends HTMLElement>(
 
   const isSelected = useMemo<boolean>(() => selectedIndex === index, [
     index,
+    selectedIndex,
   ]);
 
-  const tabIndex = useMemo<AllHTMLAttributes<Element>["tabIndex"]>(
+  const tabIndex = useMemo<AllHTMLAttributes<T>["tabIndex"]>(
     () => isSelected ? 0 : -1,
     [isSelected],
   );
@@ -91,16 +98,13 @@ function _WithTab<T extends HTMLElement>(
     tabId: joinChars([id, TAB, index], "-"),
   });
 
-  const handler = useCallback(() => {
-    if (isAriaDisabled(refs[index]?.current)) return;
-    setIndex(index);
-  }, []);
-
-  // deno-lint-ignore ban-types
-  const eventMap = useMemo<{}>(() =>
-    events.reduce((acc, cur) => {
-      return { ...acc, [cur]: handler };
-    }, {}), [JSON.stringify(events)]);
+  const handlerMap = useMemo<HandlerMap>(
+    () =>
+      Array.from(handlers).reduce((acc, cur) => {
+        return { ...acc, [cur]: () => updateAndFocus(index) };
+      }, {}),
+    [JSON.stringify(handlers), index],
+  );
 
   const updateAndFocus = useCallback((featureIndex: number): void => {
     if (!isAriaDisabled(refs[featureIndex]?.current)) {
@@ -109,11 +113,11 @@ function _WithTab<T extends HTMLElement>(
     setIndex(featureIndex);
   }, []);
 
-  const keyboardHandler = useKeyboard({
+  const keyboardHandlerMap = useKeyboard({
     isHorizontal,
     index,
     refs,
-    type: keyboardEvent,
+    type: keyboardHandler,
     onFire: updateAndFocus,
   });
 
@@ -121,10 +125,10 @@ function _WithTab<T extends HTMLElement>(
     children,
     mergeProps(children.props, {
       ref,
-      ...aria,
       tabIndex,
-      ...eventMap,
-      ...keyboardHandler,
+      ...aria,
+      ...handlerMap,
+      ...keyboardHandlerMap,
     }),
   );
 }
