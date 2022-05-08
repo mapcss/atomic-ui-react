@@ -89,6 +89,14 @@ export function resolveRef<E>(
   throw Error(ERROR_MSG);
 }
 
+export function getRefObject<T>(
+  el: ReactElement,
+): [false] | [true, RefObject<T>] | [true] {
+  const ref = getRef<T>(el);
+  if (!ref) return [false];
+  return isRefObject(ref) ? [true, ref] : [true];
+}
+
 export function cleanCharacter(value: string): string {
   return value.trim().replaceAll(/\s+/g, " ");
 }

@@ -9,11 +9,11 @@ import {
   useCallback,
   useContext,
   useMemo,
-  useRef,
 } from "react";
 import useTabAria, { Param } from "./use_tab_aria.ts";
 import { isNumber } from "../deps.ts";
 import { joinChars, mergeProps } from "../util.ts";
+import useSharedRef from "../hooks/use_shared_ref.ts";
 import {
   DisabledIdsContext,
   HorizontalContext,
@@ -67,15 +67,11 @@ export default function WithTab(
   const isHorizontal = useContext(HorizontalContext);
   const disabledIds = useContext(DisabledIdsContext);
   const index = tabCount.current;
-  const el = useRef<HTMLElement>(null);
-  const ref = el;
+  const ref = useSharedRef<HTMLElement>(children);
 
+  refs.push(ref);
   if (isDisabled) {
     disabledIds.push(index);
-  }
-
-  if (ref) {
-    refs.push(ref);
   }
 
   const isSelected = useMemo<boolean>(() => selectedIndex === index, [
