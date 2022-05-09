@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { Children, cloneElement, createElement, ReactNode } from "react";
 import { isIterable, isString } from "../deps.ts";
 import { isCloneable } from "../util.ts";
