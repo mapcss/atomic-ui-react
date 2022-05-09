@@ -1,0 +1,5 @@
+export const snapshot = {};
+
+snapshot[`Alert should render as 1`] = `'<div role="alert">test</div>'`;
+
+snapshot[`Alert should change tag 1`] = `'<span role="alert" class="test">test</span>'`;
