@@ -4,6 +4,7 @@
 export {
   isBoolean,
   isFunction,
+  isIterable,
   isLength0,
   isNil,
   isNumber,

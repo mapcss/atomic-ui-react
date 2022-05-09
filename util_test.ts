@@ -146,7 +146,11 @@ Deno.test("mergeProps", () => {
       g: "h",
     }],
     [{ className: "" }, { className: "" }, { className: "" }],
-    [{ className: "" }, { className: undefined }, { className: undefined }],
+    [{ className: "" }, { className: undefined }, { className: "" }],
+    [{ className: undefined }, { className: "" }, { className: "" }],
+    [{ className: undefined }, { className: undefined }, {
+      className: undefined,
+    }],
     [{ className: "test" }, { className: "test" }, { className: "test" }],
     [{ className: "test test2" }, { className: "test" }, {
       className: "test test2",

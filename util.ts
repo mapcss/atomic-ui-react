@@ -1,7 +1,16 @@
 // This module is browser compatible.
 // deno-lint-ignore-file no-explicit-any
 
-import { Attributes, ReactElement, Ref, RefAttributes, RefObject } from "react";
+import {
+  Attributes,
+  JSXElementConstructor,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  Ref,
+  RefAttributes,
+  RefObject,
+} from "react";
 import {
   distinct,
   isFunction,
@@ -9,6 +18,7 @@ import {
   isNil,
   isObject,
   isString,
+  isUndefined,
 } from "./deps.ts";
 
 export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
@@ -177,11 +187,6 @@ export function mergeProps<T extends Props, U extends Props>(
       const recordA = a[key];
       const recordB = b[key];
 
-      if (typeof recordA !== typeof recordB) {
-        result[key] = recordB;
-        continue;
-      }
-
       if (isObject(recordA) && isObject(recordB)) {
         result[key] = mergeProps(recordA, recordB);
         continue;
@@ -200,7 +205,7 @@ export function mergeProps<T extends Props, U extends Props>(
         continue;
       }
 
-      result[key] = recordB;
+      result[key] = isUndefined(recordB) ? recordA : recordB;
       continue;
     }
     if (hasB) {
@@ -229,4 +234,12 @@ function chain(
       callback(...args);
     }
   };
+}
+
+export function isCloneable(
+  value: ReactNode,
+): value is
+  | ReactElement<any, string | JSXElementConstructor<any>>
+  | ReactPortal {
+  return isObject(value) && "key" in value;
 }
