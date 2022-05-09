@@ -1,3 +1,12 @@
+# [1.0.0-beta.39](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.38...1.0.0-beta.39) (2022-05-09)
+
+
+### Features
+
+* **breadcrumb:** add `Breadcrumb` component ([ea6fce2](https://github.com/mapcss/atomic-ui-react/commit/ea6fce269b957543ee1b8821ecdb62a4bf2e470f))
+* **hooks:** add `useSharedRef` hooks ([7cc0444](https://github.com/mapcss/atomic-ui-react/commit/7cc04448565500751d23ed21763c5ee662a45b4f))
+* **tab:** rename props of `handlers` and `keyboardHandler` ([9a1a534](https://github.com/mapcss/atomic-ui-react/commit/9a1a5343309766e726ade33a268199c2015fc9bd))
+
 # [1.0.0-beta.38](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.37...1.0.0-beta.38) (2022-05-08)
 
 
