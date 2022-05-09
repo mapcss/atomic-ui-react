@@ -13,3 +13,5 @@ snapshot[`Breadcrumb > should overwrite components 2`] = `'<nav aria-label="Brea
 snapshot[`Breadcrumb > should overwrite components 3`] = `'<nav aria-label="Breadcrumb"><ol><li><a>1</a></li><li><a aria-current="page">2</a></li></ol></nav>'`;
 
 snapshot[`Breadcrumb > should disabled auto adding aria current attribute 1`] = `'<nav aria-label="Breadcrumb"><ol><li><a>1</a></li><li aria-hidden="true">/</li><li><a>2</a></li></ol></nav>'`;
+
+snapshot[`Breadcrumb > should not add aria-current when the last element is not anchor 1`] = `'<nav aria-label="Breadcrumb"><ol><li><div>not anchor</div></li></ol></nav>'`;

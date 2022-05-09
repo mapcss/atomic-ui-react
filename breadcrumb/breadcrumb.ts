@@ -72,7 +72,8 @@ export default function Breadcrumb(
         ol({
           children: _children.map((_node, i) => {
             const isLast = _children.length - 1 === i;
-            const node = !disabledAriaCurrent && isLast && isCloneable(_node)
+            const node = !disabledAriaCurrent && isLast && isCloneable(_node) &&
+                _node.type === "a"
               ? cloneElement(_node, { "aria-current": "page" })
               : _node;
 

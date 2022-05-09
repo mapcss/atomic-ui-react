@@ -96,3 +96,17 @@ it(describeTests, "should disabled auto adding aria current attribute", (t) => {
 
   assertSnapshot(t, container.innerHTML);
 });
+
+it(
+  describeTests,
+  "should not add aria-current when the last element is not anchor",
+  (t) => {
+    const { container } = render(
+      <Breadcrumb>
+        <div>not anchor</div>
+      </Breadcrumb>,
+    );
+
+    assertSnapshot(t, container.innerHTML);
+  },
+);
