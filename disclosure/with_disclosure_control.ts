@@ -1,8 +1,9 @@
 // This module is browser compatible.
 
 import { cloneElement, ReactElement, useContext, useMemo } from "react";
-import { associateWith, isFunction, ValueOf } from "../deps.ts";
+import { isFunction, ValueOf } from "../deps.ts";
 import { BooleanContext, IdContext } from "../_shared/context.ts";
+import { useEventHandler } from "../_shared/hooks.ts";
 import { mergeProps } from "../util.ts";
 import { AllHandler, AllHandlerMap } from "../types.ts";
 import useAriaDisclosureControl, {
@@ -42,10 +43,7 @@ export default function WithDisclosureControl(
   ]);
 
   const aria = useAriaDisclosureControl(stateMap);
-
-  const handlerMap = useMemo<AllHandlerMap>(() => {
-    return associateWith(Array.from(on), () => dispatch);
-  }, [JSON.stringify(on), JSON.stringify(dispatch)]);
+  const handlerMap = useEventHandler(on, dispatch);
 
   if (isFunction(children)) {
     return children({ ...aria, ...handlerMap }, {

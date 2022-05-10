@@ -20,7 +20,7 @@ type Render = (
   context: StateMap,
 ) => ReactElement;
 
-const defaultRender: Render = (root, attributes, { isOpen }) => {
+export const defaultRender: Render = (root, attributes, { isOpen }) => {
   return isOpen ? cloneElement(root, attributes) : cloneElement(
     root,
     mergeProps(root.props, { ...attributes, style: { display: "none" } }),
