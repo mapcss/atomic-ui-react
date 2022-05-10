@@ -12,11 +12,11 @@ import { BooleanContext, IdContext } from "../_shared/context.ts";
 import { ERROR_MSG } from "./constant.ts";
 import { DispatchMap, StateMap } from "./types.ts";
 
-type RenderAttributes<T> = Required<Pick<AllHTMLAttributes<T>, "id">>;
+type RenderAttributes = Required<Pick<AllHTMLAttributes<Element>, "id">>;
 
-type Render<T = unknown> = (
+type Render = (
   root: ReactElement,
-  attributes: RenderAttributes<T>,
+  attributes: RenderAttributes,
   context: StateMap,
 ) => ReactElement;
 
@@ -27,24 +27,22 @@ const defaultRender: Render = (root, attributes, { isOpen }) => {
   );
 };
 
-export type Props<T> = {
+export type Props = {
   children:
     | ReactElement
     | ((
-      attributes: RenderAttributes<T>,
+      attributes: RenderAttributes,
       context: StateMap & DispatchMap,
     ) => ReactElement);
 
-  render?: Render<T>;
+  render?: Render;
 };
 
-export default function WithDisclosureContent<
-  E extends Element,
->(
+export default function WithDisclosureContent(
   {
     children,
     render = defaultRender,
-  }: Props<E>,
+  }: Props,
 ): JSX.Element {
   const id = useContext(IdContext);
   const stateSet = useContext(BooleanContext);

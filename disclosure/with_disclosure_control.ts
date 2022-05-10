@@ -1,46 +1,33 @@
 // This module is browser compatible.
 
-import {
-  cloneElement,
-  DOMAttributes,
-  ReactElement,
-  useContext,
-  useMemo,
-} from "react";
-import { isFunction, ValueOf } from "../deps.ts";
+import { cloneElement, ReactElement, useContext, useMemo } from "react";
+import { associateWith, isFunction, ValueOf } from "../deps.ts";
 import { BooleanContext, IdContext } from "../_shared/context.ts";
 import { mergeProps } from "../util.ts";
-import { AllHandler } from "../types.ts";
+import { AllHandler, AllHandlerMap } from "../types.ts";
 import useAriaDisclosureControl, {
-  ReturnValue,
+  ReturnValue as UseAriaDisclosureControlReturnValue,
 } from "./use_aria_disclosure_control.ts";
 import { ERROR_MSG } from "./constant.ts";
 import { DispatchMap, StateMap } from "./types.ts";
 
 type Type = "toggle" | "open" | "close";
 
-type RenderAttributes<H extends AllHandler, E extends Element = Element> =
-  & ReturnValue
-  & Pick<DOMAttributes<E>, H>;
-
-export type Props<H extends AllHandler, E extends Element = Element> = {
-  on?: Iterable<H>;
+export type Props = {
+  on?: Iterable<AllHandler>;
 
   type?: Type;
 
   children:
     | ReactElement
     | ((
-      attributes: RenderAttributes<H, E>,
+      attributes: UseAriaDisclosureControlReturnValue & AllHandlerMap,
       context: StateMap & DispatchMap,
     ) => JSX.Element);
 };
 
-export default function WithDisclosureControl<
-  E extends Element,
-  H extends AllHandler = "onClick",
->(
-  { on = ["onClick"] as H[], type = "toggle", children }: Readonly<Props<H, E>>,
+export default function WithDisclosureControl(
+  { on = ["onClick"], type = "toggle", children }: Readonly<Props>,
 ): JSX.Element {
   const id = useContext(IdContext);
   const stateSet = useContext(BooleanContext);
@@ -56,10 +43,8 @@ export default function WithDisclosureControl<
 
   const aria = useAriaDisclosureControl(stateMap);
 
-  const handlerMap = useMemo<Pick<DOMAttributes<E>, H>>(() => {
-    return Array.from(on).reduce((acc, cur) => {
-      return { ...acc, [cur]: dispatch };
-    }, {} as Pick<DOMAttributes<E>, H>);
+  const handlerMap = useMemo<AllHandlerMap>(() => {
+    return associateWith(Array.from(on), () => dispatch);
   }, [JSON.stringify(on), JSON.stringify(dispatch)]);
 
   if (isFunction(children)) {
