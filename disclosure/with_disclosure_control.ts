@@ -7,27 +7,23 @@ import {
   useContext,
   useMemo,
 } from "react";
-import { isFunction } from "../deps.ts";
+import { isFunction, ValueOf } from "../deps.ts";
+import { BooleanContext, IdContext } from "../_shared/context.ts";
 import { mergeProps } from "../util.ts";
-import useAriaDisclosureTrigger, {
+import { AllHandler } from "../types.ts";
+import useAriaDisclosureControl, {
   ReturnValue,
-} from "./use_aria_disclosure_trigger.ts";
-import { DispatchMap, StateMap } from "./use_disclosure.ts";
-import Context from "./context.ts";
+} from "./use_aria_disclosure_control.ts";
 import { ERROR_MSG } from "./constant.ts";
-
-type Handler<E extends Element = Element> = Exclude<
-  keyof DOMAttributes<E>,
-  "children" | "dangerouslySetInnerHTML"
->;
+import { DispatchMap, StateMap } from "./types.ts";
 
 type Type = "toggle" | "open" | "close";
 
-type RenderAttributes<H extends Handler, E extends Element = Element> =
+type RenderAttributes<H extends AllHandler, E extends Element = Element> =
   & ReturnValue
   & Pick<DOMAttributes<E>, H>;
 
-export type Props<H extends Handler, E extends Element = Element> = {
+export type Props<H extends AllHandler, E extends Element = Element> = {
   on?: Iterable<H>;
 
   type?: Type;
@@ -36,25 +32,29 @@ export type Props<H extends Handler, E extends Element = Element> = {
     | ReactElement
     | ((
       attributes: RenderAttributes<H, E>,
-      context: RenderContext,
+      context: StateMap & DispatchMap,
     ) => JSX.Element);
 };
 
-type RenderContext = StateMap & DispatchMap;
-
-export default function WithDisclosureTrigger<
+export default function WithDisclosureControl<
   E extends Element,
-  H extends Handler = "onClick",
+  H extends AllHandler = "onClick",
 >(
   { on = ["onClick"] as H[], type = "toggle", children }: Readonly<Props<H, E>>,
 ): JSX.Element {
-  const context = useContext(Context);
-  if (!context) throw Error(ERROR_MSG);
+  const id = useContext(IdContext);
+  const stateSet = useContext(BooleanContext);
 
-  const [stateMap, dispatchMap] = context;
-  const dispatch = useMemo(() => dispatchMap[type], [type]);
+  if (!stateSet) throw Error(ERROR_MSG);
 
-  const aria = useAriaDisclosureTrigger(stateMap);
+  const [isOpen, { on: open, off: close, toggle }] = stateSet;
+  const stateMap: StateMap = { isOpen, id };
+  const dispatchMap: DispatchMap = { open, close, toggle };
+  const dispatch = useMemo<ValueOf<DispatchMap>>(() => dispatchMap[type], [
+    type,
+  ]);
+
+  const aria = useAriaDisclosureControl(stateMap);
 
   const handlerMap = useMemo<Pick<DOMAttributes<E>, H>>(() => {
     return Array.from(on).reduce((acc, cur) => {

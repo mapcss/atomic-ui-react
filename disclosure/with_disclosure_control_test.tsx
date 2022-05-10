@@ -1,4 +1,4 @@
-import WithDisclosureTrigger from "./with_disclosure_trigger.ts";
+import WithDisclosureControl from "./with_disclosure_control.ts";
 import Disclosure from "./disclosure_provider.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
 import {
@@ -15,7 +15,7 @@ import {
 import { fireEvent, render } from "@testing-library/react";
 
 const describeTests = describe({
-  name: "WithDisclosureTrigger",
+  name: "WithDisclosureControl",
   async beforeEach() {
     await setupJSDOM();
   },
@@ -24,9 +24,9 @@ const describeTests = describe({
 it(describeTests, "should throw error when it not wrap Context", () => {
   expect(() =>
     render(
-      <WithDisclosureTrigger>
+      <WithDisclosureControl>
         <p>test</p>
-      </WithDisclosureTrigger>,
+      </WithDisclosureControl>,
     )
   ).toThrow();
 });
@@ -35,10 +35,10 @@ it(
   describeTests,
   "should trigger click event by default",
   (t) => {
-    const { baseElement, getByTestId } = render(
-      <WithDisclosureTrigger>
+    const { container, getByTestId } = render(
+      <WithDisclosureControl>
         <p data-testid="test">test</p>
-      </WithDisclosureTrigger>,
+      </WithDisclosureControl>,
       {
         wrapper: ({ children }) => {
           return (
@@ -50,15 +50,15 @@ it(
       },
     );
 
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
 
     const el = getByTestId("test");
 
     fireEvent.click(el);
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
 
     fireEvent.click(el);
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
   },
 );
 
@@ -66,10 +66,10 @@ it(
   describeTests,
   "should change trigger event",
   (t) => {
-    const { baseElement, getByTestId } = render(
-      <WithDisclosureTrigger on={["onMouseEnter", "onMouseLeave"]}>
+    const { container, getByTestId } = render(
+      <WithDisclosureControl on={["onMouseEnter", "onMouseLeave"]}>
         <div data-testid="test">test</div>
-      </WithDisclosureTrigger>,
+      </WithDisclosureControl>,
       {
         wrapper: ({ children }) => {
           return (
@@ -84,13 +84,13 @@ it(
     const el = getByTestId("test");
 
     fireEvent.click(el);
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
 
     fireEvent.mouseEnter(el);
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
 
     fireEvent.mouseLeave(el);
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
   },
 );
 
@@ -100,13 +100,13 @@ it(
   () => {
     const mockFn = fn();
     render(
-      <WithDisclosureTrigger>
+      <WithDisclosureControl>
         {(props, context) => {
           mockFn(props);
           mockFn(context);
           return <></>;
         }}
-      </WithDisclosureTrigger>,
+      </WithDisclosureControl>,
       {
         wrapper: ({ children }) => {
           return (
@@ -121,6 +121,7 @@ it(
     expect(mockFn).toHaveBeenCalledWith({
       "aria-controls": anyString(),
       "aria-expanded": anyBoolean(),
+      role: "button",
       onClick: anyFunction(),
     });
     expect(mockFn).toHaveBeenCalledWith({
@@ -139,12 +140,12 @@ it(
   () => {
     const mockFn = fn();
     render(
-      <WithDisclosureTrigger on={["onAbort", "onChange"]}>
+      <WithDisclosureControl on={["onAbort", "onChange"]}>
         {(props) => {
           mockFn(props);
           return <></>;
         }}
-      </WithDisclosureTrigger>,
+      </WithDisclosureControl>,
       {
         wrapper: ({ children }) => {
           return (
@@ -159,6 +160,7 @@ it(
     expect(mockFn).toHaveBeenCalledWith({
       "aria-controls": anyString(),
       "aria-expanded": anyBoolean(),
+      role: "button",
       onAbort: anyFunction(),
       onChange: anyFunction(),
     });
@@ -169,8 +171,8 @@ it(
   describeTests,
   "should render as children",
   (t) => {
-    const { baseElement } = render(
-      <WithDisclosureTrigger>
+    const { container } = render(
+      <WithDisclosureControl>
         {(props, { isOpen }) => {
           return (
             <span
@@ -179,7 +181,7 @@ it(
             />
           );
         }}
-      </WithDisclosureTrigger>,
+      </WithDisclosureControl>,
       {
         wrapper: ({ children }) => {
           return (
@@ -190,6 +192,6 @@ it(
         },
       },
     );
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
   },
 );

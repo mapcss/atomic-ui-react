@@ -1,8 +1,9 @@
 // This module is browser compatible.
 
 import { createElement, ReactNode } from "react";
-import Context from "./context.ts";
-import useDisclosure from "./use_disclosure.ts";
+import useId from "../hooks/use_id.ts";
+import useBoolean from "../hooks/use_boolean.ts";
+import { BooleanContext, IdContext } from "../_shared/context.ts";
 
 export type Props = {
   children: ReactNode;
@@ -16,6 +17,12 @@ export type Props = {
 export default function DisclosureProvider(
   { children, isDefaultOpen }: Props,
 ): JSX.Element {
-  const stateSet = useDisclosure(isDefaultOpen);
-  return createElement(Context.Provider, { value: stateSet }, children);
+  const id = useId();
+  const stateSet = useBoolean(isDefaultOpen);
+
+  return createElement(
+    IdContext.Provider,
+    { value: id },
+    createElement(BooleanContext.Provider, { value: stateSet }, children),
+  );
 }

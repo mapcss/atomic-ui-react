@@ -1,4 +1,4 @@
-import WithDisclosureTarget from "./with_disclosure_target.ts";
+import WithDisclosureContent from "./with_disclosure_content.ts";
 import Disclosure from "./disclosure_provider.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
 import {
@@ -11,7 +11,7 @@ import {
 import { render } from "@testing-library/react";
 
 const describeTests = describe({
-  name: "WithDisclosureTarget",
+  name: "WithDisclosureContent",
   async beforeEach() {
     await setupJSDOM();
   },
@@ -20,9 +20,9 @@ const describeTests = describe({
 it(describeTests, "should throw error when it not wrap Context", () => {
   expect(() =>
     render(
-      <WithDisclosureTarget>
+      <WithDisclosureContent>
         <p>test</p>
-      </WithDisclosureTarget>,
+      </WithDisclosureContent>,
     )
   ).toThrow();
 });
@@ -31,10 +31,10 @@ it(
   describeTests,
   "should render with style when the internal `isOpen` is false",
   (t) => {
-    const { baseElement } = render(
-      <WithDisclosureTarget>
+    const { container } = render(
+      <WithDisclosureContent>
         <p>test</p>
-      </WithDisclosureTarget>,
+      </WithDisclosureContent>,
       {
         wrapper: ({ children }) => {
           return (
@@ -46,15 +46,15 @@ it(
       },
     );
 
-    assertSnapshot(t, baseElement.innerHTML);
+    assertSnapshot(t, container.innerHTML);
   },
 );
 
 it(describeTests, "should render when the internal `isOpen` is true", (t) => {
-  const { baseElement } = render(
-    <WithDisclosureTarget>
+  const { container } = render(
+    <WithDisclosureContent>
       <p>test</p>
-    </WithDisclosureTarget>,
+    </WithDisclosureContent>,
     {
       wrapper: ({ children }) => {
         return (
@@ -66,14 +66,14 @@ it(describeTests, "should render when the internal `isOpen` is true", (t) => {
     },
   );
 
-  assertSnapshot(t, baseElement.innerHTML);
+  assertSnapshot(t, container.innerHTML);
 });
 
 it(describeTests, "should merge style", (t) => {
-  const { baseElement } = render(
-    <WithDisclosureTarget>
+  const { container } = render(
+    <WithDisclosureContent>
       <p style={{ font: "icon" }}>test</p>
-    </WithDisclosureTarget>,
+    </WithDisclosureContent>,
     {
       wrapper: ({ children }) => {
         return (
@@ -85,5 +85,5 @@ it(describeTests, "should merge style", (t) => {
     },
   );
 
-  assertSnapshot(t, baseElement.innerHTML);
+  assertSnapshot(t, container.innerHTML);
 });

@@ -1,9 +1,9 @@
-import { AriaAttributes, useMemo } from "react";
-import { StateMap } from "./use_disclosure.ts";
+import { HTMLAttributes, useMemo } from "react";
+import { StateMap } from "./types.ts";
 
 export type ReturnValue = Pick<
-  AriaAttributes,
-  "aria-controls" | "aria-expanded"
+  HTMLAttributes<Element>,
+  "aria-controls" | "aria-expanded" | "role"
 >;
 
 export default function useAria(
@@ -13,6 +13,7 @@ export default function useAria(
     return {
       "aria-controls": id,
       "aria-expanded": isOpen,
+      role: "button",
     };
   }, [id, isOpen]);
 

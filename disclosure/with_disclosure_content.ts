@@ -8,9 +8,9 @@ import {
 } from "react";
 import { isFunction } from "../deps.ts";
 import { mergeProps } from "../util.ts";
-import { DispatchMap, StateMap } from "./use_disclosure.ts";
-import Context from "./context.ts";
+import { BooleanContext, IdContext } from "../_shared/context.ts";
 import { ERROR_MSG } from "./constant.ts";
+import { DispatchMap, StateMap } from "./types.ts";
 
 type RenderAttributes<T> = Required<Pick<AllHTMLAttributes<T>, "id">>;
 
@@ -38,7 +38,7 @@ export type Props<T> = {
   render?: Render<T>;
 };
 
-export default function WithDisclosureTarget<
+export default function WithDisclosureContent<
   E extends Element,
 >(
   {
@@ -46,14 +46,17 @@ export default function WithDisclosureTarget<
     render = defaultRender,
   }: Props<E>,
 ): JSX.Element {
-  const context = useContext(Context);
-  if (!context) throw Error(ERROR_MSG);
+  const id = useContext(IdContext);
+  const stateSet = useContext(BooleanContext);
+  if (!stateSet) throw Error(ERROR_MSG);
 
-  const [{ isOpen, id }, dispatchMap] = context;
+  const [isOpen, { on: open, off: close, toggle }] = stateSet;
+  const stateMap: StateMap = { isOpen, id };
+  const dispatchMap: DispatchMap = { open, close, toggle };
 
   if (isFunction(children)) {
-    return children({ id }, { isOpen, id, ...dispatchMap });
+    return children({ id }, { ...stateMap, ...dispatchMap });
   }
 
-  return render(children, { id }, { isOpen, id });
+  return render(children, { id }, stateMap);
 }
