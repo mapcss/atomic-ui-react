@@ -43,3 +43,10 @@ function _DisclosureControl<As extends Tag = "button">(
 
 const DisclosureControl = forwardRef(_DisclosureControl);
 export default DisclosureControl;
+
+declare module "react" {
+  // deno-lint-ignore ban-types
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: Ref<T>) => ReactElement | null,
+  ): (props: P & RefAttributes<T>) => ReactElement | null;
+}
