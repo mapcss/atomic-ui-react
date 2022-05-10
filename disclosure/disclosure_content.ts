@@ -4,7 +4,7 @@ import {
   AllHTMLAttributes,
   cloneElement,
   createElement,
-  forwardRef,
+  forwardRef as _forwardRef,
   Ref,
 } from "react";
 import { Tag } from "../types.ts";
@@ -42,7 +42,7 @@ function _DisclosureContent<As extends Tag>(
   });
 }
 
-const DisclosureContent = forwardRef(_DisclosureContent);
+const DisclosureContent = _forwardRef(_DisclosureContent);
 export default DisclosureContent;
 
 declare module "react" {

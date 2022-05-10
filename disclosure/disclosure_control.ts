@@ -1,6 +1,11 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, createElement, forwardRef, Ref } from "react";
+import {
+  AllHTMLAttributes,
+  createElement,
+  forwardRef as _forwardRef,
+  Ref,
+} from "react";
 import { mergeProps } from "../util.ts";
 import { useAs } from "../_shared/hooks.ts";
 import { Tag } from "../types.ts";
@@ -41,7 +46,7 @@ function _DisclosureControl<As extends Tag = "button">(
   });
 }
 
-const DisclosureControl = forwardRef(_DisclosureControl);
+const DisclosureControl = _forwardRef(_DisclosureControl);
 export default DisclosureControl;
 
 declare module "react" {
