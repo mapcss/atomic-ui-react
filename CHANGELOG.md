@@ -1,3 +1,17 @@
+# [1.0.0-beta.40](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.39...1.0.0-beta.40) (2022-05-10)
+
+
+### Bug Fixes
+
+* **breadcrumb:** add checking anchor tag or not for `aria-current` attribute ([0707659](https://github.com/mapcss/atomic-ui-react/commit/0707659908cc8abff5f0dcccda7af8f2a9febc1b))
+
+
+### Features
+
+* **alert:** add `Alert` and `WithAlert` components ([a1751ab](https://github.com/mapcss/atomic-ui-react/commit/a1751ab29ee17433d564a3766cbb206ba367c55d))
+* **breadcrumb:** export breadcrumb to global ([f3c6e24](https://github.com/mapcss/atomic-ui-react/commit/f3c6e24f8cbea535ba693c167dd02dd54f1961c5))
+* **disclosure:** add `DisclosureControl` and `DisclosureContent` components ([dc49ee4](https://github.com/mapcss/atomic-ui-react/commit/dc49ee4050744758e93285ed463b6e463413ff4a))
+
 # [1.0.0-beta.39](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.38...1.0.0-beta.39) (2022-05-09)
 
 
