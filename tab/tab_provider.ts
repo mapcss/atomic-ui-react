@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { isNumber } from "../deps.ts";
+import { tempId } from "../_shared/util.ts";
 import { DEFAULT_INDEX, DEFAULT_IS_HORIZONTAL } from "./constant.ts";
 import useId from "../hooks/use_id.ts";
 import {
@@ -20,7 +21,6 @@ import {
   TabPanelCountContext,
   TabRefsContext,
 } from "./context.ts";
-import { tempId } from "./util.ts";
 
 export type Props = {
   /** The selected index if you want to use as a controlled component. */

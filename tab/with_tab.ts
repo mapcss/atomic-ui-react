@@ -27,7 +27,7 @@ import {
   getLastIndex,
   getNextIndex,
   getPrevIndex,
-} from "./util.ts";
+} from "../_shared/util.ts";
 import { PANEL, TAB } from "./constant.ts";
 import { isAriaDisabled } from "./assert.ts";
 

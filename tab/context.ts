@@ -2,14 +2,14 @@
 
 import { createContext, Dispatch, RefObject, SetStateAction } from "react";
 import { noop } from "../deps.ts";
-import { TempIdReturnValue } from "./util.ts";
+import { DEFAULT_TEMP_ID, TempIdReturnValue } from "../_shared/util.ts";
 import { DEFAULT_IS_HORIZONTAL } from "./constant.ts";
 
-export const TabCountContext = createContext<TempIdReturnValue>({
-  current: 0,
-});
+export const TabCountContext = createContext<TempIdReturnValue>(
+  DEFAULT_TEMP_ID,
+);
 export const TabPanelCountContext = createContext<TempIdReturnValue>(
-  { current: 0 },
+  DEFAULT_TEMP_ID,
 );
 export const IdContext = createContext<string>("");
 export const IndexContext = createContext<
