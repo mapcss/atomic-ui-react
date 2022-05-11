@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { DOMAttributes } from "react";
 
 export type AllHandlerMap = Omit<
@@ -6,5 +8,17 @@ export type AllHandlerMap = Omit<
 >;
 
 export type AllHandler = keyof AllHandlerMap;
+
+export type AllHandlerMapWithoutKeyBoard = Omit<
+  AllHandlerMap,
+  "onKeyDown" | "onKeyUp" | "onKeyPress"
+>;
+export type AllHandlerWithoutKeyBoard = keyof AllHandlerMapWithoutKeyBoard;
+
+export type KeyboardHandlerMap = Pick<
+  AllHandlerMap,
+  "onKeyDown" | "onKeyUp" | "onKeyPress"
+>;
+export type KeyboardHandler = keyof KeyboardHandlerMap;
 
 export type Tag = keyof JSX.IntrinsicElements;

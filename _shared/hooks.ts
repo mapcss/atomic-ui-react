@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { useMemo } from "react";
 import { associateWith } from "../deps.ts";
 import { AllHandler, AllHandlerMap, Tag } from "../types.ts";
