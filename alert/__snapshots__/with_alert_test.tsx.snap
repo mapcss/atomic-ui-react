@@ -1,0 +1,5 @@
+export const snapshot = {};
+
+snapshot[`WithAlert should render as 1`] = `'<div role="alert">test</div>'`;
+
+snapshot[`WithAlert should children as function 1`] = `'<span role="alert"></span>'`;

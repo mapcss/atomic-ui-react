@@ -1,0 +1,17 @@
+export const snapshot = {};
+
+snapshot[`Breadcrumb > should be match snapshot 1`] = `'<nav aria-label="Breadcrumb"><ol><li><a aria-current="page">test</a></li></ol></nav>'`;
+
+snapshot[`Breadcrumb > should add aria-current attribute to last element 1`] = `'<nav aria-label="Breadcrumb"><ol><li><a>1</a></li><li aria-hidden="true">/</li><li><a>2</a></li><li aria-hidden="true">/</li><li><a aria-current="page">3</a></li></ol></nav>'`;
+
+snapshot[`Breadcrumb > should change separator 1`] = `'<nav aria-label="Breadcrumb"><ol><li><a>1</a></li><li aria-hidden="true"><span>&gt;</span></li><li><a aria-current="page">2</a></li></ol></nav>'`;
+
+snapshot[`Breadcrumb > should overwrite components 1`] = `'<nav><ol><li><a>1</a></li><li aria-hidden="true">/</li><li><a aria-current="page">2</a></li></ol></nav>'`;
+
+snapshot[`Breadcrumb > should overwrite components 2`] = `'<nav aria-label="Breadcrumb"><ul><li><a>1</a></li><li aria-hidden="true">/</li><li><a aria-current="page">2</a></li></ul></nav>'`;
+
+snapshot[`Breadcrumb > should overwrite components 3`] = `'<nav aria-label="Breadcrumb"><ol><li><a>1</a></li><li><a aria-current="page">2</a></li></ol></nav>'`;
+
+snapshot[`Breadcrumb > should disabled auto adding aria current attribute 1`] = `'<nav aria-label="Breadcrumb"><ol><li><a>1</a></li><li aria-hidden="true">/</li><li><a>2</a></li></ol></nav>'`;
+
+snapshot[`Breadcrumb > should not add aria-current when the last element is not anchor 1`] = `'<nav aria-label="Breadcrumb"><ol><li><div>not anchor</div></li></ol></nav>'`;

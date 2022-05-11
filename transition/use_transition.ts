@@ -1,35 +1,33 @@
 // This module is browser compatible.
 
-import { DependencyList, RefObject, useMemo } from "react";
-import { isLength0, mapValues } from "../deps.ts";
-import { isRefObject, Lazyable, lazyEval } from "../util.ts";
+import { DependencyList, useMemo, useState } from "react";
+import { isLength0, isNumber, mapValues } from "../deps.ts";
+import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
+import { cleanTokens, ElementLike, resolveElementLike } from "../util.ts";
 import useIsFirstMount from "../hooks/use_is_first_mount.ts";
 import useMutated from "../hooks/use_mutated.ts";
-import { Transition, TransitionProps } from "./types.ts";
+import { TransitionMap, TransitionName } from "./types.ts";
 import useTransitionLifeCycle, {
   TransitionLifecycle,
   TransitionLifecycleMap,
 } from "./use_transition_lifecycle.ts";
 import {
-  cleanTokens,
   getDuration,
   getTransitionMap,
   isShowable as _isShowable,
 } from "./util.ts";
-import { END, INACTIVE } from "./constant.ts";
+import { END, ENTER, INACTIVE, LEAVE } from "./constant.ts";
 
 export type TransitionStatus = TransitionLifecycle | typeof INACTIVE;
 
-export type ElementLike<T extends Element = Element> =
-  | Lazyable<T | undefined | null>
-  | RefObject<T | undefined>;
+export type DurationLike<E extends Element = Element> = number | ElementLike<E>;
 
-export type Param<T extends Element = Element> = {
-  /** Target to monitor end of transitions.
+export type Param<E extends Element = Element> = {
+  /** Transition duration itself or it reference.
    * Specify `Element` or equivalent.
    * The duration and delay of the transition are taken from the actual DOM and used to calculate the length of the transition.
    */
-  target: ElementLike<T>;
+  duration: DurationLike<E>;
 
   /** Whether the target should be shown or hidden. */
   isShow: boolean;
@@ -56,20 +54,37 @@ export type ReturnValue =
     /** Whether transition lifecycle is completed or not. */
     isCompleted: boolean;
 
+    /** Whether has `leaved` in transition map or not. */
+    hasLeaved: boolean;
+
+    /** Whether the first call for this hook or not.
+     * @remarks This is not a reactive value.
+     */
+    isFirst: boolean;
+
     /** Non-duplicated token and space transition props
      * It guarantee that there is no empty string or spaces only characters.
      */
-    cleanTransitionProps: Partial<TransitionProps>;
+    cleanTransitionMap: Partial<TransitionMap>;
 
     /** List of currently adapted transition. */
-    currentTransitions: Transition[];
+    currentTransitions: TransitionName[];
     /** Current transition lifecycle */
 
     status: TransitionStatus;
   }
-  & ({ isActivated: true; lifecycle: TransitionLifecycle } | {
+  & ({
+    isActivated: true;
+    lifecycle: TransitionLifecycle;
+
+    /** Current transition mode.
+     * If it is not activated, return `undefined`
+     */
+    mode: typeof ENTER | typeof LEAVE;
+  } | {
     isActivated: false;
     lifecycle: undefined;
+    mode: undefined;
   });
 
 /** Monitors the mount lifecycle and returns the appropriate transition status.
@@ -80,7 +95,7 @@ export type ReturnValue =
  * export default () => {
  *   const [isShow] = useState(true)
  *   const ref = useRef<HTMLDivElement>(null)
- *   const { className } = useTransition({ isShow, target: ref }, {
+ *   const { className } = useTransition({ isShow, duration: ref }, {
  *     enter: "transition duration-300",
  *     enterFrom: "opacity-0",
  *   }, [isShow]);
@@ -90,33 +105,31 @@ export type ReturnValue =
  * ```
  */
 export default function useTransition<T extends Element>(
-  { target, isShow, immediate = false }: Readonly<Param<T>>,
-  transitionProps: Readonly<
-    Partial<TransitionProps>
+  { duration, isShow, immediate = false }: Readonly<Param<T>>,
+  transitionMap: Readonly<
+    Partial<TransitionMap>
   >,
   deps: DependencyList,
 ): ReturnValue {
-  const { isFirstMount } = useIsFirstMount();
-  const transitionPropsStr = JSON.stringify(transitionProps);
+  const { isFirstMount: isFirst } = useIsFirstMount();
+  const transitionMapStr = JSON.stringify(transitionMap);
+  const lazyIsShow = useLazyState(isShow);
   const hasMutate = useMutated([
     isShow,
     immediate,
-    transitionPropsStr,
+    transitionMapStr,
   ]);
 
   const use = useMemo<boolean>(() => {
     if (immediate) return true;
-    if (isFirstMount) return false;
+    if (isFirst) return false;
 
     return hasMutate;
   }, [hasMutate]);
 
   const [isActivated, transitionLifecycle] = useTransitionLifeCycle(
     {
-      duration: () => {
-        const maybeElement = resolveElement(target);
-        return maybeElement ? getDuration(maybeElement) : 0;
-      },
+      duration: () => resolveDurationLike(duration),
       use,
     },
     [use, JSON.stringify(deps)],
@@ -127,16 +140,16 @@ export default function useTransition<T extends Element>(
   ]);
 
   const transitionLifecycleMap = useMemo<TransitionLifecycleMap>(
-    () => getTransitionMap(isShow),
-    [isShow],
+    () => getTransitionMap(lazyIsShow),
+    [lazyIsShow],
   );
 
-  const cleanTransitionProps = useMemo<Partial<TransitionProps>>(
-    () => cleanRecordToken(transitionProps),
-    [transitionPropsStr],
+  const cleanTransitionMap = useMemo<Partial<TransitionMap>>(
+    () => cleanRecordToken(transitionMap),
+    [transitionMapStr],
   );
 
-  const currentTransitions = useMemo<Transition[]>(
+  const currentTransitions = useMemo<TransitionName[]>(
     () =>
       isActivated === false ? [] : transitionLifecycleMap[transitionLifecycle],
     [isActivated, transitionLifecycle, JSON.stringify(transitionLifecycleMap)],
@@ -147,20 +160,34 @@ export default function useTransition<T extends Element>(
     [isActivated, transitionLifecycle],
   );
 
+  const hasLeaved = useMemo<boolean>(() => !!transitionMap.leaved, [
+    transitionMap.leaved,
+  ]);
+
   const isShowable = useMemo<boolean>(
-    () => _isShowable(isShow, { isCompleted, isActivated }),
-    [isShow, isCompleted, isActivated],
+    () =>
+      _isShowable(lazyIsShow, {
+        isCompleted,
+        isActivated,
+        hasLeaved,
+      }),
+    [lazyIsShow, isCompleted, isActivated, hasLeaved],
   );
 
   const classNames = useMemo<string[]>(() => {
     const transitions = currentTransitions.map((key) =>
-      cleanTransitionProps[key]
+      cleanTransitionMap[key]
     );
     return cleanTokens(transitions);
   }, [
     JSON.stringify(currentTransitions),
-    JSON.stringify(cleanTransitionProps),
+    JSON.stringify(cleanTransitionMap),
   ]);
+
+  const mode = useMemo<typeof LEAVE | typeof ENTER | undefined>(
+    () => use ? lazyIsShow ? ENTER : LEAVE : undefined,
+    [lazyIsShow, use],
+  );
 
   const className = useMemo<string | undefined>(() => {
     const _className = classNames.join(" ");
@@ -173,21 +200,14 @@ export default function useTransition<T extends Element>(
     isCompleted,
     isActivated,
     isShowable,
+    isFirst,
+    hasLeaved,
     status,
     currentTransitions,
-    lifecycle: transitionLifecycle as never, // for conditional types,
-    cleanTransitionProps,
+    lifecycle: transitionLifecycle as never, // for conditional types
+    mode: mode as never, // for conditional types
+    cleanTransitionMap,
   };
-}
-
-export function resolveElement<E extends Element>(
-  elementLike: ElementLike<E>,
-): E | undefined | null {
-  if (isRefObject(elementLike)) {
-    return elementLike.current;
-  }
-
-  return lazyEval(elementLike);
 }
 
 export function cleanRecordToken<
@@ -198,4 +218,23 @@ export function cleanRecordToken<
     const cleanedTokens = cleanTokens([value]);
     return isLength0(cleanedTokens) ? undefined : cleanedTokens.join(" ");
   }) as T;
+}
+
+export function resolveDurationLike<E extends Element = Element>(
+  durationLike: DurationLike<E>,
+): number {
+  if (isNumber(durationLike)) {
+    return Number.isFinite(durationLike) ? durationLike : 0;
+  }
+  const maybeElement = resolveElementLike(durationLike);
+  return maybeElement ? getDuration(maybeElement) : 0;
+}
+
+function useLazyState(value: boolean, deps?: DependencyList): boolean {
+  const [state, setState] = useState(value);
+  useIsomorphicLayoutEffect(() => {
+    setState(value);
+  }, [value, JSON.stringify(deps)]);
+
+  return state;
 }

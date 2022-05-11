@@ -1,6 +1,5 @@
 // This module is browser compatible.
 
-import { distinct, filterTruthy } from "../deps.ts";
 import {
   END,
   ENTER,
@@ -70,35 +69,18 @@ export function getTransitionMap(isEnter: boolean): TransitionLifecycleMap {
  *
  * ```ts
  * import { isShowable } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
- * isShowable(true, {isActivated: false, isCompleted: false })
+ * isShowable(true, { isActivated: false, isCompleted: false, hasLeaved: true })
  * ```
  */
 export function isShowable(
   isShow: boolean,
-  { isActivated, isCompleted }: Readonly<
+  { isActivated, isCompleted, hasLeaved }: Readonly<
     Pick<
       ReturnValue,
       "isActivated" | "isCompleted"
-    >
+    > & { hasLeaved: boolean }
   >,
 ): boolean {
   if (!isActivated) return isShow;
-  return isShow || !isCompleted;
-}
-
-/** Returns space-separated, non-duplicate tokens.
- * Empty characters are not considered token.
- */
-export function cleanTokens(
-  value: Readonly<Iterable<string | undefined>>,
-): string[] {
-  const truthy = filterTruthy(Array.from(value));
-  return distinct(truthy.map(tokenize).flat());
-}
-
-/** Returns a space-separated string as tokens.
- * Duplicates are not eliminated.
- */
-export function tokenize(value: string): string[] {
-  return filterTruthy(value.split(" "));
+  return isShow || !isCompleted || hasLeaved;
 }

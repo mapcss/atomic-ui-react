@@ -11,7 +11,7 @@ import {
   LEAVED,
 } from "./constant.ts";
 
-export type TransitionProps = {
+export type TransitionMap = {
   /** Classes during the entire enter phase. */
   [ENTER]: string;
 
@@ -36,4 +36,4 @@ export type TransitionProps = {
   /** Classes the leave phase is ended. */
   [LEAVED]: string;
 };
-export type Transition = keyof TransitionProps;
+export type TransitionName = keyof TransitionMap;

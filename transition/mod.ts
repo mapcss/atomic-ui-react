@@ -1,11 +1,12 @@
 // This module is browser compatible.
 
-export { default as TransitionProvider } from "./transition_provider.ts";
+export { default as WithTransition } from "./with_transition.ts";
 export type {
-  Props as TransitionProviderProps,
+  Attributes as TransitionAttributes,
+  Props as WithTransitionProps,
   Render as TransitionRender,
   RenderContext as TransitionRenderContext,
-} from "./transition_provider.ts";
+} from "./with_transition.ts";
 
 export { default as useTransition } from "./use_transition.ts";
 export type {
@@ -19,5 +20,5 @@ export type {
   ReturnValue as UseTransitionLifecycleReturnValue,
   TransitionLifecycle,
 } from "./use_transition_lifecycle.ts";
-export { cleanTokens, getDuration, isShowable, tokenize } from "./util.ts";
-export type { Transition, TransitionProps } from "./types.ts";
+export { getDuration, isShowable } from "./util.ts";
+export type { TransitionMap, TransitionName } from "./types.ts";

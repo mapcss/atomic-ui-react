@@ -1,0 +1,15 @@
+export const snapshot = {};
+
+snapshot[`WithDisclosureControl > should trigger click event by default 1`] = `'<p data-testid="test" aria-controls="atomic-ui-0" aria-expanded="false" role="button">test</p>'`;
+
+snapshot[`WithDisclosureControl > should trigger click event by default 2`] = `'<p data-testid="test" aria-controls="atomic-ui-0" aria-expanded="true" role="button">test</p>'`;
+
+snapshot[`WithDisclosureControl > should trigger click event by default 3`] = `'<p data-testid="test" aria-controls="atomic-ui-0" aria-expanded="false" role="button">test</p>'`;
+
+snapshot[`WithDisclosureControl > should change trigger event 1`] = `'<div data-testid="test" aria-controls="atomic-ui-0" aria-expanded="false" role="button">test</div>'`;
+
+snapshot[`WithDisclosureControl > should change trigger event 2`] = `'<div data-testid="test" aria-controls="atomic-ui-0" aria-expanded="true" role="button">test</div>'`;
+
+snapshot[`WithDisclosureControl > should change trigger event 3`] = `'<div data-testid="test" aria-controls="atomic-ui-0" aria-expanded="false" role="button">test</div>'`;
+
+snapshot[`WithDisclosureControl > should render as children 1`] = `'<span aria-controls="atomic-ui-0" aria-expanded="false" role="button" class="i-mdi-chevron-down"></span>'`;

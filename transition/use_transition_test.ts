@@ -1,7 +1,7 @@
 import { renderHook } from "@testing-library/react-hooks";
 import useTransition, {
   cleanRecordToken,
-  resolveElement,
+  resolveDurationLike,
 } from "./use_transition.ts";
 import {
   describe,
@@ -14,19 +14,10 @@ import {
   setupRaf,
 } from "../dev_deps.ts";
 
-const resolveElementTest = describe({
-  name: "resolveElement",
-  beforeAll: setupJSDOM,
-});
-
-it(resolveElementTest, "should return element or undefined/null", () => {
-  const el = globalThis.document.createElement("div");
-  expect(resolveElement(null)).toBe(null);
-  expect(resolveElement(undefined)).toBe(undefined);
-  expect(resolveElement(el)).toEqual(el);
-  expect(resolveElement(() => el)).toEqual(el);
-  expect(resolveElement(() => undefined)).toBe(undefined);
-  expect(resolveElement({ current: el })).toEqual(el);
+Deno.test("resolveDurationLike", () => {
+  expect(resolveDurationLike(100)).toBe(100);
+  expect(resolveDurationLike(Infinity)).toBe(0);
+  expect(resolveDurationLike(0)).toBe(0);
 });
 
 it("cleanRecordToken: should return undefined or non-duplicated token and space", () => {
@@ -74,7 +65,7 @@ it(
     const { result, rerender } = renderHook(({ isShow }) =>
       useTransition(
         {
-          target,
+          duration: target,
           isShow,
           immediate: true,
         },
@@ -100,7 +91,9 @@ it(
       expect(result.current.classNames).toEqual(["enterFrom"]);
       expect(result.current.currentTransitions).toEqual(["enterFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
-      expect(result.current.cleanTransitionProps).toEqual({
+      expect(result.current.isFirst).toBeTruthy();
+      expect(result.current.mode).toBe("enter");
+      expect(result.current.cleanTransitionMap).toEqual({
         enter: "enter",
         enterFrom: "enterFrom",
         enterTo: "enterTo dirty class name",
@@ -110,6 +103,7 @@ it(
         leaveTo: "leaveTo",
         leaved: "leaved",
       });
+      expect(result.current.hasLeaved).toBeTruthy();
 
       time.next();
       expect(result.current.status).toBe("start");
@@ -117,6 +111,7 @@ it(
       expect(result.current.classNames).toEqual(["enterFrom", "enter"]);
       expect(result.current.currentTransitions).toEqual(["enterFrom", "enter"]);
       expect(result.current.isCompleted).toBeFalsy();
+      expect(result.current.isFirst).toBeFalsy();
 
       time.next();
       expect(result.current.status).toBe("wait");
@@ -137,6 +132,7 @@ it(
       expect(result.current.classNames).toEqual(["entered"]);
       expect(result.current.currentTransitions).toEqual(["entered"]);
       expect(result.current.isCompleted).toBeTruthy();
+      expect(result.current.mode).toBe("enter");
 
       rerender({ isShow: false });
       expect(result.current.status).toBe("init");
@@ -144,6 +140,7 @@ it(
       expect(result.current.classNames).toEqual(["leaveFrom"]);
       expect(result.current.currentTransitions).toEqual(["leaveFrom"]);
       expect(result.current.isCompleted).toBeFalsy();
+      expect(result.current.mode).toBe("leave");
 
       time.next();
       expect(result.current.status).toBe("start");
@@ -166,7 +163,7 @@ it(
       expect(result.current.classNames).toEqual(["leaved"]);
       expect(result.current.currentTransitions).toEqual(["leaved"]);
       expect(result.current.isCompleted).toBeTruthy();
-      expect(result.current.isShowable).toBeFalsy();
+      expect(result.current.isShowable).toBeTruthy();
     } catch (e) {
       throw e;
     } finally {
@@ -186,7 +183,7 @@ it(
       ({ isShow, immediate }) =>
         useTransition(
           {
-            target,
+            duration: target,
             isShow,
             immediate,
           },
@@ -217,6 +214,7 @@ it(
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isActivated).toBeFalsy();
       expect(result.current.lifecycle).not.toBeDefined();
+      expect(result.current.mode).toBe(undefined);
 
       time.next();
       expect(result.current.status).toBe("inactive");
@@ -225,12 +223,15 @@ it(
       expect(result.current.currentTransitions).toEqual([]);
       expect(result.current.isCompleted).toBeFalsy();
       expect(result.current.isActivated).toBeFalsy();
+      expect(result.current.mode).toBe(undefined);
 
       rerender();
       expect(result.current.status).toBe("inactive");
+      expect(result.current.mode).toBe(undefined);
 
       rerender({ isShow: false, immediate: false });
       expect(result.current.status).toBe("init");
+      expect(result.current.mode).toBe("leave");
     } catch (e) {
       throw e;
     } finally {
@@ -249,7 +250,7 @@ it(
       ({ isShow, immediate }) =>
         useTransition(
           {
-            target,
+            duration: target,
             isShow,
             immediate,
           },
@@ -301,7 +302,7 @@ it(
       ({ enter }) =>
         useTransition(
           {
-            target,
+            duration: target,
             isShow: true,
           },
           {
@@ -349,7 +350,7 @@ it(
     const { result } = renderHook(() =>
       useTransition(
         {
-          target,
+          duration: target,
           isShow: true,
           immediate: true,
         },

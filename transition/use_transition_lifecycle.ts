@@ -1,15 +1,17 @@
+// This module is browser compatible.
+
 import { DependencyList, useMemo, useState } from "react";
 import { Lazyable, lazyEval } from "../util.ts";
 import { Useable } from "../hooks/types.ts";
 import useLifecycle from "../hooks/use_lifecycle.ts";
 import { END, INIT, START, WAIT } from "./constant.ts";
-import { Transition } from "./types.ts";
+import { TransitionName } from "./types.ts";
 
 export type TransitionLifecycleMap = {
-  [INIT]: Transition[];
-  [START]: Transition[];
-  [WAIT]: Transition[];
-  [END]: Transition[];
+  [INIT]: TransitionName[];
+  [START]: TransitionName[];
+  [WAIT]: TransitionName[];
+  [END]: TransitionName[];
 };
 
 /** Named transition lifecycle

@@ -15,28 +15,25 @@ Monitor component lifecycles and control transitions.
 ## Example
 
 ```tsx
-import { useState } from "react";
-import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
-
+import { WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 export default () => {
-  const [state] = useState(false);
   return (
-    <TransitionProvider
+    <WithTransition
       enter="transition duration-300"
       enterFrom="opacity-0"
-      leave="transition transform duration-500"
-      leaveTo="-translate-x-full"
-      isShow={state}
+      leave="transition duration-300"
+      leaveTo="opacity-0"
+      isShow
     >
       <div />
-    </TransitionProvider>
+    </WithTransition>
   );
 };
 ```
 
 ## API
 
-### TransitionProvider
+### WithTransition
 
 Component to automatically adapt transitions to the root child.
 
@@ -51,7 +48,7 @@ import { ReactElement, RefObject } from "react";
  * - `end`: Ended
  */
 type TransitionLifecycle = "init" | "start" | "wait" | "end";
-type TransitionProps = {
+type TransitionMap = {
   /** Classes during the entire enter phase. */
   enter: string;
 
@@ -76,7 +73,7 @@ type TransitionProps = {
   leaved: string;
   /** Classes the leave phase is ended. */
 };
-type Transition = keyof TransitionProps;
+type Transition = keyof TransitionMap;
 type UseTransitionReturnValue = {
   /** The className from adapted currently transition. */
   className: string | undefined;
@@ -94,7 +91,7 @@ type UseTransitionReturnValue = {
    * It guarantee that there is no empty string or spaces only
    * characters.
    */
-  cleanTransitionProps: Partial<TransitionProps>;
+  cleanTransitionMap: Partial<TransitionMap>;
 
   /** List of currently adapted transition. */
   currentTransitions: Transition[];
@@ -143,27 +140,30 @@ type TransitionProviderProps<E extends Element = Element> = {
    * @default false
    */
   immediate?: boolean;
-} & Partial<TransitionProps>;
+} & Partial<TransitionMap>;
 ```
 
 #### Example
 
 ```tsx
-import { useState } from "react";
-import { TransitionProvider } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useRef, useState } from "react";
+import { WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 export default () => {
-  const [state] = useState(false);
+  const [isShow] = useState(false);
   return (
-    <TransitionProvider
-      enter="transition duration-300"
+    <WithTransition
       enterFrom="opacity-0"
-      leave="transition transform duration-500"
-      leaveTo="-translate-x-full"
-      isShow={state}
+      enter="transition"
+      leaveTo="opacity-0"
+      leave="transition"
+      leaved="opacity-0"
+      isShow={isShow}
     >
-      <div />
-    </TransitionProvider>
+      {({ className, ref }) => {
+        return <div ref={ref} className={className}>transition</div>;
+      }}
+    </WithTransition>
   );
 };
 ```
@@ -177,14 +177,14 @@ Monitors the mount lifecycle and returns the appropriate transition status.
 ```ts
 import { RefObject } from "react";
 import {
-  TransitionProps,
+  TransitionMap,
   UseTransitionParam,
   UseTransitionReturnValue,
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 declare function useTransition<T extends Element>(
-  { target, isShow }: Readonly<UseTransitionParam<T>>,
-  transitionProps: Readonly<Partial<TransitionProps>>,
+  { duration, isShow }: Readonly<UseTransitionParam<T>>,
+  transitionMap: Readonly<Partial<TransitionMap>>,
 ): UseTransitionReturnValue;
 ```
 
@@ -197,7 +197,7 @@ import { useTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.
 export default () => {
   const [isShow] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
-  const { className } = useTransition({ isShow, target: ref }, {
+  const { className } = useTransition({ isShow, duration: ref }, {
     enter: "transition duration-300",
     enterFrom: "opacity-0",
   }, [isShow]);

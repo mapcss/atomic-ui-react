@@ -1,0 +1,11 @@
+export const snapshot = {};
+
+snapshot[`TooltipProvider > should render markup 1`] = `'<div style="position:relative"></div>'`;
+
+snapshot[`TooltipProvider > should render markup 2`] = `'<span style="position:relative"></span>'`;
+
+snapshot[`TooltipProvider > should render tooltip when mouseenter, remove tooltip when mouseleave 1`] = `'<div><div style="position: relative;"><button data-testid="test"></button></div></div>'`;
+
+snapshot[`TooltipProvider > should render tooltip when mouseenter, remove tooltip when mouseleave 2`] = `'<div><div style="position: relative;"><button data-testid="test"></button><span role="tooltip">Tooltip</span></div></div>'`;
+
+snapshot[`TooltipProvider > should render tooltip when mouseenter, remove tooltip when mouseleave 3`] = `'<div><div style="position: relative;"><button data-testid="test"></button></div></div>'`;

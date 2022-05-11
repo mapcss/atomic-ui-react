@@ -21,3 +21,18 @@ export type {
 } from "./use_lifecycle.ts";
 export type { Useable } from "./types.ts";
 export { default as useMutated } from "./use_mutated.ts";
+export { default as useOutside } from "./use_outside.ts";
+export type {
+  Option as UseOutsideOption,
+  Param as UseOutsideParam,
+} from "./use_outside.ts";
+export { default as useEventListener } from "./use_event_listener.ts";
+export type {
+  Option as UseEventListenerOption,
+  Param as UseEventListenerParam,
+} from "./use_event_listener.ts";
+export { default as useKeyboardHandler } from "./use_keyboard_handler.ts";
+export type {
+  Param as UseKeyboardHandlerParam,
+  ReturnValue as UseKeyboardHandlerReturnValue,
+} from "./use_keyboard_handler.ts";

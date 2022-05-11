@@ -1,8 +1,7 @@
 // This module is browser compatible.
 
 import { useContext, useMemo } from "react";
-import { isBrowser } from "../util.ts";
-import { joinChars } from "../deps.ts";
+import { isBrowser, joinChars } from "../util.ts";
 import _Context from "./context.ts";
 import { _DEFAULT_CONTEXT } from "./constant.ts";
 
@@ -16,7 +15,9 @@ export default function _useSSRSafeId(defaultId?: string): string {
   }
 
   return useMemo(
-    () => defaultId || joinChars(["atomic-ui", ctx.prefix, ++ctx.current], "-"),
+    () =>
+      (defaultId || joinChars(["atomic-ui", ctx.prefix, ++ctx.current], "-")) ??
+        "",
     [defaultId],
   );
 }

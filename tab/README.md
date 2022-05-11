@@ -1,5 +1,6 @@
 # tab
 
+- No element
 - No style
 - WAI-ARIA ready
 - Provider and Pure Components
@@ -10,21 +11,31 @@
 
 ```tsx
 import {
-  Tab,
-  TabList,
-  TabPanel,
   TabProvider,
+  WithTab,
+  WithTabList,
+  WithTabPanel,
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 export default () => (
   <TabProvider>
-    <TabList>
-      <Tab>Title 1</Tab>
-      <Tab>Title 2</Tab>
-    </TabList>
+    <WithTabList>
+      <div>
+        <WithTab>
+          <button>Title 1</button>
+        </WithTab>
+        <WithTab>
+          <button>Title 2</button>
+        </WithTab>
+      </div>
+    </WithTabList>
 
-    <TabPanel>Content 1</TabPanel>
-    <TabPanel>Content 2</TabPanel>
+    <WithTabPanel>
+      <div>Content 1</div>
+    </WithTabPanel>
+    <WithTabPanel>
+      <div>Content 2</div>
+    </WithTabPanel>
   </TabProvider>
 );
 ```
