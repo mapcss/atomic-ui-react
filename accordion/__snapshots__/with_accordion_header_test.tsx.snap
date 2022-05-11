@@ -3,3 +3,5 @@ export const snapshot = {};
 snapshot[`WithAccordionHeader > should render as 1`] = `'<button data-testid="test1" aria-expanded="true" aria-controls="atomic-ui-0-accordion-panel-0" id="atomic-ui-0-accordion-header-0">test1</button><button data-testid="test2" aria-expanded="false" aria-controls="atomic-ui-0-accordion-panel-1" id="atomic-ui-0-accordion-header-1">test2</button>'`;
 
 snapshot[`WithAccordionHeader > should render as 2`] = `'<button data-testid="test1" aria-expanded="false" aria-controls="atomic-ui-0-accordion-panel-0" id="atomic-ui-0-accordion-header-0">test1</button><button data-testid="test2" aria-expanded="true" aria-controls="atomic-ui-0-accordion-panel-1" id="atomic-ui-0-accordion-header-1">test2</button>'`;
+
+snapshot[`WithAccordionHeader > should render children as props 1`] = `'<button aria-expanded="true" aria-controls="atomic-ui-0-accordion-panel-0" id="atomic-ui-0-accordion-header-0">test</button>'`;

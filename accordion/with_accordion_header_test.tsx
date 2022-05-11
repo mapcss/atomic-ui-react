@@ -1,7 +1,12 @@
 import {
+  anyBoolean,
+  anyFunction,
+  anyNumber,
+  anyString,
   assertSnapshot,
   describe,
   expect,
+  fn,
   it,
   setupJSDOM,
 } from "../dev_deps.ts";
@@ -194,4 +199,45 @@ it(describeTests, "should change open event handler", (t) => {
 
   fireEvent.mouseEnter(el3);
   expect(el3).toHaveAttribute("aria-expanded", "true");
+});
+
+it(describeTests, "should render children as props", (t) => {
+  const mockFn = fn();
+  const { container } = render(
+    <>
+      <WithAccordionHeader>
+        {(attrs, context) => {
+          mockFn(attrs);
+          mockFn(context);
+          return <button {...attrs}>test</button>;
+        }}
+      </WithAccordionHeader>
+    </>,
+    {
+      wrapper: ({ children }) => (
+        <SSRProvider>
+          <AccordionProvider>{children as ReactNode}</AccordionProvider>
+        </SSRProvider>
+      ),
+    },
+  );
+  assertSnapshot(t, container.innerHTML);
+
+  expect(mockFn).toHaveBeenCalledWith({
+    "aria-expanded": anyBoolean(),
+    "aria-controls": anyString(),
+    id: anyString(),
+    onClick: anyFunction(),
+    onKeyDown: anyFunction(),
+  });
+
+  expect(mockFn).toHaveBeenCalledWith({
+    isOpen: anyBoolean(),
+    open: anyFunction(),
+    index: anyNumber(),
+    focusFirst: anyFunction(),
+    focusLast: anyFunction(),
+    focusNext: anyFunction(),
+    focusPrev: anyFunction(),
+  });
 });

@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { KeyboardEventHandler, RefObject, useCallback } from "react";
+import { RefObject, useCallback } from "react";
 import {
   getFirstIndex,
   getLastIndex,
@@ -8,42 +8,47 @@ import {
   getPrevIndex,
 } from "../_shared/util.ts";
 
+export type Param = { refs: RefObject<HTMLElement>[]; index: number };
+
+export type ReturnValue = {
+  focusPrev: () => void;
+  focusNext: () => void;
+  focusFirst: () => void;
+  focusLast: () => void;
+};
+
 export default function useCallbackFocus(
-  { refs, index }: { refs: RefObject<HTMLElement>[]; index: number },
-) {
-  const prev = useCallback<KeyboardEventHandler>((ev) => {
-    ev.preventDefault();
+  { refs, index }: Param,
+): ReturnValue {
+  const focusPrev = useCallback(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getPrevIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
   }, [index]);
 
-  const first = useCallback<KeyboardEventHandler>((ev) => {
-    ev.preventDefault();
+  const focusFirst = useCallback(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getFirstIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
   }, [index]);
 
-  const next = useCallback<KeyboardEventHandler>((ev) => {
-    ev.preventDefault();
+  const focusNext = useCallback(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getNextIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
   }, [index]);
 
-  const last = useCallback<KeyboardEventHandler>((ev) => {
-    ev.preventDefault();
+  const focusLast = useCallback(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getLastIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
   }, [index]);
 
   return {
-    prev,
-    first,
-    next,
-    last,
+    focusPrev,
+    focusFirst,
+    focusNext,
+    focusLast,
   };
 }
 

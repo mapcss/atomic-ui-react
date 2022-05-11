@@ -1,6 +1,7 @@
 export {
   anyBoolean,
   anyFunction,
+  anyNumber,
   anyString,
   defineExpect,
   defineGlobalThis,
