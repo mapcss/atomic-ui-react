@@ -1,6 +1,7 @@
 // This module is browser compatible.
 
 import { RefObject, useCallback } from "react";
+import { VFn } from "../deps.ts";
 import {
   getFirstIndex,
   getLastIndex,
@@ -11,34 +12,34 @@ import {
 export type Param = { refs: RefObject<HTMLElement>[]; index: number };
 
 export type ReturnValue = {
-  focusPrev: () => void;
-  focusNext: () => void;
-  focusFirst: () => void;
-  focusLast: () => void;
+  focusPrev: VFn;
+  focusNext: VFn;
+  focusFirst: VFn;
+  focusLast: VFn;
 };
 
 export default function useCallbackFocus(
   { refs, index }: Param,
 ): ReturnValue {
-  const focusPrev = useCallback(() => {
+  const focusPrev = useCallback<VFn>(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getPrevIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
   }, [index]);
 
-  const focusFirst = useCallback(() => {
+  const focusFirst = useCallback<VFn>(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getFirstIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
   }, [index]);
 
-  const focusNext = useCallback(() => {
+  const focusNext = useCallback<VFn>(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getNextIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
   }, [index]);
 
-  const focusLast = useCallback(() => {
+  const focusLast = useCallback<VFn>(() => {
     const matrix = refs.map(isTruthyRefObject);
     const featureIndex = getLastIndex(index, matrix);
     refs[featureIndex]?.current?.focus();
