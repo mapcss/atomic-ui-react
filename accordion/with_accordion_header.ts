@@ -96,10 +96,8 @@ export default function WithAccordionHeader(
       open,
     }), [JSON.stringify(codeEntries), prev, first, next, last, open]);
 
-  const keyHandlerMap = useKeyboardHandler({
-    on: onKey,
-    keyEntries,
-  });
+  const keyboardHandler = useKeyboardHandler(keyEntries);
+  const keyHandlerMap = useEventHandler(onKey, keyboardHandler);
 
   const headerId = joinChars([id, "accordion", "header", index], "-");
   const panelId = joinChars([id, "accordion", "panel", index], "-");
