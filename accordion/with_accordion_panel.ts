@@ -1,29 +1,79 @@
 // This module is browser compatible.
 
-import { cloneElement, ReactElement, useContext, useMemo } from "react";
-import { IdContext, IndexContext, PanelCountContext } from "./context.ts";
+import {
+  AllHTMLAttributes,
+  cloneElement,
+  ReactElement,
+  useCallback,
+  useContext,
+  useMemo,
+} from "react";
+import { isFunction } from "../deps.ts";
+import {
+  IdContext,
+  IndexContext,
+  PanelCountContext,
+  RefsContext,
+} from "./context.ts";
 import { joinChars } from "../util.ts";
-import useAriaAccordionPanel from "./use_aria_accordion_panel.ts";
+import useAriaAccordionPanel, {
+  ReturnValue as UseAriaAccordionPanelReturnValue,
+} from "./use_aria_accordion_panel.ts";
+import useCallbackFocus from "./use_callback_focus.ts";
+import { RenderContext } from "./types.ts";
+
+export type Attributes =
+  & UseAriaAccordionPanelReturnValue
+  & Pick<AllHTMLAttributes<Element>, "hidden">;
 
 export type Props = {
-  children: ReactElement;
+  children:
+    | ReactElement
+    | ((attributes: Attributes, context: RenderContext) => ReactElement);
 };
 export default function WithAccordionPanel({ children }: Props): JSX.Element {
   const id = useContext(IdContext);
   const { next: index } = useContext(
     PanelCountContext,
   );
-  const [currentIndex] = useContext(IndexContext);
+  const [selectedIndex, setSelectedIndex] = useContext(IndexContext);
+  const refs = useContext(RefsContext);
 
-  const isOpen = useMemo<boolean>(() => index === currentIndex, [
+  const isOpen = useMemo<boolean>(() => index === selectedIndex, [
     index,
-    currentIndex,
+    selectedIndex,
   ]);
+  const open = useCallback<() => void>(() => setSelectedIndex(index), [
+    setSelectedIndex,
+    index,
+  ]);
+  const focusCallbackMap = useCallbackFocus({
+    refs,
+    index,
+  });
 
   const headerId = joinChars([id, "accordion", "header", index], "-");
   const panelId = joinChars([id, "accordion", "panel", index], "-");
 
   const aria = useAriaAccordionPanel({ id: panelId, headerId });
 
-  return cloneElement(children, { ...aria, hidden: !isOpen });
+  const attributes = useMemo<Attributes>(
+    () => ({ ...aria, hidden: !isOpen }),
+    [JSON.stringify(aria), isOpen],
+  );
+  const context = useMemo<RenderContext>(
+    () => ({ isOpen, open, ...focusCallbackMap, index }),
+    [
+      isOpen,
+      open,
+      index,
+      focusCallbackMap,
+    ],
+  );
+
+  if (isFunction(children)) {
+    return children(attributes, context);
+  }
+
+  return cloneElement(children, attributes);
 }

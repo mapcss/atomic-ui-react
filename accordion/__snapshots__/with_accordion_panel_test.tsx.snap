@@ -1,3 +1,5 @@
 export const snapshot = {};
 
 snapshot[`WithAccordionPanel > should render as 1`] = `'<div aria-labelledby="atomic-ui-0-accordion-header-0" id="atomic-ui-0-accordion-panel-0">test1</div><div aria-labelledby="atomic-ui-0-accordion-header-1" id="atomic-ui-0-accordion-panel-1" hidden="">test2</div>'`;
+
+snapshot[`WithAccordionPanel > should render children as props 1`] = `'<div aria-labelledby="atomic-ui-0-accordion-header-0" id="atomic-ui-0-accordion-panel-0">test</div>'`;

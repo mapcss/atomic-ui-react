@@ -31,24 +31,17 @@ import {
 import useAriaAccordionHeader, {
   ReturnValue as UseAriaAccordionHeaderReturnValue,
 } from "./use_aria_accordion_header.ts";
-import useCallbackFocus, {
-  ReturnValue as UseCallbackFocusReturnValue,
-} from "./use_callback_focus.ts";
+import useCallbackFocus from "./use_callback_focus.ts";
+import { RenderContext } from "./types.ts";
 
 type Attributes =
   & AllHandlerMap
   & UseAriaAccordionHeaderReturnValue;
 
-type Context = {
-  isOpen: boolean;
-  open: () => void;
-  index: number;
-} & UseCallbackFocusReturnValue;
-
 export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: Context) => ReactElement);
+    | ((attributes: Attributes, context: RenderContext) => ReactElement);
 
   on?: Iterable<AllHandlerWithoutKeyBoard>;
 
