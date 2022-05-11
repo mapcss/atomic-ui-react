@@ -1,3 +1,12 @@
+# [1.0.0-beta.41](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.40...1.0.0-beta.41) (2022-05-11)
+
+
+### Features
+
+* **accordion:** add accordion basic components ([7c8d43d](https://github.com/mapcss/atomic-ui-react/commit/7c8d43dfab0914ee83d5825d338e3e362ae36fc8))
+* **accordion:** add render children as props to `WithAccordionHeader` component ([341068d](https://github.com/mapcss/atomic-ui-react/commit/341068d1dfd5d9cac16a16b7836fa828026620bf))
+* **hooks:** add `useKeyboardHandler` hooks that mapping keyboard event and callback ([fd145b7](https://github.com/mapcss/atomic-ui-react/commit/fd145b71c79d3c4ee137d844f3c42a1595242c0f))
+
 # [1.0.0-beta.40](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.39...1.0.0-beta.40) (2022-05-10)
 
 
