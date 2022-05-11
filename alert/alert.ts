@@ -1,7 +1,8 @@
 // This module is browser compatible.
 
-import { createElement, forwardRef as _forwardRef, Ref, useMemo } from "react";
+import { createElement, forwardRef as _forwardRef, Ref } from "react";
 import { Tag } from "../types.ts";
+import { useAs } from "../_shared/hooks.ts";
 import ariaAlert from "./aria_alert.ts";
 
 declare module "react" {
@@ -23,12 +24,12 @@ export type Props<As extends Tag> =
   & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
 
 function _Alert<As extends Tag = "div">(
-  { as: _as, ...rest }: Props<As>,
+  { as, ...rest }: Props<As>,
   ref: Ref<Element>,
 ): JSX.Element {
-  const as = useMemo<string>(() => _as ?? "div", [_as]);
+  const tag = useAs(as, "div");
 
-  return createElement(as, { ref, ...ariaAlert, ...rest });
+  return createElement(tag, { ref, ...ariaAlert, ...rest });
 }
 
 const Alert = _forwardRef(_Alert);
