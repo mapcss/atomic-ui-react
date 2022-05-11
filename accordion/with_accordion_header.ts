@@ -13,9 +13,10 @@ import {
 } from "react";
 import { isFunction } from "../deps.ts";
 import { useEventHandler } from "../_shared/hooks.ts";
-import { KeyEntries } from "../_shared/util.ts";
 import { joinChars, mergeProps } from "../util.ts";
-import useKeyboardHandler from "../hooks/use_keyboard_handler.ts";
+import useKeyboardEventHandler, {
+  Param as KeyEntries,
+} from "../hooks/use_keyboard_event_handler.ts";
 import {
   AllHandlerMap,
   AllHandlerWithoutKeyBoard,
@@ -82,21 +83,24 @@ export default function WithAccordionHeader(
     index,
   });
 
-  const prev = useWithPreventDefault(focusPrev);
-  const next = useWithPreventDefault(focusNext);
-  const first = useWithPreventDefault(focusFirst);
-  const last = useWithPreventDefault(focusLast);
-
   const keyEntries = useMemo<KeyEntries>(() =>
     mapCodeEntries(codeEntries, {
-      prev,
-      first,
-      next,
-      last,
+      prev: focusPrev,
+      first: focusFirst,
+      next: focusNext,
+      last: focusLast,
       open,
-    }), [JSON.stringify(codeEntries), prev, first, next, last, open]);
+    }), [
+    JSON.stringify(codeEntries),
+    focusFirst,
+    focusLast,
+    focusNext,
+    focusPrev,
+    open,
+  ]);
 
-  const keyboardHandler = useKeyboardHandler(keyEntries);
+  const beforeAll = usePreventDefault();
+  const keyboardHandler = useKeyboardEventHandler(keyEntries, { beforeAll });
   const keyHandlerMap = useEventHandler(onKey, keyboardHandler);
 
   const headerId = joinChars([id, "accordion", "header", index], "-");
@@ -155,12 +159,8 @@ function mapCodeEntries(
   ) => [codeEntry, codeCallbackMap[type]]);
 }
 
-function useWithPreventDefault(
-  // deno-lint-ignore ban-types
-  callback: Function,
-): (event: SyntheticEvent<Element, Event>) => void {
+function usePreventDefault(): (event: SyntheticEvent<Element, Event>) => void {
   return useCallback<EventHandler<SyntheticEvent<Element>>>((ev) => {
     ev.preventDefault();
-    callback();
-  }, [callback]);
+  }, []);
 }

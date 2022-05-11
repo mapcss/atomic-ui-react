@@ -1,7 +1,6 @@
 // This module is browser compatible.
 
-import { EventHandler, KeyboardEvent, KeyboardEventHandler } from "react";
-import { isLength0, isString, not, sortBy } from "../deps.ts";
+import { isLength0, not } from "../deps.ts";
 export type TempIdReturnValue = {
   readonly current: number;
   readonly next: number;
@@ -78,44 +77,4 @@ export function getLastIndex(
   } else {
     return index;
   }
-}
-
-export type KeyEntries = [
-  string | Partial<KeyboardEvent<Element>>,
-  EventHandler<KeyboardEvent<Element>>,
-][];
-
-export function mappingKey(
-  keyEntries: KeyEntries,
-): KeyboardEventHandler<Element> {
-  const callback: KeyboardEventHandler = (ev) => {
-    for (const [maybeCode, callback] of sortKeyEntries(keyEntries)) {
-      if (isString(maybeCode)) {
-        if (ev.code === maybeCode || ev.key === maybeCode) {
-          callback(ev);
-          break;
-        }
-        continue;
-      }
-
-      const match = Object.entries(maybeCode).every(([key, value]) => {
-        return ev[key as keyof KeyboardEvent] === value;
-      });
-      if (match) {
-        callback(ev);
-        break;
-      }
-    }
-  };
-
-  return callback;
-}
-
-export function sortKeyEntries(keyEntries: Readonly<KeyEntries>): KeyEntries {
-  return sortBy(keyEntries, ([key]) => {
-    if (isString(key)) {
-      return 1;
-    }
-    return 0;
-  });
 }
