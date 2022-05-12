@@ -1,3 +1,11 @@
+# [1.0.0-beta.42](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.41...1.0.0-beta.42) (2022-05-11)
+
+
+### Features
+
+* **accordion:** add render children as props to `WithAccordionPanel` component ([11b423b](https://github.com/mapcss/atomic-ui-react/commit/11b423b58dec40ccb99f3aad1b2cb040e4881f9e))
+* **hooks:** rename `useKeyboardHandler` to `useKeyboardEventHandler` ([d1ab39b](https://github.com/mapcss/atomic-ui-react/commit/d1ab39bcb7abb1f7dcfd7b71dd722ef387d8aec1))
+
 # [1.0.0-beta.41](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.40...1.0.0-beta.41) (2022-05-11)
 
 
