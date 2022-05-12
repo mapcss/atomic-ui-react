@@ -5,10 +5,11 @@ import { KeyboardEventHandler } from "../types.ts";
 
 export type KeyOrCodeOrKeyboardEvent = string | Partial<KeyboardEvent>;
 
-export type Param = Iterable<[
+export type KeyEntries = Iterable<[
   KeyOrCodeOrKeyboardEvent,
   KeyboardEventHandler,
 ]>;
+
 export type Option = {
   beforeAll: KeyboardEventHandler;
 
@@ -17,7 +18,7 @@ export type Option = {
 
 /** Hooks for mapping keyboard event and callback */
 export default function useKeyboardEventHandler(
-  keyEntries: Readonly<Param>,
+  keyEntries: Readonly<KeyEntries>,
   option: Readonly<Partial<Option>> = {},
 ): KeyboardEventHandler {
   const callback = useCallback<KeyboardEventHandler>(
@@ -29,7 +30,7 @@ export default function useKeyboardEventHandler(
 }
 
 export function mappingKey(
-  keyEntries: Readonly<Param>,
+  keyEntries: Readonly<KeyEntries>,
   { beforeAll, afterAll }: Readonly<Partial<Option>> = {},
 ): KeyboardEventHandler {
   const callback: KeyboardEventHandler = (ev) => {
@@ -37,7 +38,7 @@ export function mappingKey(
 
     for (const [maybeCode, callback] of keyEntries) {
       if (isString(maybeCode)) {
-        if (ev.code === maybeCode || ev.key === maybeCode) {
+        if ([ev.code, ev.key].includes(maybeCode)) {
           callback(ev);
           break;
         }

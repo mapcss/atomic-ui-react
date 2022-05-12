@@ -11,34 +11,31 @@ import useAriaAlertDialog, {
   ReturnValue as UseAriaAlertDialog,
 } from "./use_aria_alert_dialog.ts";
 import { isFunction } from "../deps.ts";
-import { KeyboardEventHandler } from "../types.ts";
 import useId from "../hooks/use_id.ts";
-import { IdMapContext, RenderContextContext } from "./context.ts";
+import { ContextContext, IdMapContext } from "./context.ts";
 import { joinChars } from "../util.ts";
 import useKeyboardEventHandler, {
-  KeyOrCodeOrKeyboardEvent,
+  KeyEntries,
 } from "../hooks/use_keyboard_event_handler.ts";
 import useEventListener from "../hooks/use_event_listener.ts";
 import useChildRef from "../hooks/use_child_ref.ts";
 import useFocusCallback from "./use_focus_callback.ts";
-import { RenderContext } from "./types.ts";
+import { Context } from "./types.ts";
 
 export type Props = {
   children:
     | ReactElement
     | ((
       attributes: UseAriaAlertDialog,
-      context: RenderContext,
+      context: Context,
     ) => ReactElement);
 
   isShow: boolean;
 
   /**
-   * - `focus-prev` - Focus on the focusable element before the currently active element.
-   * - `focus-next` - Focus on the focusable element after the currently active element.
-   * @default [[{ code: "Tab", shiftKey: true }, "focus-prev"],["Tab", "focus-next"]]
+   * @defaultValue {@link defaultKeyEntries}
    */
-  keyEntries?: KeyEntries;
+  keyEntries?: (context: Context) => KeyEntries;
 };
 export default function WithAlertDialog(
   { children, isShow, keyEntries = defaultKeyEntries }: Readonly<
@@ -58,24 +55,19 @@ export default function WithAlertDialog(
   const refCurrent = useCallback(() => getRef.current, []);
 
   const { focusNext, focusPrev } = useFocusCallback(refCurrent);
-  const renderContext = useMemo<RenderContext>(
+  const ctx = useMemo<Context>(
     () => ({ isShow, focusPrev, focusNext }),
     [isShow, focusPrev, focusNext],
   );
   const _child = isFunction(children)
-    ? children(aria, renderContext)
+    ? children(aria, ctx)
     : cloneElement(children, aria);
 
-  const entries = useMemo<[KeyOrCodeOrKeyboardEvent, KeyboardEventHandler][]>(
+  const entries = useMemo<KeyEntries>(
     () => {
-      const interactiveTypeMap: InteractiveTypeMap = {
-        "focus-prev": focusPrev,
-        "focus-next": focusNext,
-      };
-
-      return mapping(keyEntries, interactiveTypeMap);
+      return keyEntries(ctx);
     },
-    [focusPrev, focusNext, JSON.stringify(keyEntries)],
+    [focusPrev, focusNext, keyEntries],
   );
 
   const target = useCallback(() => document, []);
@@ -99,38 +91,16 @@ export default function WithAlertDialog(
     IdMapContext.Provider,
     { value: { title, describe } },
     createElement(
-      RenderContextContext.Provider,
-      { value: renderContext },
+      ContextContext.Provider,
+      { value: ctx },
       child,
     ),
   );
 }
 
-type InteractiveType = "focus-prev" | "focus-next";
-
-type KeyEntries = Iterable<
-  [
-    KeyOrCodeOrKeyboardEvent,
-    InteractiveType | KeyboardEventHandler,
-  ]
->;
-
-export const defaultKeyEntries: KeyEntries = [
-  [{ code: "Tab", shiftKey: true }, "focus-prev"],
-  ["Tab", "focus-next"],
+export const defaultKeyEntries: (context: Context) => KeyEntries = (
+  { focusNext, focusPrev },
+) => [
+  [{ code: "Tab", shiftKey: true }, focusPrev],
+  ["Tab", focusNext],
 ];
-
-type InteractiveTypeMap = Record<InteractiveType, KeyboardEventHandler>;
-
-function mapping(
-  keyEntries: KeyEntries,
-  record: InteractiveTypeMap,
-): [KeyOrCodeOrKeyboardEvent, KeyboardEventHandler][] {
-  return Array.from(keyEntries).map(([keyOr, map]) => {
-    if (isFunction(map)) {
-      return [keyOr, map];
-    }
-
-    return [keyOr, record[map]];
-  });
-}

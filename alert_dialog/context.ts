@@ -2,13 +2,13 @@
 
 import { createContext } from "react";
 import { noop } from "../deps.ts";
-import { RenderContext } from "./types.ts";
+import { Context } from "./types.ts";
 
 export const IdMapContext = createContext({
   title: "",
   describe: "",
 });
-export const RenderContextContext = createContext<RenderContext>({
+export const ContextContext = createContext<Context>({
   isShow: false,
   focusNext: noop,
   focusPrev: noop,
