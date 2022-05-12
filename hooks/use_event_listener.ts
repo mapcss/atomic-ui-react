@@ -37,10 +37,13 @@ export type EventMap<T> = T extends Window ? WindowEventMap
   : T extends AbortSignal ? AbortSignalEventMap
   : never;
 
-export type Param<Target extends EventTarget> = {
+export type Param<
+  Target extends EventTarget,
+  E extends keyof EventMap<Target> = keyof EventMap<Target>,
+> = {
   target: TargetLike<Target>;
-  callback: (ev: EventMap<Target>[keyof EventMap<Target>]) => void;
-  event: keyof EventMap<Target> | (keyof EventMap<Target>)[];
+  callback: (ev: EventMap<Target>[E]) => void;
+  event: E | E[];
 };
 
 export type Option = {
@@ -49,8 +52,9 @@ export type Option = {
 
 export default function useEventListener<
   Target extends EventTarget,
+  E extends keyof EventMap<Target> = keyof EventMap<Target>,
 >(
-  { target: _target, event: _event, callback }: Readonly<Param<Target>>,
+  { target: _target, event: _event, callback }: Readonly<Param<Target, E>>,
   { listenerOption, use = true }: Readonly<Partial<Option>> = {},
   deps?: DependencyList,
 ): void {

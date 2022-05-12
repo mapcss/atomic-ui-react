@@ -1,26 +1,25 @@
 // This module is browser compatible.
-import { KeyboardEventHandler, useCallback } from "react";
+import { useCallback } from "react";
 import { isString } from "../deps.ts";
-import { EventHandler, KeyboardEvent } from "react";
 
 export type Param = Iterable<[
-  string | Partial<KeyboardEvent<Element>>,
-  EventHandler<KeyboardEvent<Element>>,
+  string | Partial<KeyboardEvent>,
+  ReturnValue,
 ]>;
 export type Option = {
-  beforeAll: EventHandler<KeyboardEvent<Element>>;
+  beforeAll: ReturnValue;
 
-  afterAll: EventHandler<KeyboardEvent<Element>>;
+  afterAll: ReturnValue;
 };
 
-export type ReturnValue = KeyboardEventHandler<Element>;
+export type ReturnValue = (ev: KeyboardEvent) => void;
 
 /** Hooks for mapping keyboard event and callback */
 export default function useKeyboardEventHandler(
   keyEntries: Readonly<Param>,
   option: Readonly<Partial<Option>> = {},
-): ReturnValue {
-  const callback = useCallback<ReturnValue>(
+): (ev: KeyboardEvent) => void {
+  const callback = useCallback<(ev: KeyboardEvent) => void>(
     mappingKey(keyEntries, option),
     [JSON.stringify(keyEntries), option.beforeAll, option.afterAll],
   );
@@ -31,8 +30,8 @@ export default function useKeyboardEventHandler(
 export function mappingKey(
   keyEntries: Readonly<Param>,
   { beforeAll, afterAll }: Readonly<Partial<Option>> = {},
-): KeyboardEventHandler<Element> {
-  const callback: KeyboardEventHandler = (ev) => {
+): ReturnValue {
+  const callback = (ev: KeyboardEvent) => {
     beforeAll?.(ev);
 
     for (const [maybeCode, callback] of keyEntries) {
@@ -45,7 +44,7 @@ export function mappingKey(
       }
 
       const match = Object.entries(maybeCode).every(([key, value]) => {
-        return ev[key as keyof KeyboardEvent] === value;
+        return ev[key as keyof globalThis.KeyboardEvent] === value;
       });
       if (match) {
         callback(ev);
