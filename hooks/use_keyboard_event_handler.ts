@@ -33,12 +33,19 @@ export function mappingKey(
   keyEntries: Readonly<KeyEntries>,
   { beforeAll, afterAll }: Readonly<Partial<Option>> = {},
 ): KeyboardEventHandler {
-  const callback: KeyboardEventHandler = (ev) => {
-    beforeAll?.(ev);
+  let beforeAllDone = false;
 
+  const callback: KeyboardEventHandler = (ev) => {
+    function callBeforeAll(): void {
+      if (!beforeAllDone) {
+        beforeAllDone = true;
+        beforeAll?.(ev);
+      }
+    }
     for (const [maybeCode, callback] of keyEntries) {
       if (isString(maybeCode)) {
         if ([ev.code, ev.key].includes(maybeCode)) {
+          callBeforeAll();
           callback(ev);
           break;
         }
@@ -49,6 +56,7 @@ export function mappingKey(
         return ev[key as keyof globalThis.KeyboardEvent] === value;
       });
       if (match) {
+        callBeforeAll();
         callback(ev);
         break;
       }
