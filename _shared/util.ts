@@ -78,3 +78,24 @@ export function getLastIndex(
     return index;
   }
 }
+
+export function filterFocusable(
+  node: ParentNode,
+): HasFocusElement[] {
+  const candidate = [
+    ...node.querySelectorAll(
+      'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])',
+    ),
+  ].filter(
+    (el) => !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden"),
+  );
+
+  return candidate.filter(hasFocusElement);
+}
+
+type HasFocusElement = HTMLElement | SVGElement | MathMLElement;
+
+function hasFocusElement(el: Element): el is HasFocusElement {
+  return el instanceof HTMLElement || el instanceof SVGElement ||
+    el instanceof MathMLElement;
+}
