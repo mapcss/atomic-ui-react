@@ -47,3 +47,10 @@ function _AccordionHeader<As extends Tag = "button">(
 
 const AccordionHeader = _forwardRef(_AccordionHeader);
 export default AccordionHeader;
+
+declare module "react" {
+  // deno-lint-ignore ban-types
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: Ref<T>) => ReactElement | null,
+  ): (props: P & RefAttributes<T>) => ReactElement | null;
+}
