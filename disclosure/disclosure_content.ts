@@ -14,6 +14,7 @@ import WithDisclosureContent, {
   defaultRender,
 } from "./with_disclosure_content.ts";
 import { DispatchMap, StateMap } from "./types.ts";
+import { WithIntrinsicElements } from "../types.ts";
 
 type _Props<As extends Tag> = {
   as?: As;
@@ -21,9 +22,7 @@ type _Props<As extends Tag> = {
   propsAs?: (context: StateMap & DispatchMap) => AllHTMLAttributes<Element>;
 };
 
-export type Props<As extends Tag> =
-  & _Props<As>
-  & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
+export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _DisclosureContent<As extends Tag>(
   { as, propsAs, ...props }: Props<As>,

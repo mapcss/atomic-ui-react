@@ -8,7 +8,7 @@ import {
 } from "react";
 import { mergeProps } from "../util.ts";
 import { useAs } from "../_shared/hooks.ts";
-import { Tag } from "../types.ts";
+import { Tag, WithIntrinsicElements } from "../types.ts";
 import WithDisclosureControl, {
   Props as WithDisclosureControlProps,
 } from "./with_disclosure_control.ts";
@@ -23,9 +23,7 @@ type _Props<As extends Tag> = {
   propsAs?: (context: StateMap & DispatchMap) => AllHTMLAttributes<Element>;
 } & Omit<WithDisclosureControlProps, "children">;
 
-export type Props<As extends Tag> =
-  & _Props<As>
-  & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
+export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _DisclosureControl<As extends Tag = "button">(
   { as, propsAs, type, on, ...props }: Props<As>,
