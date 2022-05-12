@@ -28,6 +28,8 @@ export async function setupJSDOM(): Promise<void> {
   const doc = new JSDOM(`<!DOCTYPE html>`);
   globalThis.document = doc.window.document;
   globalThis.HTMLIFrameElement = doc.window.HTMLIFrameElement;
+  globalThis.HTMLElement = doc.window.HTMLElement;
+
   globalThis.Node = doc.window.Node;
 }
 export const expect = defineExpect({

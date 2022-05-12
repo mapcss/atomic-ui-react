@@ -1,6 +1,7 @@
 // This module is browser compatible.
 
 export * from "./accordion/mod.ts";
+export * from "./alert_dialog/mod.ts";
 export * from "./alert/mod.ts";
 export * from "./breadcrumb/mod.ts";
 export * from "./switch/mod.ts";
