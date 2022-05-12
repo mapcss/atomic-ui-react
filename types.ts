@@ -22,3 +22,7 @@ export type KeyboardHandlerMap = Pick<
 export type KeyboardHandler = keyof KeyboardHandlerMap;
 
 export type Tag = keyof JSX.IntrinsicElements;
+
+export type WithIntrinsicElements<Props, As extends Tag> =
+  & Props
+  & Omit<JSX.IntrinsicElements[As], keyof Props>;
