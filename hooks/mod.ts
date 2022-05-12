@@ -36,3 +36,5 @@ export type {
   Param as UseKeyboardEventHandlerParam,
   ReturnValue as UseKeyboardEventHandlerReturnValue,
 } from "./use_keyboard_event_handler.ts";
+export { default as useChildRef } from "./use_child_ref.ts";
+export type { ReturnValue as UseChildRefReturnValue } from "./use_child_ref.ts";
