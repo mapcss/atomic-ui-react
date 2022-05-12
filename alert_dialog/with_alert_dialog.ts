@@ -5,7 +5,6 @@ import {
   createElement,
   ReactElement,
   useCallback,
-  useEffect,
   useMemo,
 } from "react";
 import useAriaAlertDialog, {
@@ -16,7 +15,6 @@ import { KeyboardEventHandler } from "../types.ts";
 import useId from "../hooks/use_id.ts";
 import { IdMapContext, RenderContextContext } from "./context.ts";
 import { joinChars } from "../util.ts";
-import { HasFocusElement } from "../_shared/types.ts";
 import useKeyboardEventHandler, {
   KeyOrCodeOrKeyboardEvent,
 } from "../hooks/use_keyboard_event_handler.ts";
@@ -35,9 +33,6 @@ export type Props = {
 
   isShow: boolean;
 
-  /** Initial focus element */
-  initialFocus?: () => HasFocusElement | undefined | null;
-
   /**
    * - `focus-prev` - Focus on the focusable element before the currently active element.
    * - `focus-next` - Focus on the focusable element after the currently active element.
@@ -46,7 +41,7 @@ export type Props = {
   keyEntries?: KeyEntries;
 };
 export default function WithAlertDialog(
-  { children, isShow, initialFocus, keyEntries = defaultKeyEntries }: Readonly<
+  { children, isShow, keyEntries = defaultKeyEntries }: Readonly<
     Props
   >,
 ): JSX.Element {
@@ -61,12 +56,6 @@ export default function WithAlertDialog(
   );
   const aria = useAriaAlertDialog({ titleId: title, describeId: describe });
   const refCurrent = useCallback(() => getRef.current, []);
-
-  useEffect(() => {
-    const el = initialFocus?.();
-    if (!isShow || !el) return;
-    el.focus();
-  }, [isShow, initialFocus]);
 
   const { focusNext, focusPrev } = useFocusCallback(refCurrent);
   const renderContext = useMemo<RenderContext>(
