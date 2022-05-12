@@ -20,7 +20,7 @@ import useAriaAccordionPanel, {
   ReturnValue as UseAriaAccordionPanelReturnValue,
 } from "./use_aria_accordion_panel.ts";
 import useCallbackFocus from "./use_callback_focus.ts";
-import { RenderContext } from "./types.ts";
+import { Context } from "./types.ts";
 
 export type Attributes =
   & UseAriaAccordionPanelReturnValue
@@ -29,7 +29,7 @@ export type Attributes =
 export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: RenderContext) => ReactElement);
+    | ((attributes: Attributes, context: Context) => ReactElement);
 };
 export default function WithAccordionPanel({ children }: Props): JSX.Element {
   const id = useContext(IdContext);
@@ -61,7 +61,7 @@ export default function WithAccordionPanel({ children }: Props): JSX.Element {
     () => ({ ...aria, hidden: !isOpen }),
     [JSON.stringify(aria), isOpen],
   );
-  const context = useMemo<RenderContext>(
+  const context = useMemo<Context>(
     () => ({ isOpen, open, ...focusCallbackMap, index }),
     [
       isOpen,

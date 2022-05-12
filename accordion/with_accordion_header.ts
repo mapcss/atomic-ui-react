@@ -11,7 +11,7 @@ import { isFunction } from "../deps.ts";
 import { useEventHandler } from "../_shared/hooks.ts";
 import { joinChars, mergeProps } from "../util.ts";
 import useKeyboardEventHandler, {
-  Param as KeyEntries,
+  KeyEntries,
 } from "../hooks/use_keyboard_event_handler.ts";
 import {
   AllHandlerMap,
@@ -29,7 +29,7 @@ import useAriaAccordionHeader, {
 } from "./use_aria_accordion_header.ts";
 import useCallbackFocus from "./use_callback_focus.ts";
 import useChildRef from "../hooks/use_child_ref.ts";
-import { RenderContext } from "./types.ts";
+import { Context } from "./types.ts";
 
 type Attributes =
   & AllHandlerMap
@@ -38,15 +38,25 @@ type Attributes =
 export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: RenderContext) => ReactElement);
+    | ((attributes: Attributes, context: Context) => ReactElement);
 
   on?: Iterable<AllHandlerWithoutKeyBoard>;
 
   onKey?: Iterable<KeyboardHandler>;
+
+  /**
+   * @defaultValue {@link defaultKeyEntries}
+   */
+  keyEntries?: (context: Context) => KeyEntries;
 };
 
 export default function WithAccordionHeader(
-  { children, on = ["onClick"], onKey = ["onKeyDown"] }: Props,
+  {
+    children,
+    on = ["onClick"],
+    onKey = ["onKeyDown"],
+    keyEntries = defaultKeyEntries,
+  }: Props,
 ): JSX.Element {
   const id = useContext(IdContext);
   const [selectedIndex, setSelectedIndex] = useContext(IndexContext);
@@ -71,24 +81,23 @@ export default function WithAccordionHeader(
     index,
   });
 
-  const keyEntries = useMemo<KeyEntries>(() =>
-    mapCodeEntries(codeEntries, {
-      prev: focusPrev,
-      first: focusFirst,
-      next: focusNext,
-      last: focusLast,
-      open,
-    }), [
-    JSON.stringify(codeEntries),
+  const ctx: Context = {
+    isOpen,
+    open,
+    index,
     focusFirst,
     focusLast,
     focusNext,
     focusPrev,
-    open,
+  };
+
+  const entries = useMemo<KeyEntries>(() => keyEntries(ctx), [
+    keyEntries,
+    JSON.stringify(ctx),
   ]);
 
   const beforeAll = usePreventDefault();
-  const keyboardHandler = useKeyboardEventHandler(keyEntries, { beforeAll });
+  const keyboardHandler = useKeyboardEventHandler(entries, { beforeAll });
   const keyHandlerMap = useEventHandler(onKey, keyboardHandler);
 
   const headerId = joinChars([id, "accordion", "header", index], "-");
@@ -106,15 +115,7 @@ export default function WithAccordionHeader(
   ]);
 
   const child = isFunction(children)
-    ? children(attributes, {
-      isOpen,
-      open,
-      index,
-      focusFirst,
-      focusLast,
-      focusNext,
-      focusPrev,
-    })
+    ? children(attributes, ctx)
     : cloneElement(children, mergeProps(children.props, attributes));
 
   const [getRef, setRef] = useChildRef(child);
@@ -123,32 +124,19 @@ export default function WithAccordionHeader(
   return cloneElement(child, { ref: setRef });
 }
 
-type InteractionType = "prev" | "next" | "first" | "last" | "open";
-
-type CodeCallbackMap = { [k in string]: (ev: KeyboardEvent) => void };
-
-type CodeEntries = [string | Partial<KeyboardEvent>, InteractionType][];
-
-const codeEntries: CodeEntries = [
-  ["ArrowUp", "prev"],
-  ["ArrowDown", "next"],
-  ["Enter", "open"],
-  ["Space", "open"],
-  ["Home", "first"],
-  ["End", "last"],
-];
-
-function mapCodeEntries(
-  codeEntries: CodeEntries,
-  codeCallbackMap: CodeCallbackMap,
-): KeyEntries {
-  return codeEntries.map((
-    [codeEntry, type],
-  ) => [codeEntry, codeCallbackMap[type]]);
-}
-
 function usePreventDefault(): (event: Event) => void {
   return useCallback<(ev: Event) => void>((ev) => {
     ev.preventDefault();
   }, []);
 }
+
+const defaultKeyEntries: (context: Context) => KeyEntries = (
+  { focusFirst, focusLast, focusNext, focusPrev, open },
+) => [
+  ["ArrowUp", focusPrev],
+  ["ArrowDown", focusNext],
+  ["Enter", open],
+  ["Space", open],
+  ["Home", focusFirst],
+  ["End", focusLast],
+];
