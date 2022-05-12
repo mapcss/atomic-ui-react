@@ -1,23 +1,40 @@
-import { createElement, forwardRef as _forwardRef, Ref } from "react";
+import {
+  AllHTMLAttributes,
+  createElement,
+  forwardRef as _forwardRef,
+  Ref,
+  useMemo,
+} from "react";
 import WithAccordionPanel from "./with_accordion_panel.ts";
+import { RenderContext } from "./types.ts";
 import { useAs } from "../_shared/hooks.ts";
 import { mergeProps } from "../util.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
 
 type _Props<As extends Tag> = {
   as?: As;
+
+  propsAs?: (context: RenderContext) => AllHTMLAttributes<Element>;
 };
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _AccordionPanel<As extends Tag>(
-  { as, ...props }: Props<As>,
+  { as, propsAs, ...props }: Props<As>,
   ref: Ref<Element>,
 ): JSX.Element {
   return WithAccordionPanel({
-    children: (attributes) => {
+    children: (attributes, context) => {
       const tag = useAs(as, "div");
-      return createElement(tag, { ref, ...mergeProps(attributes, props) });
+      const propsWith = useMemo<AllHTMLAttributes<Element>>(
+        () => propsAs?.(context) ?? {},
+        [propsAs, JSON.stringify(context)],
+      );
+
+      return createElement(tag, {
+        ref,
+        ...mergeProps(attributes, mergeProps(props, propsWith)),
+      });
     },
   });
 }

@@ -5,6 +5,7 @@ import {
   EventHandler,
   KeyboardEvent,
   ReactElement,
+  RefAttributes,
   SyntheticEvent,
   useCallback,
   useContext,
@@ -34,28 +35,31 @@ import useAriaAccordionHeader, {
 import useCallbackFocus from "./use_callback_focus.ts";
 import { RenderContext } from "./types.ts";
 
-type Attributes =
+type Attributes<E extends Element = Element> =
   & AllHandlerMap
-  & UseAriaAccordionHeaderReturnValue;
+  & UseAriaAccordionHeaderReturnValue
+  & RefAttributes<E>;
 
-export type Props = {
+export type Props<E extends Element = Element> = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: RenderContext) => ReactElement);
+    | ((attributes: Attributes<E>, context: RenderContext) => ReactElement);
 
   on?: Iterable<AllHandlerWithoutKeyBoard>;
 
   onKey?: Iterable<KeyboardHandler>;
 };
 
-export default function WithAccordionHeader(
-  { children, on = ["onClick"], onKey = ["onKeyDown"] }: Props,
+export default function WithAccordionHeader<
+  E extends HTMLElement = HTMLElement,
+>(
+  { children, on = ["onClick"], onKey = ["onKeyDown"] }: Props<E>,
 ): JSX.Element {
   const id = useContext(IdContext);
   const [selectedIndex, setSelectedIndex] = useContext(IndexContext);
   const tempId = useContext(HeaderCountContext);
   const refs = useContext(RefsContext);
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<E>(null);
 
   const index = tempId.next;
   refs.push(ref);
@@ -100,7 +104,8 @@ export default function WithAccordionHeader(
   const panelId = joinChars([id, "accordion", "panel", index], "-");
   const aria = useAriaAccordionHeader({ id: headerId, panelId, isOpen });
 
-  const attributes = useMemo<Attributes>(() => ({
+  const attributes = useMemo<Attributes<E>>(() => ({
+    ref,
     ...aria,
     ...handlerMap,
     ...keyHandlerMap,
@@ -122,10 +127,7 @@ export default function WithAccordionHeader(
     });
   }
 
-  return cloneElement(children, {
-    ref,
-    ...mergeProps(children.props, attributes),
-  });
+  return cloneElement(children, mergeProps(children.props, attributes));
 }
 
 type InteractionType = "prev" | "next" | "first" | "last" | "open";
