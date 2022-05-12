@@ -14,4 +14,6 @@ export const HeaderCountContext = createContext<TempIdReturnValue>(
 export const PanelCountContext = createContext<TempIdReturnValue>(
   DEFAULT_TEMP_ID,
 );
-export const RefsContext = createContext<RefObject<HTMLElement>[]>([]);
+export const RefsContext = createContext<RefObject<HTMLElement | SVGElement>[]>(
+  [],
+);

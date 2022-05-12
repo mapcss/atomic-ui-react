@@ -8,13 +8,13 @@ import { ATOMIC_UI } from "../_shared/constant.ts";
 
 const ERROR_MSG = `${ATOMIC_UI} String ref is not supported.`;
 
-export type ReturnValue<E extends HTMLElement | SVGElement | MathMLElement> = [
+export type ReturnValue<E extends HTMLElement | SVGElement> = [
   RefObject<E>,
   RefObject<E> | RefCallback<E>,
 ];
 
 export default function useChildRef<
-  E extends HTMLElement | SVGElement | MathMLElement,
+  E extends HTMLElement | SVGElement,
 >(
   value: Readonly<ReactElement>,
 ): ReturnValue<E> {

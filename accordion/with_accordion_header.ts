@@ -3,11 +3,9 @@
 import {
   cloneElement,
   ReactElement,
-  RefAttributes,
   useCallback,
   useContext,
   useMemo,
-  useRef,
 } from "react";
 import { isFunction } from "../deps.ts";
 import { useEventHandler } from "../_shared/hooks.ts";
@@ -30,36 +28,32 @@ import useAriaAccordionHeader, {
   ReturnValue as UseAriaAccordionHeaderReturnValue,
 } from "./use_aria_accordion_header.ts";
 import useCallbackFocus from "./use_callback_focus.ts";
+import useChildRef from "../hooks/use_child_ref.ts";
 import { RenderContext } from "./types.ts";
 
-type Attributes<E extends Element = Element> =
+type Attributes =
   & AllHandlerMap
-  & UseAriaAccordionHeaderReturnValue
-  & RefAttributes<E>;
+  & UseAriaAccordionHeaderReturnValue;
 
-export type Props<E extends Element = Element> = {
+export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes<E>, context: RenderContext) => ReactElement);
+    | ((attributes: Attributes, context: RenderContext) => ReactElement);
 
   on?: Iterable<AllHandlerWithoutKeyBoard>;
 
   onKey?: Iterable<KeyboardHandler>;
 };
 
-export default function WithAccordionHeader<
-  E extends HTMLElement = HTMLElement,
->(
-  { children, on = ["onClick"], onKey = ["onKeyDown"] }: Props<E>,
+export default function WithAccordionHeader(
+  { children, on = ["onClick"], onKey = ["onKeyDown"] }: Props,
 ): JSX.Element {
   const id = useContext(IdContext);
   const [selectedIndex, setSelectedIndex] = useContext(IndexContext);
   const tempId = useContext(HeaderCountContext);
   const refs = useContext(RefsContext);
-  const ref = useRef<E>(null);
 
   const index = tempId.next;
-  refs.push(ref);
 
   const isOpen = useMemo<boolean>(() => index === selectedIndex, [
     index,
@@ -101,8 +95,7 @@ export default function WithAccordionHeader<
   const panelId = joinChars([id, "accordion", "panel", index], "-");
   const aria = useAriaAccordionHeader({ id: headerId, panelId, isOpen });
 
-  const attributes = useMemo<Attributes<E>>(() => ({
-    ref,
+  const attributes = useMemo<Attributes>(() => ({
     ...aria,
     ...handlerMap,
     ...keyHandlerMap,
@@ -112,8 +105,8 @@ export default function WithAccordionHeader<
     keyHandlerMap,
   ]);
 
-  if (isFunction(children)) {
-    return children(attributes, {
+  const child = isFunction(children)
+    ? children(attributes, {
       isOpen,
       open,
       index,
@@ -121,10 +114,13 @@ export default function WithAccordionHeader<
       focusLast,
       focusNext,
       focusPrev,
-    });
-  }
+    })
+    : cloneElement(children, mergeProps(children.props, attributes));
 
-  return cloneElement(children, mergeProps(children.props, attributes));
+  const [getRef, setRef] = useChildRef(child);
+  refs.push(getRef);
+
+  return cloneElement(child, { ref: setRef });
 }
 
 type InteractionType = "prev" | "next" | "first" | "last" | "open";

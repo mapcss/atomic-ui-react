@@ -9,7 +9,10 @@ import {
   getPrevIndex,
 } from "../_shared/util.ts";
 
-export type Param = { refs: RefObject<HTMLElement>[]; index: number };
+export type Param = {
+  refs: RefObject<HTMLElement | SVGElement>[];
+  index: number;
+};
 
 export type ReturnValue = {
   focusPrev: VFn;
