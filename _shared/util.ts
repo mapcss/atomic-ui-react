@@ -1,6 +1,7 @@
 // This module is browser compatible.
 
 import { isLength0, not } from "../deps.ts";
+import { HasFocusElement } from "./types.ts";
 export type TempIdReturnValue = {
   readonly current: number;
   readonly next: number;
@@ -92,8 +93,6 @@ export function filterFocusable(
 
   return candidate.filter(hasFocusElement);
 }
-
-type HasFocusElement = HTMLElement | SVGElement | MathMLElement;
 
 function hasFocusElement(el: Element): el is HasFocusElement {
   return el instanceof HTMLElement || el instanceof SVGElement ||

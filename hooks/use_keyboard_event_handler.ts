@@ -1,25 +1,26 @@
 // This module is browser compatible.
 import { useCallback } from "react";
 import { isString } from "../deps.ts";
+import { KeyboardEventHandler } from "../types.ts";
+
+export type KeyOrCodeOrKeyboardEvent = string | Partial<KeyboardEvent>;
 
 export type Param = Iterable<[
-  string | Partial<KeyboardEvent>,
-  ReturnValue,
+  KeyOrCodeOrKeyboardEvent,
+  KeyboardEventHandler,
 ]>;
 export type Option = {
-  beforeAll: ReturnValue;
+  beforeAll: KeyboardEventHandler;
 
-  afterAll: ReturnValue;
+  afterAll: KeyboardEventHandler;
 };
-
-export type ReturnValue = (ev: KeyboardEvent) => void;
 
 /** Hooks for mapping keyboard event and callback */
 export default function useKeyboardEventHandler(
   keyEntries: Readonly<Param>,
   option: Readonly<Partial<Option>> = {},
-): (ev: KeyboardEvent) => void {
-  const callback = useCallback<(ev: KeyboardEvent) => void>(
+): KeyboardEventHandler {
+  const callback = useCallback<KeyboardEventHandler>(
     mappingKey(keyEntries, option),
     [JSON.stringify(keyEntries), option.beforeAll, option.afterAll],
   );
@@ -30,8 +31,8 @@ export default function useKeyboardEventHandler(
 export function mappingKey(
   keyEntries: Readonly<Param>,
   { beforeAll, afterAll }: Readonly<Partial<Option>> = {},
-): ReturnValue {
-  const callback = (ev: KeyboardEvent) => {
+): KeyboardEventHandler {
+  const callback: KeyboardEventHandler = (ev) => {
     beforeAll?.(ev);
 
     for (const [maybeCode, callback] of keyEntries) {

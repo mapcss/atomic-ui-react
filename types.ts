@@ -26,3 +26,4 @@ export type Tag = keyof JSX.IntrinsicElements;
 export type WithIntrinsicElements<Props, As extends Tag> =
   & Props
   & Omit<JSX.IntrinsicElements[As], keyof Props>;
+export type KeyboardEventHandler = (ev: KeyboardEvent) => void;
