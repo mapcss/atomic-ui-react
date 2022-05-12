@@ -2,11 +2,8 @@
 
 import {
   cloneElement,
-  EventHandler,
-  KeyboardEvent,
   ReactElement,
   RefAttributes,
-  SyntheticEvent,
   useCallback,
   useContext,
   useMemo,
@@ -132,7 +129,7 @@ export default function WithAccordionHeader<
 
 type InteractionType = "prev" | "next" | "first" | "last" | "open";
 
-type CodeCallbackMap = { [k in string]: EventHandler<KeyboardEvent<Element>> };
+type CodeCallbackMap = { [k in string]: (ev: KeyboardEvent) => void };
 
 type CodeEntries = [string | Partial<KeyboardEvent>, InteractionType][];
 
@@ -154,8 +151,8 @@ function mapCodeEntries(
   ) => [codeEntry, codeCallbackMap[type]]);
 }
 
-function usePreventDefault(): (event: SyntheticEvent<Element, Event>) => void {
-  return useCallback<EventHandler<SyntheticEvent<Element>>>((ev) => {
+function usePreventDefault(): (event: Event) => void {
+  return useCallback<(ev: Event) => void>((ev) => {
     ev.preventDefault();
   }, []);
 }
