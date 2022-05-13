@@ -3,32 +3,48 @@
 import { cloneElement, ReactElement, useContext, useMemo } from "react";
 import { isFunction, ValueOf } from "../deps.ts";
 import { BooleanContext, IdContext } from "../_shared/context.ts";
-import { useEventHandler } from "../_shared/hooks.ts";
+import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
 import { mergeProps } from "../util.ts";
-import { AllHandler, AllHandlerMap } from "../types.ts";
+import {
+  AllHandlerMap,
+  AllHandlerWithoutKeyBoard,
+  KeyboardHandler,
+} from "../types.ts";
 import useAriaDisclosureControl, {
   ReturnValue as UseAriaDisclosureControlReturnValue,
 } from "./use_aria_disclosure_control.ts";
 import { ERROR_MSG } from "./constant.ts";
 import { DispatchMap, StateMap } from "./types.ts";
+import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
+
+type Attributes = UseAriaDisclosureControlReturnValue & AllHandlerMap;
 
 type Type = "toggle" | "open" | "close";
 
 export type Props = {
-  on?: Iterable<AllHandler>;
+  /**
+   * @defaultValue [`onClick`]
+   */
+  on?: Iterable<AllHandlerWithoutKeyBoard>;
+
+  /**
+   * @defaultValue [`onKeyDown`]
+   */
+  onKey?: Iterable<KeyboardHandler>;
 
   type?: Type;
 
   children:
     | ReactElement
     | ((
-      attributes: UseAriaDisclosureControlReturnValue & AllHandlerMap,
+      attributes: Attributes,
       context: StateMap & DispatchMap,
     ) => JSX.Element);
 };
 
 export default function WithDisclosureControl(
-  { on = ["onClick"], type = "toggle", children }: Readonly<Props>,
+  { on = ["onClick"], onKey = ["onKeyDown"], type = "toggle", children }:
+    Readonly<Props>,
 ): JSX.Element {
   const id = useContext(IdContext);
   const stateSet = useContext(BooleanContext);
@@ -44,9 +60,21 @@ export default function WithDisclosureControl(
 
   const aria = useAriaDisclosureControl(stateMap);
   const handlerMap = useEventHandler(on, dispatch);
+  const beforeAll = usePreventDefault();
+  const keyboardHandler = useKeyboardEventHandler([
+    ["Space", dispatch],
+    ["Enter", dispatch],
+  ], { beforeAll });
+
+  const keyboardHandlerMap = useEventHandler(onKey, keyboardHandler);
+  const attributes: Attributes = {
+    ...aria,
+    ...handlerMap,
+    ...keyboardHandlerMap,
+  };
 
   if (isFunction(children)) {
-    return children({ ...aria, ...handlerMap }, {
+    return children(attributes, {
       ...stateMap,
       ...dispatchMap,
     });
@@ -54,6 +82,6 @@ export default function WithDisclosureControl(
 
   return cloneElement(
     children,
-    mergeProps(children.props, { ...aria, ...handlerMap }),
+    mergeProps(children.props, attributes),
   );
 }

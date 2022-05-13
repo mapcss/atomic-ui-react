@@ -123,6 +123,7 @@ it(
       "aria-expanded": anyBoolean(),
       role: "button",
       onClick: anyFunction(),
+      onKeyDown: anyFunction(),
     });
     expect(mockFn).toHaveBeenCalledWith({
       id: anyString(),
@@ -163,6 +164,7 @@ it(
       role: "button",
       onAbort: anyFunction(),
       onChange: anyFunction(),
+      onKeyDown: anyFunction(),
     });
   },
 );
