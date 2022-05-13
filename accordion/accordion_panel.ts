@@ -6,7 +6,7 @@ import {
   useMemo,
 } from "react";
 import WithAccordionPanel from "./with_accordion_panel.ts";
-import { RenderContext } from "./types.ts";
+import { Context } from "./types.ts";
 import { useAs } from "../_shared/hooks.ts";
 import { mergeProps } from "../util.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
@@ -14,7 +14,7 @@ import { Tag, WithIntrinsicElements } from "../types.ts";
 type _Props<As extends Tag> = {
   as?: As;
 
-  propsAs?: (context: RenderContext) => AllHTMLAttributes<Element>;
+  propsAs?: (context: Context) => AllHTMLAttributes<Element>;
 };
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;

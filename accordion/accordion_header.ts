@@ -11,7 +11,7 @@ import WithAccordionHeader, {
 import { mergeProps } from "../util.ts";
 import { useAs } from "../_shared/hooks.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
-import { RenderContext } from "./types.ts";
+import { Context } from "./types.ts";
 
 type _Props<As extends Tag> = {
   /**
@@ -19,7 +19,7 @@ type _Props<As extends Tag> = {
    */
   as?: As;
 
-  propsAs?: (context: RenderContext) => AllHTMLAttributes<Element>;
+  propsAs?: (context: Context) => AllHTMLAttributes<Element>;
 } & Pick<WithAccordionHeaderProps, "on" | "onKey">;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
