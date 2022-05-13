@@ -1,6 +1,7 @@
 // This module is browser compatible.
 
 import {
+  AllHTMLAttributes,
   cloneElement,
   ReactElement,
   useCallback,
@@ -33,7 +34,8 @@ import { Context } from "./types.ts";
 
 type Attributes =
   & AllHandlerMap
-  & UseAriaAccordionHeaderReturnValue;
+  & UseAriaAccordionHeaderReturnValue
+  & Pick<AllHTMLAttributes<Element>, "tabIndex">;
 
 export type Props = {
   children:
@@ -108,6 +110,7 @@ export default function WithAccordionHeader(
     ...aria,
     ...handlerMap,
     ...keyHandlerMap,
+    tabIndex: 0,
   }), [
     JSON.stringify(aria),
     handlerMap,
