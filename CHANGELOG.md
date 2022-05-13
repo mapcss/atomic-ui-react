@@ -1,3 +1,24 @@
+# [1.0.0-beta.43](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.42...1.0.0-beta.43) (2022-05-13)
+
+
+### Bug Fixes
+
+* **accordion:** fix types of default ref ([ebcab31](https://github.com/mapcss/atomic-ui-react/commit/ebcab31a222e61b10c51f1622b1e23a6b385594c))
+* **alert_dialog:** remove `initialFocus` props ([edb44e3](https://github.com/mapcss/atomic-ui-react/commit/edb44e3e0c0c03d02bbd73044c0008054d252b76))
+* **hooks:** `beforeAll` should be call the first keyboard event ([a1e77f4](https://github.com/mapcss/atomic-ui-react/commit/a1e77f4af680f6616e04ca279c41d0e21ca227db))
+
+
+### Features
+
+* **accordion:** add `AccordionHeader` and `AccordionPanel` components ([c5ab588](https://github.com/mapcss/atomic-ui-react/commit/c5ab588fae4751707b6769064e931ba67bf8d21b))
+* **accordion:** add `keyEntries` props for customize keyboard event ([0fee8b2](https://github.com/mapcss/atomic-ui-react/commit/0fee8b2c8777828223d96826b82fbfe96f3f8c3b))
+* **accordion:** add `propsAs` props that overwrite props with context ([300b495](https://github.com/mapcss/atomic-ui-react/commit/300b4952e8cef5f09510fb82feaef56fb2651d6c))
+* **alert_dialog:** add `keyEntries` props that manage keyboard interaction ([e3cf7af](https://github.com/mapcss/atomic-ui-react/commit/e3cf7afe6df1618072f041b9ad717ddb34219cf1))
+* **alert_dialog:** add `WithAlertDialog`, `WithDialogTitle` and `WithDialogDescribe` component ([dbfad46](https://github.com/mapcss/atomic-ui-react/commit/dbfad46fadf5ff248a3f43185a594f319d04fd2b))
+* **alert_dialog:** change `keyEntries` interface to function style ([853357f](https://github.com/mapcss/atomic-ui-react/commit/853357f10dc8901a2da8ac2a1132dc6538928682))
+* **hooks:** add `useChildRef` hooks that return refObject for get and refObject or refCallback ([2636c99](https://github.com/mapcss/atomic-ui-react/commit/2636c99cd28b03223bc8ffa96d9037f0ebb3e074))
+* **hooks:** improve types inference ([7d01c77](https://github.com/mapcss/atomic-ui-react/commit/7d01c7771f86be49355441ce8a845d4fd7331b9c))
+
 # [1.0.0-beta.42](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.41...1.0.0-beta.42) (2022-05-11)
 
 
