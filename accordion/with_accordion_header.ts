@@ -8,7 +8,7 @@ import {
   useMemo,
 } from "react";
 import { isFunction } from "../deps.ts";
-import { useEventHandler } from "../_shared/hooks.ts";
+import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
 import { joinChars, mergeProps } from "../util.ts";
 import useKeyboardEventHandler, {
   KeyEntries,
@@ -122,12 +122,6 @@ export default function WithAccordionHeader(
   refs.push(getRef);
 
   return cloneElement(child, { ref: setRef });
-}
-
-function usePreventDefault(): (event: Event) => void {
-  return useCallback<(ev: Event) => void>((ev) => {
-    ev.preventDefault();
-  }, []);
 }
 
 const defaultKeyEntries: (context: Context) => KeyEntries = (
