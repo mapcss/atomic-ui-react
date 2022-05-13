@@ -1,7 +1,6 @@
 // This module is browser compatible.
 
 import {
-  AllHTMLAttributes,
   cloneElement,
   ReactElement,
   useCallback,
@@ -9,11 +8,8 @@ import {
   useMemo,
 } from "react";
 import { isFunction } from "../deps.ts";
-import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
-import { joinChars, mergeProps } from "../util.ts";
-import useKeyboardEventHandler, {
-  KeyEntries,
-} from "../hooks/use_keyboard_event_handler.ts";
+import { mergeProps } from "../util.ts";
+import { KeyEntries } from "../hooks/use_keyboard_event_handler.ts";
 import {
   AllHandlerMap,
   AllHandlerWithoutKeyBoard,
@@ -25,22 +21,24 @@ import {
   IndexContext,
   RefsContext,
 } from "./context.ts";
-import useAriaAccordionHeader, {
-  ReturnValue as UseAriaAccordionHeaderReturnValue,
-} from "./use_aria_accordion_header.ts";
 import useCallbackFocus from "./use_callback_focus.ts";
 import useChildRef from "../hooks/use_child_ref.ts";
+import useAttributesAccordionHeader, {
+  Attributes,
+} from "./use_attributes_accordion_header.ts";
+import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
+import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
 import { Context } from "./types.ts";
 
-type Attributes =
-  & AllHandlerMap
-  & UseAriaAccordionHeaderReturnValue
-  & Pick<AllHTMLAttributes<Element>, "tabIndex">;
+type HTMLAttributes = Attributes | AllHandlerMap;
 
 export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: Context) => ReactElement);
+    | ((
+      htmlAttributes: HTMLAttributes,
+      context: Context,
+    ) => ReactElement);
 
   on?: Iterable<AllHandlerWithoutKeyBoard>;
 
@@ -64,7 +62,6 @@ export default function WithAccordionHeader(
   const [selectedIndex, setSelectedIndex] = useContext(IndexContext);
   const tempId = useContext(HeaderCountContext);
   const refs = useContext(RefsContext);
-
   const index = tempId.next;
 
   const isOpen = useMemo<boolean>(() => index === selectedIndex, [
@@ -77,7 +74,6 @@ export default function WithAccordionHeader(
     index,
   ]);
 
-  const handlerMap = useEventHandler(on, open);
   const { focusFirst, focusLast, focusNext, focusPrev } = useCallbackFocus({
     refs,
     index,
@@ -98,28 +94,25 @@ export default function WithAccordionHeader(
     JSON.stringify(ctx),
   ]);
 
+  const attributes = useAttributesAccordionHeader({
+    id,
+    index,
+    isOpen,
+  });
+
+  const handlerMap = useEventHandler(on, open);
   const beforeAll = usePreventDefault();
   const keyboardHandler = useKeyboardEventHandler(entries, { beforeAll });
   const keyHandlerMap = useEventHandler(onKey, keyboardHandler);
-
-  const headerId = joinChars([id, "accordion", "header", index], "-");
-  const panelId = joinChars([id, "accordion", "panel", index], "-");
-  const aria = useAriaAccordionHeader({ id: headerId, panelId, isOpen });
-
-  const attributes = useMemo<Attributes>(() => ({
-    ...aria,
+  const htmlAttributes: HTMLAttributes = {
+    ...attributes,
     ...handlerMap,
     ...keyHandlerMap,
-    tabIndex: 0,
-  }), [
-    JSON.stringify(aria),
-    handlerMap,
-    keyHandlerMap,
-  ]);
+  };
 
   const child = isFunction(children)
-    ? children(attributes, ctx)
-    : cloneElement(children, mergeProps(children.props, attributes));
+    ? children(htmlAttributes, ctx)
+    : cloneElement(children, mergeProps(children.props, htmlAttributes));
 
   const [getRef, setRef] = useChildRef(child);
   refs.push(getRef);
