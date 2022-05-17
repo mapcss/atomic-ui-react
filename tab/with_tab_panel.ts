@@ -1,17 +1,15 @@
 // This module is browser compatible.
 
 import {
+  AllHTMLAttributes,
   cloneElement,
-  createElement,
-  Fragment,
   ReactElement,
   useContext,
   useMemo,
 } from "react";
+import { isFunction } from "../deps.ts";
 import { joinChars } from "../util.ts";
-import useTabPanelAria, {
-  ReturnValue as UseTabPanelAriaReturnValue,
-} from "./use_tab_panel_aria.ts";
+import useTabPanelAria from "./use_tab_panel_aria.ts";
 import {
   DisabledIdsContext,
   IdContext,
@@ -20,7 +18,7 @@ import {
 } from "./context.ts";
 import { PANEL, TAB } from "./constant.ts";
 
-export type RenderContext = {
+export type Context = {
   selectedIndex: number;
   index: number;
   isDisabled: boolean;
@@ -28,34 +26,25 @@ export type RenderContext = {
   isShowable: boolean;
 };
 
-export type Render = (
-  root: ReactElement,
-  attributes: UseTabPanelAriaReturnValue,
-  context: RenderContext,
-) => ReactElement;
-
-export const defaultRender: Render = (
-  root,
-  attrs: UseTabPanelAriaReturnValue,
-  { isShowable }: RenderContext,
-) => {
-  return isShowable ? cloneElement(root, attrs) : createElement(Fragment);
-};
+export type Attributes = Pick<
+  AllHTMLAttributes<Element>,
+  "hidden" | "aria-labelledby" | "role" | "id"
+>;
 
 export type Props = {
-  children: ReactElement;
-
-  render?: Render;
+  children:
+    | ReactElement
+    | ((attributes: Attributes, context: Context) => ReactElement);
 };
 export default function WithTabPanel(
-  { children, render = defaultRender }: Props,
+  { children }: Props,
 ): JSX.Element {
   const id = useContext(IdContext);
   const tabPanelCount = useContext(TabPanelCountContext);
   const [selectedIndex] = useContext(IndexContext);
   const disabledIds = useContext(DisabledIdsContext);
 
-  const index = tabPanelCount.current;
+  const index = tabPanelCount.next;
   const isDisabled = disabledIds.includes(index);
   const isSelected = useMemo<boolean>(() => index === selectedIndex, [
     selectedIndex,
@@ -64,15 +53,32 @@ export default function WithTabPanel(
     isSelected,
     isDisabled,
   ]);
-  const tabId = joinChars([id, TAB, index], "-");
-  const tabPanelId = joinChars([id, TAB, PANEL, index], "-");
+  const tabId = useMemo<string | undefined>(
+    () => joinChars([id, TAB, index], "-"),
+    [id, index],
+  );
+  const tabPanelId = useMemo<string | undefined>(
+    () => joinChars([id, TAB, PANEL, index], "-"),
+    [id, index],
+  );
   const aria = useTabPanelAria({ tabId, tabPanelId });
 
-  return render(children, aria, {
-    selectedIndex,
-    index,
-    isDisabled,
+  const attributes = useMemo<Attributes>(() => ({
+    hidden: !isShowable,
+    ...aria,
+  }), [JSON.stringify(aria)]);
+
+  const context = useMemo<Context>(() => ({
     isSelected,
     isShowable,
-  });
+    isDisabled,
+    selectedIndex,
+    index,
+  }), [isSelected, isShowable, isDisabled, selectedIndex, index]);
+
+  if (isFunction(children)) {
+    return children(attributes, context);
+  }
+
+  return cloneElement(children, attributes);
 }
