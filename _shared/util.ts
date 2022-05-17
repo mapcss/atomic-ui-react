@@ -80,21 +80,23 @@ export function getLastIndex(
   }
 }
 
-export function filterFocusable(
-  node: ParentNode,
-): HasFocusElement[] {
-  const candidate = [
-    ...node.querySelectorAll(
-      'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])',
-    ),
-  ].filter(
-    (el) => !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden"),
-  );
+const selector =
+  'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
 
-  return candidate.filter(hasFocusElement);
+export function filterFocusable(
+  root: ParentNode | null | undefined,
+): HasFocusElement[] {
+  if (!root) return [];
+  const els = [...root.querySelectorAll(selector)];
+
+  return els.filter(hasNotInvalidAttribute).filter(hasFocusElement);
 }
 
 function hasFocusElement(el: Element): el is HasFocusElement {
   return el instanceof HTMLElement || el instanceof SVGElement ||
     el instanceof MathMLElement;
+}
+
+function hasNotInvalidAttribute(el: Element): boolean {
+  return !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden");
 }
