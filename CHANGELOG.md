@@ -1,3 +1,17 @@
+# [1.0.0-beta.44](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.43...1.0.0-beta.44) (2022-05-19)
+
+
+### Bug Fixes
+
+* **accordion:** add `tabIndex` to attributes ([5ccf99e](https://github.com/mapcss/atomic-ui-react/commit/5ccf99ea1c3e4933080bf44104780d76af84800b))
+* **tab:** increment tab panel count on each mount ([8331bd4](https://github.com/mapcss/atomic-ui-react/commit/8331bd4d3faeccd3f7fcdd9d891c974f9441ea35))
+
+
+### Features
+
+* **disclosure:** add keyboard event handler for `Space` and `Enter` ([9a899cd](https://github.com/mapcss/atomic-ui-react/commit/9a899cd21576466ffd3de4a9f5928133f308d291))
+* **toolbar:** add `WithToolbar` and `WithToolbarItem` components ([74daa78](https://github.com/mapcss/atomic-ui-react/commit/74daa78c70ac4d46df04c303277257f4b4c5488b))
+
 # [1.0.0-beta.43](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.42...1.0.0-beta.43) (2022-05-13)
 
 
