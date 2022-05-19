@@ -1,5 +1,5 @@
 import WithToolbarItem from "./with_toolbar_item.ts";
-import WithToolbar from "./with_toolbar.ts";
+import ToolbarProvider from "./toolbar_provider.ts";
 import {
   assertSnapshot,
   describe,
@@ -16,6 +16,20 @@ const describeTests = describe({
   },
 });
 
+it(
+  describeTests,
+  "should throw error when not wrap by ToolbarProvider",
+  () => {
+    expect(() =>
+      render(
+        <WithToolbarItem>
+          <button>1</button>
+        </WithToolbarItem>,
+      )
+    ).toThrow();
+  },
+);
+
 it(describeTests, "should render as", (t) => {
   const { container } = render(
     <>
@@ -28,11 +42,9 @@ it(describeTests, "should render as", (t) => {
     </>,
     {
       wrapper: ({ children }) => (
-        <WithToolbar>
-          <div>
-            {children}
-          </div>
-        </WithToolbar>
+        <ToolbarProvider>
+          {children as never}
+        </ToolbarProvider>
       ),
     },
   );
@@ -52,11 +64,9 @@ it(describeTests, "should focus on keydown and change tabIndex", (t) => {
     </>,
     {
       wrapper: ({ children }) => (
-        <WithToolbar>
-          <div>
-            {children}
-          </div>
-        </WithToolbar>
+        <ToolbarProvider>
+          {children as never}
+        </ToolbarProvider>
       ),
     },
   );

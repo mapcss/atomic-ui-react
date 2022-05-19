@@ -19,6 +19,9 @@ import useFocusCallback, {
 } from "../hooks/use_focus_callback.ts";
 import { useEventHandler } from "../_shared/hooks.ts";
 import { calcTabIndex } from "./util.ts";
+import { ATOMIC_UI } from "../_shared/constant.ts";
+
+const ERROR_MSG = `${ATOMIC_UI} Must be wrapped by <ToolbarProvider>`;
 
 export type Attributes =
   & Pick<AllHTMLAttributes<Element>, "tabIndex">
@@ -42,8 +45,13 @@ export default function WithToolbarItem(
   { children, onKey = ["onKeyDown"], keyEntries = defaultKeyEntries }: Props,
 ): JSX.Element {
   const refs = useContext(RefsContext);
-  const [activeElement, setActiveElement] = useContext(ActiveElementContext);
+  const activeElementContext = useContext(ActiveElementContext);
 
+  if (!refs || !activeElementContext) {
+    throw Error(ERROR_MSG);
+  }
+
+  const [activeElement, setActiveElement] = activeElementContext;
   const [getRef, ref] = useMergedRef(children);
   const isFirst = isLength0(refs);
   refs.push(getRef);

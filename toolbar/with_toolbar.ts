@@ -1,13 +1,5 @@
-import {
-  AllHTMLAttributes,
-  cloneElement,
-  createElement,
-  ReactElement,
-  useMemo,
-} from "react";
+import { AllHTMLAttributes, cloneElement, ReactElement, useMemo } from "react";
 import { isFunction } from "../deps.ts";
-import { ActiveElementContext, RefsContext } from "./context.ts";
-import useActiveElement from "../hooks/use_active_element.ts";
 
 export type Props = {
   children: ReactElement | ((attributes: Attributes) => ReactElement);
@@ -21,20 +13,11 @@ export default function WithToolbar(
   const attributes = useMemo<Attributes>(() => ({
     role: "toolbar",
   }), []);
-  const [activeElement, setActiveElement] = useActiveElement();
 
   const child = isFunction(children) ? children(attributes) : cloneElement(
     children,
     attributes,
   );
 
-  return createElement(
-    RefsContext.Provider,
-    { value: [] },
-    createElement(
-      ActiveElementContext.Provider,
-      { value: [activeElement, setActiveElement] },
-      child,
-    ),
-  );
+  return child;
 }

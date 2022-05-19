@@ -1,9 +1,9 @@
 import { createContext, RefObject } from "react";
-import { noop, VFn } from "../deps.ts";
+import { VFn } from "../deps.ts";
 
 export const ActiveElementContext = createContext<
-  [Element | null, VFn]
->([null, noop]);
+  [Element | null, VFn] | undefined
+>(undefined);
 export const RefsContext = createContext<
-  RefObject<HTMLElement | SVGElement | MathMLElement>[]
->([]);
+  RefObject<HTMLElement | SVGElement | MathMLElement>[] | undefined
+>(undefined);

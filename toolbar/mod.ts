@@ -8,3 +8,5 @@ export type {
   Attributes as WithToolbarItemAttributes,
   Props as WithToolbarItemProps,
 } from "./with_toolbar_item.ts";
+export { default as ToolbarProvider } from "./toolbar_provider.ts";
+export type { Props as ToolbarProviderProps } from "./toolbar_provider.ts";
