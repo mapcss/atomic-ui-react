@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { LegacyRef, ReactElement, RefCallback, RefObject, useRef } from "react";
 import { isFunction, isNil, isObject, isString } from "../deps.ts";
-import { getRef, isReactElement } from "../util.ts";
+import { getRef } from "../util.ts";
 import { ATOMIC_UI } from "../_shared/constant.ts";
 
 const ERROR_MSG = `${ATOMIC_UI} String ref is not supported.`;
