@@ -229,6 +229,7 @@ it(describeTests, "should render children as props", (t) => {
     id: anyString(),
     onClick: anyFunction(),
     onKeyDown: anyFunction(),
+    tabIndex: anyNumber(),
   });
 
   expect(mockFn).toHaveBeenCalledWith({
