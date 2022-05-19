@@ -243,3 +243,11 @@ export function isCloneable(
   | ReactPortal {
   return isObject(value) && "key" in value;
 }
+
+export function isReactElement(value: ReactNode): value is ReactElement {
+  return isObject(value) && "type" in value;
+}
+
+export function isSameNode(node: Node | null, other: Node | null): boolean {
+  return node?.isSameNode(other) ?? false;
+}

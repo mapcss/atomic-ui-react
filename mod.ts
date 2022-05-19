@@ -10,5 +10,6 @@ export * from "./tab/mod.ts";
 export * from "./ssr/mod.ts";
 export * from "./tooltip/mod.ts";
 export * from "./disclosure/mod.ts";
+export * from "./toolbar/mod.ts";
 export * from "./hooks/mod.ts";
 export * from "./util.ts";

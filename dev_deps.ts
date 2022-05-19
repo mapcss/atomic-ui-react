@@ -61,7 +61,10 @@ function toHaveAttribute(
   }
   return {
     pass: equal(el.getAttribute(name), expected),
-    expected: `${name} is ${Deno.inspect(expected)}`,
+    actualHint: `Actual ${name}:`,
+    resultActual: el.getAttribute(name),
+    expectedHint: `Expected ${name}:`,
+    expected,
   };
 }
 
