@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { useCallback } from "react";
 import { VFn } from "../deps.ts";
 import {

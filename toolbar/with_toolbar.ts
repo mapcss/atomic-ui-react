@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { AllHTMLAttributes, cloneElement, ReactElement, useMemo } from "react";
 import { isFunction } from "../deps.ts";
 

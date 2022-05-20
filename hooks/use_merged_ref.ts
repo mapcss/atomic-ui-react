@@ -1,4 +1,6 @@
+// This module is browser compatible.
 // deno-lint-ignore-file no-explicit-any
+
 import { LegacyRef, ReactElement, RefCallback, RefObject, useRef } from "react";
 import { isFunction, isNil, isObject, isString } from "../deps.ts";
 import { getRef } from "../util.ts";

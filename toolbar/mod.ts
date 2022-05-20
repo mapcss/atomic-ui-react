@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 export { default as WithToolbar } from "./with_toolbar.ts";
 export type {
   Attributes as WithToolbarAttributes,

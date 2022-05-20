@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 export function calcTabIndex(
   { isActive, hasActivated, isFirst }: {
     isActive: boolean;
