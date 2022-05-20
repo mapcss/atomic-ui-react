@@ -1,5 +1,9 @@
 // This module is browser compatible.
 
+export { default as Toolbar } from "./toolbar.ts";
+export type { Props as ToolbarProps } from "./toolbar.ts";
+export { default as ToolbarItem } from "./toolbar_item.ts";
+export type { Props as ToolbarItemProps } from "./toolbar_item.ts";
 export { default as WithToolbar } from "./with_toolbar.ts";
 export type { Props as WithToolbarProps } from "./with_toolbar.ts";
 export { default as WithToolbarItem } from "./with_toolbar_item.ts";

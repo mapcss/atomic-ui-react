@@ -4,25 +4,19 @@
 
 ```tsx
 import {
+  Toolbar,
+  ToolbarItem,
   ToolbarProvider,
-  WithToolbar,
-  WithToolbarItem,
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 export default () => {
   return (
     <ToolbarProvider>
-      <WithToolbar>
-        <div>
-          <WithToolbarItem>
-            <button></button>
-          </WithToolbarItem>
-
-          <WithToolbarItem>
-            <button></button>
-          </WithToolbarItem>
-        </div>
-      </WithToolbar>
+      <Toolbar>
+        <ToolbarItem>1</ToolbarItem>
+        <ToolbarItem>2</ToolbarItem>
+        <ToolbarItem>3</ToolbarItem>
+      </Toolbar>
     </ToolbarProvider>
   );
 };
