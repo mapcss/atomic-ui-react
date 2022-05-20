@@ -6,6 +6,7 @@ export type {
 export { default as WithToolbarItem } from "./with_toolbar_item.ts";
 export type {
   Attributes as WithToolbarItemAttributes,
+  Context as WithToolbarItemContext,
   Props as WithToolbarItemProps,
 } from "./with_toolbar_item.ts";
 export { default as ToolbarProvider } from "./toolbar_provider.ts";

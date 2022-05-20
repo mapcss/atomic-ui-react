@@ -1,9 +1,14 @@
 import WithToolbarItem from "./with_toolbar_item.ts";
 import ToolbarProvider from "./toolbar_provider.ts";
 import {
+  anyBoolean,
+  anyFunction,
+  anyNumber,
+  anyObject,
   assertSnapshot,
   describe,
   expect,
+  fn,
   it,
   setupJSDOM,
 } from "../dev_deps.ts";
@@ -94,4 +99,49 @@ it(describeTests, "should focus on keydown and change tabIndex", (t) => {
   expect(test1).toHaveAttribute("tabindex", "0");
   expect(test2).toHaveAttribute("tabindex", "-1");
   expect(test1).toHaveFocus();
+});
+
+it(describeTests, "should render as children", (t) => {
+  const mockFn = fn();
+  const { container } = render(
+    <>
+      <WithToolbarItem>
+        {(attributes, context) => {
+          mockFn(attributes);
+          mockFn(context);
+          return <button {...attributes}>1</button>;
+        }}
+      </WithToolbarItem>
+      <WithToolbarItem>
+        {(attributes) => {
+          return <button {...attributes}>2</button>;
+        }}
+      </WithToolbarItem>
+    </>,
+    {
+      wrapper: ({ children }) => (
+        <ToolbarProvider>
+          {children as never}
+        </ToolbarProvider>
+      ),
+    },
+  );
+
+  assertSnapshot(t, container.innerHTML);
+
+  expect(mockFn).toHaveBeenCalledWith({
+    tabIndex: anyNumber(),
+    onKeyDown: anyFunction(),
+    onFocus: anyFunction(),
+    ref: anyObject(),
+  });
+
+  expect(mockFn).toHaveBeenCalledWith({
+    isFirst: anyBoolean(),
+    isActive: anyBoolean(),
+    focusPrev: anyFunction(),
+    focusNext: anyFunction(),
+    focusFirst: anyFunction(),
+    focusLast: anyFunction(),
+  });
 });

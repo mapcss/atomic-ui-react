@@ -12,13 +12,16 @@ export type ReturnValue<E> = [
 ];
 
 export default function useMergedRef<E = HTMLElement | SVGElement>(
-  ref: LegacyRef<E> | ReactElement,
+  ref:
+    | LegacyRef<E>
+    | ReactElement
+    | ((...args: any[]) => ReactElement),
 ): ReturnValue<E> {
   const _ref = useRef<E>(null);
 
   const childRef = isObject(ref) && "type" in ref ? getRef<E>(ref) : ref;
 
-  if (isNil(childRef)) {
+  if (isFunction(ref) || isNil(childRef)) {
     return [_ref, _ref];
   }
 

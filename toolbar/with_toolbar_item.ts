@@ -2,12 +2,13 @@ import {
   AllHTMLAttributes,
   cloneElement,
   ReactElement,
+  RefAttributes,
   useCallback,
   useContext,
   useMemo,
 } from "react";
 import { filterTruthy, isSameNode, mergeProps } from "../util.ts";
-import { isLength0 } from "../deps.ts";
+import { isFunction, isLength0 } from "../deps.ts";
 import { AllHandlerMap, KeyboardHandler } from "../types.ts";
 import useMergedRef from "../hooks/use_merged_ref.ts";
 import { ActiveElementContext, RefsContext } from "./context.ts";
@@ -25,7 +26,9 @@ const ERROR_MSG = `${ATOMIC_UI} Must be wrapped by <ToolbarProvider>`;
 
 export type Attributes =
   & Pick<AllHTMLAttributes<Element>, "tabIndex">
-  & AllHandlerMap;
+  & AllHandlerMap
+  // deno-lint-ignore no-explicit-any
+  & RefAttributes<any>;
 
 export type Context = UseFocusCallbackReturnValue & {
   isFirst: boolean;
@@ -34,7 +37,9 @@ export type Context = UseFocusCallbackReturnValue & {
 };
 
 export type Props = {
-  children: ReactElement;
+  children:
+    | ReactElement
+    | ((attributes: Attributes, context: Context) => ReactElement);
 
   onKey?: Iterable<KeyboardHandler>;
 
@@ -52,13 +57,14 @@ export default function WithToolbarItem(
   }
 
   const [activeElement, setActiveElement] = activeElementContext;
-  const [getRef, ref] = useMergedRef(children);
+  const [getRef, ref] = useMergedRef<HTMLElement | SVGElement>(children);
   const isFirst = isLength0(refs);
   refs.push(getRef);
 
-  const isActive = useMemo<boolean>(() => {
-    return isSameNode(getRef.current, activeElement);
-  }, [activeElement]);
+  const isActive = useMemo<boolean>(
+    () => isSameNode(getRef.current, activeElement),
+    [activeElement],
+  );
 
   const targets = useCallback(
     () => filterTruthy(refs.map((ref) => ref.current)),
@@ -93,17 +99,18 @@ export default function WithToolbarItem(
   );
 
   const attributes = useMemo<Attributes>(
-    () => ({ tabIndex, ...handlerMap, onFocus: setActiveElement }),
+    () => ({ ref, tabIndex, ...handlerMap, onFocus: setActiveElement }),
     [
       tabIndex,
       setActiveElement,
     ],
   );
 
-  return cloneElement(children, {
-    ref,
-    ...mergeProps(children.props, attributes),
-  });
+  const child = isFunction(children)
+    ? children(attributes, context)
+    : cloneElement(children, mergeProps(children.props, attributes));
+
+  return child;
 }
 
 export const defaultKeyEntries: (
