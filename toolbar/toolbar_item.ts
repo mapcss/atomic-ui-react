@@ -30,18 +30,13 @@ function _ToolbarItem<As extends Tag = "button">(
     children: (attributes, context) => {
       const tag = useAs(as, "button");
       const _propsAs = useMemo(
-        () => propsAs?.(context) ?? {},
-        [propsAs, context],
+        () => {
+          return propsAs?.(context) ?? {};
+        },
+        [propsAs, JSON.stringify(context)],
       );
 
-      const props = useMemo(
-        () => mergeProps(mergeProps(attributes, rest), _propsAs),
-        [
-          attributes,
-          rest,
-          JSON.stringify(_propsAs),
-        ],
-      );
+      const props = mergeProps(mergeProps(attributes, rest), _propsAs);
 
       return createElement(
         tag,
