@@ -13,6 +13,7 @@ import {
 } from "react";
 import {
   distinct,
+  filterKeys,
   isFunction,
   isLength0,
   isNil,
@@ -250,4 +251,8 @@ export function isReactElement(value: ReactNode): value is ReactElement {
 
 export function isSameNode(node: Node | null, other: Node | null): boolean {
   return node?.isSameNode(other) ?? false;
+}
+
+export function omitRef(value: Readonly<Record<PropertyKey, unknown>>) {
+  return filterKeys(value, (key) => key !== "ref");
 }

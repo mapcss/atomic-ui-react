@@ -14,6 +14,7 @@ export {
 } from "https://deno.land/x/isx@v1.0.0-beta.17/mod.ts";
 export { distinct } from "https://deno.land/std@0.136.0/collections/distinct.ts";
 export { mapValues } from "https://deno.land/std@0.136.0/collections/map_values.ts";
+export { filterKeys } from "https://deno.land/std@0.136.0/collections/filter_keys.ts";
 export { associateWith } from "https://deno.land/std@0.138.0/collections/mod.ts";
 export type VFn = () => void;
 export type ValueOf<T> = T[keyof T];
