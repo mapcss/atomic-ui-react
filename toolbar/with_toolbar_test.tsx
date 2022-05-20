@@ -3,6 +3,7 @@ import {
   assertSnapshot,
   describe,
   expect,
+  fn,
   it,
   setupJSDOM,
 } from "../dev_deps.ts";
@@ -25,4 +26,25 @@ it(describeTests, "should render as", (t) => {
   );
 
   assertSnapshot(t, container.innerHTML);
+});
+
+it(describeTests, "should render as children", (t) => {
+  const mockFn = fn();
+  const { container } = render(
+    <WithToolbar>
+      {(attributes) => {
+        mockFn(attributes);
+        return (
+          <div {...attributes}>
+            <button>1</button>
+          </div>
+        );
+      }}
+    </WithToolbar>,
+  );
+
+  assertSnapshot(t, container.innerHTML);
+  expect(mockFn).toHaveBeenCalledWith({
+    role: "toolbar",
+  });
 });
