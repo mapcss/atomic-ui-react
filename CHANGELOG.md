@@ -1,3 +1,15 @@
+# [1.0.0-beta.45](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.44...1.0.0-beta.45) (2022-05-20)
+
+
+### Features
+
+* add utility for remove ref keys from record ([a94987e](https://github.com/mapcss/atomic-ui-react/commit/a94987ec322db831cade025de7fc1d29dd58b42e))
+* **toolbar:** add `Toolbar` and `ToolbarItem` component ([e5db832](https://github.com/mapcss/atomic-ui-react/commit/e5db8322b5bf84235d91d8d8ae606e1319f7ab60))
+* **toolbar:** add `useToolbar` hook ([dd8ea0e](https://github.com/mapcss/atomic-ui-react/commit/dd8ea0eff2651c4a05f634312c8d55781f1edb02))
+* **toolbar:** add `useToolbarItem` hooks ([b57fd7e](https://github.com/mapcss/atomic-ui-react/commit/b57fd7eaa7b7b77e3abb81f4838161c94afde6d3))
+* **toolbar:** add render props as children to `WithToolbarItem` ([7758005](https://github.com/mapcss/atomic-ui-react/commit/775800588cb05b8e379b1b59ec50887d980de44d))
+* **toolbar:** split context and add `TooltipProvider` component ([e992fed](https://github.com/mapcss/atomic-ui-react/commit/e992fed26f38e6bcb4e099a11293006976c73e31))
+
 # [1.0.0-beta.44](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.43...1.0.0-beta.44) (2022-05-19)
 
 
