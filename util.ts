@@ -256,3 +256,15 @@ export function isSameNode(node: Node | null, other: Node | null): boolean {
 export function omitRef(value: Readonly<Record<PropertyKey, unknown>>) {
   return filterKeys(value, (key) => key !== "ref");
 }
+
+export function onNotNullable<T, U>(
+  value: T,
+  onNonNullable: (value: NonNullable<T>) => U,
+): U | undefined {
+  if (isNil(value)) return;
+  return onNonNullable(value as NonNullable<T>);
+}
+
+export function booleanish(value: boolean): "true" | "false" {
+  return value ? "true" : "false";
+}

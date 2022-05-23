@@ -9,18 +9,21 @@ export type { Props as TabProviderProps } from "./tab_provider.ts";
 export { default as WithTab } from "./with_tab.ts";
 export type { Props as WithTabProps } from "./with_tab.ts";
 
-export { default as useTabAria } from "./use_tab_aria.ts";
+export { default as useTab } from "./use_tab.ts";
 export type {
-  Param as UseTabAriaParam,
-  ReturnValue as UseTabAriaReturnValue,
-} from "./use_tab_aria.ts";
-export { default as useTabListAria } from "./use_tab_list_aria.ts";
+  Options as UseTabOptions,
+  Params as UseTabParams,
+  Returns as UseTabReturns,
+} from "./use_tab.ts";
+export { default as useTabList } from "./use_tab_list.ts";
 export type {
-  Param as UseTabListAriaParam,
-  ReturnValue as UseTabListAriaReturnValue,
-} from "./use_tab_aria.ts";
-export { default as useTabPanelAria } from "./use_tab_panel_aria.ts";
+  Attributes as UseTabListAttributes,
+  Options as UseTabListOptions,
+} from "./use_tab_list.ts";
+export { default as useTabPanel } from "./use_tab_panel.ts";
 export type {
-  Param as UseTabPanelAriaParam,
-  ReturnValue as UseTabPanelAriaReturnValue,
-} from "./use_tab_aria.ts";
+  Attributes as UseTabPanelAttributes,
+  Contexts as UseTabPanelContexts,
+  Params as UseTabPanelParams,
+  Returns as UseTabPanelReturns,
+} from "./use_tab_panel.ts";
