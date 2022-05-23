@@ -11,8 +11,8 @@ import {
 } from "../_shared/constant.ts";
 import useToolbarItem, {
   Attributes,
-  Context,
-  Option,
+  Contexts,
+  Options,
 } from "./use_toolbar_item.ts";
 
 const ERROR_MSG = `${ATOMIC_UI} Must be wrapped by <ToolbarProvider>`;
@@ -20,8 +20,8 @@ const ERROR_MSG = `${ATOMIC_UI} Must be wrapped by <ToolbarProvider>`;
 export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: Context) => ReactElement);
-} & Partial<Option>;
+    | ((attributes: Attributes, contexts: Contexts) => ReactElement);
+} & Partial<Options>;
 
 export default function WithToolbarItem(
   { children, onKey, keyEntries }: Readonly<Props>,

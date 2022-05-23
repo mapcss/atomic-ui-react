@@ -24,13 +24,13 @@ export type Attributes =
   // deno-lint-ignore no-explicit-any
   & RefAttributes<any>;
 
-export type Context = UseFocusCallbackReturnValue & {
+export type Contexts = UseFocusCallbackReturnValue & {
   isFirst: boolean;
 
   isActive: boolean;
 };
 
-export type Param = {
+export type Params = {
   refs: RefObject<HTMLElement | SVGElement | MathMLElement>[];
 
   ref: RefObject<HTMLElement | SVGElement | MathMLElement>;
@@ -38,20 +38,20 @@ export type Param = {
   activeElementStateSet: UseActiveElementReturnValue;
 };
 
-export type Option = {
+export type Options = {
   onKey: Iterable<KeyboardHandler>;
 
-  keyEntries: (context: Context) => KeyEntries;
+  keyEntries: (context: Contexts) => KeyEntries;
 };
 
-export type ReturnValue = [Attributes, Context];
+export type Returns = [Attributes, Contexts];
 
 export default function useToolbarItem(
-  { refs, activeElementStateSet, ref }: Readonly<Param>,
+  { refs, activeElementStateSet, ref }: Readonly<Params>,
   { onKey = ["onKeyDown"], keyEntries = defaultKeyEntries }: Readonly<
-    Partial<Option>
+    Partial<Options>
   > = {},
-): ReturnValue {
+): Returns {
   const [activeElement, setActiveElement] = activeElementStateSet;
   const isFirst = isLength0(refs);
   refs.push(ref);
@@ -67,7 +67,7 @@ export default function useToolbarItem(
   );
   const returnValue = useFocusCallback(targets);
 
-  const context = useMemo<Context>(() => ({
+  const context = useMemo<Contexts>(() => ({
     ...returnValue,
     isFirst,
     isActive,
@@ -105,7 +105,7 @@ export default function useToolbarItem(
 }
 
 export const defaultKeyEntries: (
-  context: Context,
+  context: Contexts,
 ) => KeyEntries = ({ focusFirst, focusLast, focusNext, focusPrev }) => {
   return [
     ["ArrowLeft", focusPrev],
