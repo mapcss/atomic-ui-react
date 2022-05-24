@@ -2,15 +2,17 @@
 
 import { cloneElement, ReactElement } from "react";
 import { isFunction } from "../deps.ts";
-import ariaAlert, { AriaAlert } from "./aria_alert.ts";
+import useAlert, { Attributes } from "./use_alert.ts";
 
 export type Props = {
-  children: ReactElement | ((attributes: AriaAlert) => ReactElement);
+  children: ReactElement | ((attributes: Attributes) => ReactElement);
 };
 
-export default function WithAlert({ children }: Props): JSX.Element {
-  if (isFunction(children)) {
-    return children(ariaAlert);
-  }
-  return cloneElement(children, ariaAlert);
+export default function WithAlert({ children }: Readonly<Props>): JSX.Element {
+  const attributes = useAlert();
+  const child = isFunction(children)
+    ? children(attributes)
+    : cloneElement(children, attributes);
+
+  return child;
 }

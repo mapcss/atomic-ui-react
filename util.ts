@@ -3,8 +3,12 @@
 
 import {
   Attributes,
+  Children,
+  FunctionComponent,
   JSXElementConstructor,
+  PropsWithChildren,
   ReactElement,
+  ReactFragment,
   ReactNode,
   ReactPortal,
   Ref,
@@ -13,9 +17,11 @@ import {
 } from "react";
 import {
   distinct,
+  filterKeys,
   isFunction,
   isLength0,
   isNil,
+  isNumber,
   isObject,
   isString,
   isUndefined,
@@ -242,4 +248,126 @@ export function isCloneable(
   | ReactElement<any, string | JSXElementConstructor<any>>
   | ReactPortal {
   return isObject(value) && "key" in value;
+}
+
+export function isReactElement(value: ReactNode): value is ReactElement {
+  return isObject(value) && "type" in value;
+}
+
+export function isSameNode(node: Node | null, other: Node | null): boolean {
+  return node?.isSameNode(other) ?? false;
+}
+
+export function omitRef(value: Readonly<Record<PropertyKey, unknown>>) {
+  return filterKeys(value, (key) => key !== "ref");
+}
+
+export function onNotNullable<T, U>(
+  value: T,
+  onNonNullable: (value: NonNullable<T>) => U,
+): U | undefined {
+  if (isNil(value)) return;
+  return onNonNullable(value as NonNullable<T>);
+}
+
+export function booleanish(value: boolean): "true" | "false" {
+  return value ? "true" : "false";
+}
+
+export function current<T extends { current: unknown }>(
+  value: T,
+): T["current"] {
+  return value["current"];
+}
+
+export function trueOr(value?: boolean): true | undefined {
+  return value ? true : undefined;
+}
+
+export function traverse(
+  root: ReactNode | readonly ReactNode[],
+  callback: (
+    child: Exclude<ReactNode, boolean | null | undefined>,
+  ) => void,
+) {
+  const seen = new WeakSet();
+
+  const run = (
+    root: ReactNode | readonly ReactNode[],
+    callback: (
+      child: Exclude<ReactNode, boolean | null | undefined>,
+    ) => void,
+  ) => {
+    for (const child of Children.toArray(root)) {
+      callback(child);
+      if (isReactElement(child) && hasChildren(child)) {
+        if (seen.has(child)) break;
+        seen.add(child);
+        traverse(child.props.children, callback);
+      }
+    }
+  };
+  run(root, callback);
+}
+
+function hasChildren<P = unknown>(
+  el: ReactElement,
+): el is ReactElement<PropsWithChildren<P>> {
+  return "children" in el.props;
+}
+
+type Visits = {
+  onReactElement: (value: ReactElement) => void;
+  onReactPortal: (value: ReactPortal) => void;
+  onReactFragment: (value: ReactFragment) => void;
+  onString: (value: string) => void;
+  onNumber: (value: number) => void;
+};
+
+export function visit(
+  root: ReactNode | readonly ReactNode[],
+  { onReactElement, onReactFragment, onNumber, onReactPortal, onString }:
+    Readonly<
+      Partial<Visits>
+    >,
+) {
+  traverse(root, (child) => {
+    if (isString(child)) {
+      onString?.(child);
+    } else if (isNumber(child)) {
+      onNumber?.(child);
+    } else if ("type" in child) {
+      if ("children" in child) {
+        onReactPortal?.(child);
+      } else {
+        onReactElement?.(child);
+      }
+    } else {
+      onReactFragment?.(child);
+    }
+  });
+}
+
+function isFC(
+  value: ReactElement,
+): value is ReactElement<any, FunctionComponent> {
+  return isFunction(value.type);
+}
+
+type VisitDisplayNames = Record<
+  string,
+  (value: ReactElement<unknown, FunctionComponent>) => void
+>;
+
+export function visitDisplayName(
+  root: ReactNode | readonly ReactNode[],
+  visitDisplayNames: VisitDisplayNames,
+) {
+  visit(root, {
+    onReactElement: (value) => {
+      if (isFC(value) && value.type.displayName) {
+        visitDisplayNames[value.type.displayName]?.(value);
+      }
+    },
+  });
 }

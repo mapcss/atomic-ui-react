@@ -10,3 +10,17 @@ export { default as DisclosureControl } from "./disclosure_control.ts";
 export type { Props as DisclosureControlProps } from "./disclosure_control.ts";
 export { default as DisclosureContent } from "./disclosure_content.ts";
 export type { Props as DisclosureContentProps } from "./disclosure_content.ts";
+
+export { default as useDisclosureControl } from "./use_disclosure_control.ts";
+export type {
+  Attributes as UseDisclosureControlAttributes,
+  Contexts as UseDisclosureControlContexts,
+  Options as UseDisclosureControlOptions,
+  Params as UseDisclosureControlParams,
+  Returns as UseDisclosureControlReturns,
+} from "./use_disclosure_control.ts";
+export { default as useDisclosureContent } from "./use_disclosure_content.ts";
+export type {
+  Attributes as UseDisclosureContentAttributes,
+  Params as UseDisclosureContentParams,
+} from "./use_disclosure_content.ts";

@@ -92,9 +92,17 @@ export const packages: { name: string; entrypoint: string; rootDir: string }[] =
     entrypoint: join(PROJECT_ROOT, "alert", "mod.ts"),
     rootDir: join(PROJECT_ROOT, "alert"),
   }, {
+    name: "alert_dialog",
+    entrypoint: join(PROJECT_ROOT, "alert_dialog", "mod.ts"),
+    rootDir: join(PROJECT_ROOT, "alert_dialog"),
+  }, {
     name: "accordion",
     entrypoint: join(PROJECT_ROOT, "accordion", "mod.ts"),
     rootDir: join(PROJECT_ROOT, "accordion"),
+  }, {
+    name: "toolbar",
+    entrypoint: join(PROJECT_ROOT, "toolbar", "mod.ts"),
+    rootDir: join(PROJECT_ROOT, "toolbar"),
   }, {
     name: "hooks",
     entrypoint: join(PROJECT_ROOT, "hooks", "mod.ts"),

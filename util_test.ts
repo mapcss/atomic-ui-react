@@ -4,6 +4,7 @@ import {
   isBrowser,
   joinChars,
   mergeProps,
+  omitRef,
   tokenize,
 } from "./util.ts";
 import {
@@ -180,4 +181,11 @@ Deno.test("mergeProps: merge event handler", () => {
   props.onClick(1);
   expect(onClick1).toHaveBeenCalledWith(1);
   expect(onClick2).toHaveBeenCalledWith(1);
+});
+
+Deno.test("omitRef: no ref key from record", () => {
+  expect(omitRef({})).toEqual({});
+  expect(omitRef({ ref: null })).toEqual({});
+  expect(omitRef({ ref: { current: null } })).toEqual({});
+  expect(omitRef({ ref: null, a: "b" })).toEqual({ a: "b" });
 });

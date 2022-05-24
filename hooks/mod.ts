@@ -31,8 +31,7 @@ export type {
   Option as UseEventListenerOption,
   Param as UseEventListenerParam,
 } from "./use_event_listener.ts";
-export { default as useKeyboardHandler } from "./use_keyboard_handler.ts";
-export type {
-  Param as UseKeyboardHandlerParam,
-  ReturnValue as UseKeyboardHandlerReturnValue,
-} from "./use_keyboard_handler.ts";
+export { default as useKeyboardEventHandler } from "./use_keyboard_event_handler.ts";
+export type { KeyEntries } from "./use_keyboard_event_handler.ts";
+export { default as useChildRef } from "./use_child_ref.ts";
+export type { ReturnValue as UseChildRefReturnValue } from "./use_child_ref.ts";

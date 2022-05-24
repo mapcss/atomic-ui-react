@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { associateWith } from "../deps.ts";
 import { AllHandler, AllHandlerMap, Tag } from "../types.ts";
 
@@ -18,4 +18,10 @@ export function useEventHandler(
   }, [JSON.stringify(on), callback]);
 
   return handlerMap;
+}
+
+export function usePreventDefault(): (event: Event) => void {
+  return useCallback<(ev: Event) => void>((ev) => {
+    ev.preventDefault();
+  }, []);
 }

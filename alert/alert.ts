@@ -1,15 +1,9 @@
 // This module is browser compatible.
 
-import { createElement, forwardRef as _forwardRef, Ref, useMemo } from "react";
-import { Tag } from "../types.ts";
-import ariaAlert from "./aria_alert.ts";
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}
+import { createElement, forwardRef as _forwardRef, Ref } from "react";
+import { Tag, WithIntrinsicElements } from "../types.ts";
+import useAlert from "./use_alert.ts";
+import { useAs } from "../_shared/hooks.ts";
 
 type _Props<As extends Tag> = {
   /**
@@ -18,18 +12,23 @@ type _Props<As extends Tag> = {
   as?: As;
 };
 
-export type Props<As extends Tag> =
-  & _Props<As>
-  & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
-
+export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 function _Alert<As extends Tag = "div">(
-  { as: _as, ...rest }: Props<As>,
+  { as, ...props }: Readonly<Props<As>>,
   ref: Ref<Element>,
 ): JSX.Element {
-  const as = useMemo<string>(() => _as ?? "div", [_as]);
+  const tag = useAs(as, "div");
+  const attributes = useAlert();
 
-  return createElement(as, { ref, ...ariaAlert, ...rest });
+  return createElement(tag, { ref, ...attributes, ...props });
 }
 
 const Alert = _forwardRef(_Alert);
 export default Alert;
+
+declare module "react" {
+  // deno-lint-ignore ban-types
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: Ref<T>) => ReactElement | null,
+  ): (props: P & RefAttributes<T>) => ReactElement | null;
+}

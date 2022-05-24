@@ -1,0 +1,5 @@
+export const snapshot = {};
+
+snapshot[`WithToolbarItem > should render as 1`] = `'<button tabindex="0">1</button><button tabindex="-1">2</button>'`;
+
+snapshot[`WithToolbarItem > should render as children 1`] = `'<button tabindex="0">1</button><button tabindex="-1">2</button>'`;

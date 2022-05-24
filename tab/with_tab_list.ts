@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { cloneElement, ReactElement, useContext } from "react";
-import useTabListAria from "./use_tab_list_aria.ts";
+import useTabList from "./use_tab_list.ts";
 import { HorizontalContext } from "./context.ts";
 
 export type Props = {
@@ -12,7 +12,7 @@ export default function WithTabList(
   { children }: Props,
 ): JSX.Element {
   const isHorizontal = useContext(HorizontalContext);
-  const aria = useTabListAria({ isHorizontal });
+  const attributes = useTabList({ isHorizontal });
 
-  return cloneElement(children, aria);
+  return cloneElement(children, attributes);
 }

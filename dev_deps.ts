@@ -2,6 +2,7 @@ export {
   anyBoolean,
   anyFunction,
   anyNumber,
+  anyObject,
   anyString,
   defineExpect,
   defineGlobalThis,
@@ -28,6 +29,8 @@ export async function setupJSDOM(): Promise<void> {
   const doc = new JSDOM(`<!DOCTYPE html>`);
   globalThis.document = doc.window.document;
   globalThis.HTMLIFrameElement = doc.window.HTMLIFrameElement;
+  globalThis.HTMLElement = doc.window.HTMLElement;
+
   globalThis.Node = doc.window.Node;
 }
 export const expect = defineExpect({
@@ -59,7 +62,10 @@ function toHaveAttribute(
   }
   return {
     pass: equal(el.getAttribute(name), expected),
-    expected: `${name} is ${Deno.inspect(expected)}`,
+    actualHint: `Actual ${name}:`,
+    resultActual: el.getAttribute(name),
+    expectedHint: `Expected ${name}:`,
+    expected,
   };
 }
 

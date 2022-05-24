@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
-import { EventHandler, KeyboardEvent, KeyboardEventHandler } from "react";
-import { isLength0, isString, not, sortBy } from "../deps.ts";
+import { isLength0, not } from "../deps.ts";
+import { HasFocusElement } from "./types.ts";
 export type TempIdReturnValue = {
   readonly current: number;
   readonly next: number;
@@ -80,42 +80,23 @@ export function getLastIndex(
   }
 }
 
-export type KeyEntries = [
-  string | Partial<KeyboardEvent<Element>>,
-  EventHandler<KeyboardEvent<Element>>,
-][];
+const selector =
+  'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
 
-export function mappingKey(
-  keyEntries: KeyEntries,
-): KeyboardEventHandler<Element> {
-  const callback: KeyboardEventHandler = (ev) => {
-    for (const [maybeCode, callback] of sortKeyEntries(keyEntries)) {
-      if (isString(maybeCode)) {
-        if (ev.code === maybeCode || ev.key === maybeCode) {
-          callback(ev);
-          break;
-        }
-        continue;
-      }
+export function filterFocusable(
+  root: ParentNode | null | undefined,
+): HasFocusElement[] {
+  if (!root) return [];
+  const els = [...root.querySelectorAll(selector)];
 
-      const match = Object.entries(maybeCode).every(([key, value]) => {
-        return ev[key as keyof KeyboardEvent] === value;
-      });
-      if (match) {
-        callback(ev);
-        break;
-      }
-    }
-  };
-
-  return callback;
+  return els.filter(hasNotInvalidAttribute).filter(hasFocusElement);
 }
 
-export function sortKeyEntries(keyEntries: Readonly<KeyEntries>): KeyEntries {
-  return sortBy(keyEntries, ([key]) => {
-    if (isString(key)) {
-      return 1;
-    }
-    return 0;
-  });
+function hasFocusElement(el: Element): el is HasFocusElement {
+  return el instanceof HTMLElement || el instanceof SVGElement ||
+    el instanceof MathMLElement;
+}
+
+function hasNotInvalidAttribute(el: Element): boolean {
+  return !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden");
 }

@@ -1,78 +1,46 @@
 // This module is browser compatible.
 
-import {
-  cloneElement,
-  createElement,
-  Fragment,
-  ReactElement,
-  useContext,
-  useMemo,
-} from "react";
-import { joinChars } from "../util.ts";
-import useTabPanelAria, {
-  ReturnValue as UseTabPanelAriaReturnValue,
-} from "./use_tab_panel_aria.ts";
+import { cloneElement, ReactElement, useContext } from "react";
+import { isFunction } from "../deps.ts";
 import {
   DisabledIdsContext,
   IdContext,
   IndexContext,
   TabPanelCountContext,
 } from "./context.ts";
-import { PANEL, TAB } from "./constant.ts";
-
-export type RenderContext = {
-  selectedIndex: number;
-  index: number;
-  isDisabled: boolean;
-  isSelected: boolean;
-  isShowable: boolean;
-};
-
-export type Render = (
-  root: ReactElement,
-  attributes: UseTabPanelAriaReturnValue,
-  context: RenderContext,
-) => ReactElement;
-
-export const defaultRender: Render = (
-  root,
-  attrs: UseTabPanelAriaReturnValue,
-  { isShowable }: RenderContext,
-) => {
-  return isShowable ? cloneElement(root, attrs) : createElement(Fragment);
-};
+import { ERROR_MSG } from "./constant.ts";
+import useTabPanel, { Attributes, Contexts } from "./use_tab_panel.ts";
 
 export type Props = {
-  children: ReactElement;
-
-  render?: Render;
+  children:
+    | ReactElement
+    | ((attributes: Attributes, contexts: Contexts) => ReactElement);
 };
+
 export default function WithTabPanel(
-  { children, render = defaultRender }: Props,
+  { children }: Props,
 ): JSX.Element {
   const id = useContext(IdContext);
   const tabPanelCount = useContext(TabPanelCountContext);
-  const [selectedIndex] = useContext(IndexContext);
+  const indexStateSet = useContext(IndexContext);
   const disabledIds = useContext(DisabledIdsContext);
 
-  const index = tabPanelCount.current;
-  const isDisabled = disabledIds.includes(index);
-  const isSelected = useMemo<boolean>(() => index === selectedIndex, [
-    selectedIndex,
-  ]);
-  const isShowable = useMemo<boolean>(() => isSelected && !isDisabled, [
-    isSelected,
-    isDisabled,
-  ]);
-  const tabId = joinChars([id, TAB, index], "-");
-  const tabPanelId = joinChars([id, TAB, PANEL, index], "-");
-  const aria = useTabPanelAria({ tabId, tabPanelId });
+  if (!id || !indexStateSet || !tabPanelCount) {
+    throw Error(ERROR_MSG);
+  }
+  const [selectedIndex] = indexStateSet;
+  const index = tabPanelCount.next;
 
-  return render(children, aria, {
-    selectedIndex,
+  const [attributes, contexts] = useTabPanel({
+    id,
     index,
-    isDisabled,
-    isSelected,
-    isShowable,
+    disabledIds,
+    selectedIndex,
   });
+
+  if (isFunction(children)) {
+    return children(attributes, contexts);
+  }
+
+  return cloneElement(children, attributes);
 }

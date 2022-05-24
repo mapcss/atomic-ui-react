@@ -1,7 +1,5 @@
 export const snapshot = {};
 
-snapshot[`WithDisclosureContent > should render with style when the internal \`isOpen\` is false 1`] = `'<p id="atomic-ui-0" style="display: none;">test</p>'`;
+snapshot[`WithDisclosureContent > should render with style when the internal \`isOpen\` is false 1`] = `'<p id="atomic-ui-0" hidden="">test</p>'`;
 
 snapshot[`WithDisclosureContent > should render when the internal \`isOpen\` is true 1`] = `'<p id="atomic-ui-0">test</p>'`;
-
-snapshot[`WithDisclosureContent > should merge style 1`] = `'<p style="font: icon; display: none;" id="atomic-ui-0">test</p>'`;

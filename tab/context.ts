@@ -1,20 +1,21 @@
 // This module is browser compatible.
 
 import { createContext, Dispatch, RefObject, SetStateAction } from "react";
-import { noop } from "../deps.ts";
-import { DEFAULT_TEMP_ID, TempIdReturnValue } from "../_shared/util.ts";
+import { TempIdReturnValue } from "../_shared/util.ts";
 import { DEFAULT_IS_HORIZONTAL } from "./constant.ts";
 
-export const TabCountContext = createContext<TempIdReturnValue>(
-  DEFAULT_TEMP_ID,
+export const TabCountContext = createContext<TempIdReturnValue | undefined>(
+  undefined,
 );
-export const TabPanelCountContext = createContext<TempIdReturnValue>(
-  DEFAULT_TEMP_ID,
+export const TabPanelCountContext = createContext<
+  TempIdReturnValue | undefined
+>(
+  undefined,
 );
-export const IdContext = createContext<string>("");
+export const IdContext = createContext<string | undefined>(undefined);
 export const IndexContext = createContext<
-  [number, Dispatch<SetStateAction<number>>]
->([0, noop]);
+  [number, Dispatch<SetStateAction<number>>] | undefined
+>(undefined);
 export const TabRefsContext = createContext<
   RefObject<HTMLElement>[]
 >([]);

@@ -1,0 +1,5 @@
+export const snapshot = {};
+
+snapshot[`WithToolbar > should render as 1`] = `'<div role="toolbar"><button>1</button></div>'`;
+
+snapshot[`WithToolbar > should render as children 1`] = `'<div role="toolbar"><button>1</button></div>'`;
