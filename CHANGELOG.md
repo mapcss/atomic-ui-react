@@ -1,3 +1,14 @@
+# [1.0.0-beta.46](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.45...1.0.0-beta.46) (2022-05-24)
+
+
+### Features
+
+* **accordion:** add hooks of `useAccordionHeader` and `useAccordionPanel` ([09a66ad](https://github.com/mapcss/atomic-ui-react/commit/09a66ad5693c2c8053c548355ccd19b95c285c4d))
+* **alert_dialog:** add hooks of `useAlertDialog` ([f609045](https://github.com/mapcss/atomic-ui-react/commit/f6090451baa1c3951b10714ea9754bf8dd27b0b5))
+* **alert_dialog:** detect dialog title and describe with traverse children ([602ed6c](https://github.com/mapcss/atomic-ui-react/commit/602ed6cb44d68fc9e537bce0a080f6283a1fbe24))
+* **disclosure:** add hooks of `useDisclosureControl` and `useDisclosureContent` ([3f1c67a](https://github.com/mapcss/atomic-ui-react/commit/3f1c67a1f222e9866ee84bfb42b305ce6add3c20))
+* **tab:** add providing attributes and contexts as hooks ([8e20e94](https://github.com/mapcss/atomic-ui-react/commit/8e20e94554137f47442968c3616d948e74bae193))
+
 # [1.0.0-beta.45](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.44...1.0.0-beta.45) (2022-05-20)
 
 
