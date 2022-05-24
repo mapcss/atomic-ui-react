@@ -128,9 +128,7 @@ it(
     expect(mockFn).toHaveBeenCalledWith({
       id: anyString(),
       isOpen: anyBoolean(),
-      toggle: anyFunction(),
-      open: anyFunction(),
-      close: anyFunction(),
+      dispatch: anyFunction(),
     });
   },
 );

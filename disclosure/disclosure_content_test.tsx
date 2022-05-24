@@ -39,7 +39,7 @@ it(describeTests, "should be render as", (t) => {
   rerender(
     <DisclosureContent
       className="test"
-      propsAs={() => ({
+      renderAttributes={() => ({
         className: "test2",
       })}
     >
@@ -50,7 +50,7 @@ it(describeTests, "should be render as", (t) => {
 
   rerender(
     <DisclosureContent
-      propsAs={() => ({
+      renderAttributes={() => ({
         style: {
           display: undefined,
         },
@@ -61,7 +61,7 @@ it(describeTests, "should be render as", (t) => {
   );
   rerender(
     <DisclosureContent
-      propsAs={({ isOpen }) => ({
+      renderAttributes={({ isOpen }) => ({
         className: isOpen ? "open" : "close",
       })}
     >

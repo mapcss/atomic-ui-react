@@ -68,22 +68,3 @@ it(describeTests, "should render when the internal `isOpen` is true", (t) => {
 
   assertSnapshot(t, container.innerHTML);
 });
-
-it(describeTests, "should merge style", (t) => {
-  const { container } = render(
-    <WithDisclosureContent>
-      <p style={{ font: "icon" }}>test</p>
-    </WithDisclosureContent>,
-    {
-      wrapper: ({ children }) => {
-        return (
-          <SSRProvider>
-            <Disclosure>{children as never}</Disclosure>
-          </SSRProvider>
-        );
-      },
-    },
-  );
-
-  assertSnapshot(t, container.innerHTML);
-});
