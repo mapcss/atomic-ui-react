@@ -3,65 +3,53 @@
 import {
   cloneElement,
   ReactElement,
+  RefAttributes,
   useCallback,
   useContext,
   useMemo,
 } from "react";
-import { isFunction } from "../deps.ts";
-import { mergeProps } from "../util.ts";
-import { KeyEntries } from "../hooks/use_keyboard_event_handler.ts";
-import {
-  AllHandlerMap,
-  AllHandlerWithoutKeyBoard,
-  KeyboardHandler,
-} from "../types.ts";
+import { isFunction, VFn } from "../deps.ts";
+import { current, filterTruthy, mergeProps, omitRef } from "../util.ts";
 import {
   HeaderCountContext,
   IdContext,
   IndexContext,
   RefsContext,
 } from "./context.ts";
-import useCallbackFocus from "./use_callback_focus.ts";
-import useChildRef from "../hooks/use_child_ref.ts";
-import useAttributesAccordionHeader, {
+import useMergedRef from "../hooks/use_merged_ref.ts";
+import useAccordionHeader, {
   Attributes,
-} from "./use_attributes_accordion_header.ts";
-import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
-import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
-import { Context } from "./types.ts";
-
-type HTMLAttributes = Attributes | AllHandlerMap;
+  Contexts,
+  Options,
+} from "./use_accordion_header.ts";
+import { ERROR_MSG } from "./constant.ts";
 
 export type Props = {
   children:
     | ReactElement
     | ((
-      htmlAttributes: HTMLAttributes,
-      context: Context,
+      // deno-lint-ignore no-explicit-any
+      attributes: Attributes & RefAttributes<any>,
+      contexts: Contexts,
     ) => ReactElement);
-
-  on?: Iterable<AllHandlerWithoutKeyBoard>;
-
-  onKey?: Iterable<KeyboardHandler>;
-
-  /**
-   * @defaultValue {@link defaultKeyEntries}
-   */
-  keyEntries?: (context: Context) => KeyEntries;
-};
+} & Partial<Options>;
 
 export default function WithAccordionHeader(
   {
     children,
-    on = ["onClick"],
-    onKey = ["onKeyDown"],
-    keyEntries = defaultKeyEntries,
-  }: Props,
-): JSX.Element {
+    on,
+    onKey,
+    keyEntries,
+  }: Readonly<Props>,
+): JSX.Element | never {
   const id = useContext(IdContext);
-  const [selectedIndex, setSelectedIndex] = useContext(IndexContext);
+  const selectedIndexStateSet = useContext(IndexContext);
   const tempId = useContext(HeaderCountContext);
   const refs = useContext(RefsContext);
+
+  if (!id || !selectedIndexStateSet || !tempId) throw Error(ERROR_MSG);
+
+  const [selectedIndex, setSelectedIndex] = selectedIndexStateSet;
   const index = tempId.next;
 
   const isOpen = useMemo<boolean>(() => index === selectedIndex, [
@@ -69,64 +57,33 @@ export default function WithAccordionHeader(
     selectedIndex,
   ]);
 
-  const open = useCallback<() => void>(() => setSelectedIndex(index), [
+  const targets = useCallback(() => filterTruthy(refs.map(current)), []);
+  const open = useCallback<VFn>(() => setSelectedIndex(index), [
     setSelectedIndex,
     index,
   ]);
 
-  const { focusFirst, focusLast, focusNext, focusPrev } = useCallbackFocus({
-    refs,
-    index,
-  });
-
-  const ctx: Context = {
+  const [attributes, contexts] = useAccordionHeader({
     isOpen,
-    open,
-    index,
-    focusFirst,
-    focusLast,
-    focusNext,
-    focusPrev,
-  };
-
-  const entries = useMemo<KeyEntries>(() => keyEntries(ctx), [
-    keyEntries,
-    JSON.stringify(ctx),
-  ]);
-
-  const attributes = useAttributesAccordionHeader({
     id,
     index,
-    isOpen,
+    targets,
+    open,
+  }, {
+    on,
+    onKey,
+    keyEntries,
   });
 
-  const handlerMap = useEventHandler(on, open);
-  const beforeAll = usePreventDefault();
-  const keyboardHandler = useKeyboardEventHandler(entries, { beforeAll });
-  const keyHandlerMap = useEventHandler(onKey, keyboardHandler);
-  const htmlAttributes: HTMLAttributes = {
-    ...attributes,
-    ...handlerMap,
-    ...keyHandlerMap,
-  };
-
-  const child = isFunction(children)
-    ? children(htmlAttributes, ctx)
-    : cloneElement(children, mergeProps(children.props, htmlAttributes));
-
-  const [getRef, setRef] = useChildRef(child);
+  const [getRef, ref] = useMergedRef<HTMLElement | SVGElement>(children);
   refs.push(getRef);
 
-  return cloneElement(child, { ref: setRef });
-}
+  const child = isFunction(children)
+    ? children({ ref, ...attributes }, contexts)
+    : cloneElement(children, {
+      ref,
+      ...mergeProps(omitRef(children.props), attributes),
+    });
 
-const defaultKeyEntries: (context: Context) => KeyEntries = (
-  { focusFirst, focusLast, focusNext, focusPrev, open },
-) => [
-  ["ArrowUp", focusPrev],
-  ["ArrowDown", focusNext],
-  ["Enter", open],
-  ["Space", open],
-  ["Home", focusFirst],
-  ["End", focusLast],
-];
+  return child;
+}

@@ -268,3 +268,13 @@ export function onNotNullable<T, U>(
 export function booleanish(value: boolean): "true" | "false" {
   return value ? "true" : "false";
 }
+
+export function current<T extends { current: unknown }>(
+  value: T,
+): T["current"] {
+  return value["current"];
+}
+
+export function trueOr(value?: boolean): true | undefined {
+  return value ? true : undefined;
+}

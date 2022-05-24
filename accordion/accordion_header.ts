@@ -5,13 +5,11 @@ import {
   Ref,
   useMemo,
 } from "react";
-import WithAccordionHeader, {
-  Props as WithAccordionHeaderProps,
-} from "./with_accordion_header.ts";
+import WithAccordionHeader from "./with_accordion_header.ts";
 import { mergeProps } from "../util.ts";
 import { useAs } from "../_shared/hooks.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
-import { Context } from "./types.ts";
+import { Contexts, Options } from "./use_accordion_header.ts";
 
 type _Props<As extends Tag> = {
   /**
@@ -19,29 +17,32 @@ type _Props<As extends Tag> = {
    */
   as?: As;
 
-  propsAs?: (context: Context) => AllHTMLAttributes<Element>;
-} & Pick<WithAccordionHeaderProps, "on" | "onKey">;
+  renderAttributes?: (contexts: Contexts) => AllHTMLAttributes<Element>;
+} & Partial<Options>;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _AccordionHeader<As extends Tag = "button">(
-  { as, on, onKey, propsAs, ...props }: Props<As>,
+  { as, on, onKey, keyEntries, renderAttributes, ...props }: Readonly<
+    Props<As>
+  >,
   ref: Ref<Element>,
 ): JSX.Element {
   return WithAccordionHeader({
-    children: (attributes, context) => {
+    children: (attrs, context) => {
       const tag = useAs(as, "button");
-      const propsWith = useMemo<AllHTMLAttributes<Element>>(
-        () => propsAs?.(context) ?? {},
-        [propsAs, JSON.stringify(context)],
+      const attributes = useMemo<AllHTMLAttributes<Element>>(
+        () => renderAttributes?.(context) ?? {},
+        [renderAttributes, JSON.stringify(context)],
       );
       return createElement(tag, {
         ref,
-        ...mergeProps(attributes, mergeProps(props, propsWith)),
+        ...mergeProps(attrs, mergeProps(props, attributes)),
       });
     },
     onKey,
     on,
+    keyEntries,
   });
 }
 

@@ -13,10 +13,17 @@ import { tempId } from "../_shared/util.ts";
 
 export type Props = {
   children: ReactNode;
+
+  /** The default selected index.
+   * @default 0
+   */
+  defaultIndex?: number;
 };
 
-export default function AccordionProvider({ children }: Props): JSX.Element {
-  const stateSet = useState<number>(0);
+export default function AccordionProvider(
+  { children, defaultIndex = 0 }: Readonly<Props>,
+): JSX.Element {
+  const stateSet = useState<number>(defaultIndex);
   const id = useId();
   const headerCount = tempId();
   const panelCount = tempId();

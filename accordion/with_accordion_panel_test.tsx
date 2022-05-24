@@ -50,9 +50,9 @@ it(describeTests, "should render children as props", (t) => {
   const { container } = render(
     <>
       <WithAccordionPanel>
-        {(attrs, context) => {
+        {(attrs, contexts) => {
           mockFn(attrs);
-          mockFn(context);
+          mockFn(contexts);
           return <div {...attrs}>test</div>;
         }}
       </WithAccordionPanel>
@@ -68,18 +68,21 @@ it(describeTests, "should render children as props", (t) => {
   assertSnapshot(t, container.innerHTML);
 
   expect(mockFn).toHaveBeenCalledWith({
-    "hidden": anyBoolean(),
+    "hidden": undefined,
     "aria-labelledby": anyString(),
     id: anyString(),
   });
 
   expect(mockFn).toHaveBeenCalledWith({
     isOpen: anyBoolean(),
-    open: anyFunction(),
     index: anyNumber(),
     focusFirst: anyFunction(),
     focusLast: anyFunction(),
     focusNext: anyFunction(),
     focusPrev: anyFunction(),
+    id: anyString(),
+    headerId: anyString(),
+    panelId: anyString(),
+    targets: anyFunction(),
   });
 });

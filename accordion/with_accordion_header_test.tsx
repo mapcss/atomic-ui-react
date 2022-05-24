@@ -2,6 +2,7 @@ import {
   anyBoolean,
   anyFunction,
   anyNumber,
+  anyObject,
   anyString,
   assertSnapshot,
   describe,
@@ -224,6 +225,7 @@ it(describeTests, "should render children as props", (t) => {
   assertSnapshot(t, container.innerHTML);
 
   expect(mockFn).toHaveBeenCalledWith({
+    ref: anyObject(),
     "aria-expanded": anyBoolean(),
     "aria-controls": anyString(),
     id: anyString(),
@@ -234,8 +236,12 @@ it(describeTests, "should render children as props", (t) => {
 
   expect(mockFn).toHaveBeenCalledWith({
     isOpen: anyBoolean(),
+    id: anyString(),
     open: anyFunction(),
     index: anyNumber(),
+    targets: anyFunction(),
+    headerId: anyString(),
+    panelId: anyString(),
     focusFirst: anyFunction(),
     focusLast: anyFunction(),
     focusNext: anyFunction(),

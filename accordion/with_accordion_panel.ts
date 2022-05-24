@@ -1,7 +1,6 @@
 // This module is browser compatible.
 
 import {
-  AllHTMLAttributes,
   cloneElement,
   ReactElement,
   useCallback,
@@ -9,71 +8,66 @@ import {
   useMemo,
 } from "react";
 import { isFunction } from "../deps.ts";
+import { current, filterTruthy } from "../util.ts";
 import {
   IdContext,
   IndexContext,
   PanelCountContext,
   RefsContext,
 } from "./context.ts";
-import { joinChars } from "../util.ts";
-import useAriaAccordionPanel, {
-  ReturnValue as UseAriaAccordionPanelReturnValue,
-} from "./use_aria_accordion_panel.ts";
-import useCallbackFocus from "./use_callback_focus.ts";
-import { Context } from "./types.ts";
-
-export type Attributes =
-  & UseAriaAccordionPanelReturnValue
-  & Pick<AllHTMLAttributes<Element>, "hidden">;
+import useAccordionPanel, {
+  Attributes,
+  Contexts,
+  Params,
+} from "./use_accordion_panel.ts";
+import { Targets } from "../hooks/use_focus_callback.ts";
+import { ERROR_MSG } from "./constant.ts";
 
 export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: Context) => ReactElement);
+    | ((attributes: Attributes, contexts: Contexts & Params) => ReactElement);
 };
+
 export default function WithAccordionPanel({ children }: Props): JSX.Element {
   const id = useContext(IdContext);
-  const { next: index } = useContext(
+  const tempId = useContext(
     PanelCountContext,
   );
-  const [selectedIndex, setSelectedIndex] = useContext(IndexContext);
+  const selectedIndexStateSet = useContext(IndexContext);
   const refs = useContext(RefsContext);
 
+  if (!id || !tempId || !selectedIndexStateSet) throw Error(ERROR_MSG);
+
+  const index = tempId.next;
+  const [selectedIndex] = selectedIndexStateSet;
   const isOpen = useMemo<boolean>(() => index === selectedIndex, [
     index,
     selectedIndex,
   ]);
-  const open = useCallback<() => void>(() => setSelectedIndex(index), [
-    setSelectedIndex,
+
+  const targets = useCallback<Targets>(
+    () => filterTruthy(refs.map(current)),
+    [],
+  );
+
+  const params: Params = {
+    id,
     index,
-  ]);
-  const focusCallbackMap = useCallbackFocus({
-    refs,
+    targets,
+    isOpen,
+  };
+
+  const [attributes, contexts] = useAccordionPanel({
+    id,
     index,
+    targets,
+    isOpen,
   });
 
-  const headerId = joinChars([id, "accordion", "header", index], "-");
-  const panelId = joinChars([id, "accordion", "panel", index], "-");
+  const child = isFunction(children)
+    ? children(attributes, { ...contexts, ...params })
+    : cloneElement(children, attributes);
 
-  const aria = useAriaAccordionPanel({ id: panelId, headerId });
-
-  const attributes = useMemo<Attributes>(
-    () => ({ ...aria, hidden: !isOpen }),
-    [JSON.stringify(aria), isOpen],
-  );
-  const context = useMemo<Context>(
-    () => ({ isOpen, open, ...focusCallbackMap, index }),
-    [
-      isOpen,
-      open,
-      index,
-      focusCallbackMap,
-    ],
-  );
-
-  if (isFunction(children)) {
-    return children(attributes, context);
-  }
-
-  return cloneElement(children, attributes);
+  return child;
 }
