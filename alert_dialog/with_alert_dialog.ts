@@ -1,106 +1,55 @@
 // This module is browser compatible.
 
-import {
-  cloneElement,
-  createElement,
-  ReactElement,
-  useCallback,
-  useMemo,
-} from "react";
-import useAriaAlertDialog, {
-  ReturnValue as UseAriaAlertDialog,
-} from "./use_aria_alert_dialog.ts";
+import { cloneElement, ReactElement, RefAttributes, useCallback } from "react";
 import { isFunction } from "../deps.ts";
+import { mergeProps, omitRef } from "../util.ts";
 import useId from "../hooks/use_id.ts";
-import { ContextContext, IdMapContext } from "./context.ts";
-import { joinChars } from "../util.ts";
-import useKeyboardEventHandler, {
-  KeyEntries,
-} from "../hooks/use_keyboard_event_handler.ts";
-import useEventListener from "../hooks/use_event_listener.ts";
-import useChildRef from "../hooks/use_child_ref.ts";
-import useFocusCallback from "./use_focus_callback.ts";
-import { Context } from "./types.ts";
+import { filterFocusable } from "../_shared/util.ts";
+import useMergedRef from "../hooks/use_merged_ref.ts";
+import useAlertDialog, {
+  Attributes,
+  Contexts,
+  Options,
+  Params,
+} from "./use_alert_dialog.ts";
+import { Targets } from "../hooks/use_focus_callback.ts";
 
-export type Props = {
-  children:
-    | ReactElement
-    | ((
-      attributes: UseAriaAlertDialog,
-      context: Context,
-    ) => ReactElement);
-
-  isShow: boolean;
-
-  /**
-   * @defaultValue {@link defaultKeyEntries}
-   */
-  keyEntries?: (context: Context) => KeyEntries;
-};
+export type Props =
+  & {
+    children:
+      | ReactElement
+      | ((
+        // deno-lint-ignore no-explicit-any
+        attributes: Attributes & RefAttributes<any>,
+        contexts: Contexts,
+      ) => ReactElement);
+  }
+  & Pick<Params, "isShow">
+  & Partial<Options>;
 export default function WithAlertDialog(
-  { children, isShow, keyEntries = defaultKeyEntries }: Readonly<
+  { children, isShow, keyEntries, initialFocus }: Readonly<
     Props
   >,
 ): JSX.Element {
   const id = useId();
-  const title = useMemo<string>(
-    () => joinChars([id, "alert", "dialog", "title"], "-")!,
-    [id],
-  );
-  const describe = useMemo<string>(
-    () => joinChars([id, "alert", "dialog", "describe"], "-")!,
-    [id],
-  );
-  const aria = useAriaAlertDialog({ titleId: title, describeId: describe });
-  const refCurrent = useCallback(() => getRef.current, []);
 
-  const { focusNext, focusPrev } = useFocusCallback(refCurrent);
-  const ctx = useMemo<Context>(
-    () => ({ isShow, focusPrev, focusNext }),
-    [isShow, focusPrev, focusNext],
-  );
-  const _child = isFunction(children)
-    ? children(aria, ctx)
-    : cloneElement(children, aria);
-
-  const entries = useMemo<KeyEntries>(
-    () => {
-      return keyEntries(ctx);
-    },
-    [focusPrev, focusNext, keyEntries],
+  const targets = useCallback<Targets>(
+    () => filterFocusable(getRef.current),
+    [],
   );
 
-  const target = useCallback(() => document, []);
+  const [attributes, contexts] = useAlertDialog({ id, isShow, targets }, {
+    keyEntries,
+    initialFocus,
+  });
 
-  const keyboardHandler = useKeyboardEventHandler(entries);
+  const [getRef, ref] = useMergedRef<HTMLElement | SVGElement>(children);
+  const child = isFunction(children)
+    ? children({ ref, ...attributes }, contexts)
+    : cloneElement(children, {
+      ref,
+      ...mergeProps(omitRef(children.props), attributes),
+    });
 
-  useEventListener(
-    {
-      target,
-      event: "keydown",
-      callback: keyboardHandler,
-    },
-    { use: isShow },
-    [target, isShow, keyboardHandler],
-  );
-
-  const [getRef, setRef] = useChildRef(_child);
-  const child = cloneElement(_child, { ref: setRef });
-
-  return createElement(
-    IdMapContext.Provider,
-    { value: { title, describe } },
-    createElement(
-      ContextContext.Provider,
-      { value: ctx },
-      child,
-    ),
-  );
+  return child;
 }
-
-export const defaultKeyEntries: (context: Context) => KeyEntries = (
-  { focusNext, focusPrev },
-) => [
-  [{ code: "Tab", shiftKey: true }, focusPrev],
-  ["Tab", focusNext],
-];
