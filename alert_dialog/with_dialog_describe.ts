@@ -7,24 +7,31 @@ import {
   useContext,
 } from "react";
 import { isFunction } from "../deps.ts";
-import { ContextContext, IdMapContext } from "./context.ts";
-import { Context } from "./types.ts";
+import { IdsContext } from "./context.ts";
+import { ALERT_DIALOG_DESCRIBE, ERROR_MSG } from "./constant.ts";
 
 type Attributes = Pick<AllHTMLAttributes<Element>, "id">;
 
 export type Props = {
   children:
     | ReactElement
-    | ((attributes: Attributes, context: Context) => ReactElement);
+    | ((attributes: Attributes) => ReactElement);
 };
 
-export default function WithDialogDescribe({ children }: Props): JSX.Element {
-  const { describe: id } = useContext(IdMapContext);
-  const renderContext = useContext(ContextContext);
+export default function WithDialogDescribe(
+  { children }: Readonly<Props>,
+): JSX.Element | never {
+  const ids = useContext(IdsContext);
 
-  if (isFunction(children)) {
-    return children({ id }, renderContext);
-  }
+  if (!ids) throw Error(ERROR_MSG);
+  const { describeId } = ids;
 
-  return cloneElement(children, { id });
+  const attributes = { id: describeId };
+  const child = isFunction(children)
+    ? children(attributes)
+    : cloneElement(children, attributes);
+
+  return child;
 }
+
+WithDialogDescribe.displayName = ALERT_DIALOG_DESCRIBE;

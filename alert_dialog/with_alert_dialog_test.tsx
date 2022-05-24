@@ -1,6 +1,6 @@
 import {
-  anyBoolean,
   anyFunction,
+  anyObject,
   anyString,
   assertSnapshot,
   describe,
@@ -11,7 +11,10 @@ import {
 } from "../dev_deps.ts";
 import { ReactElement } from "react";
 import SSRProvider from "../ssr/ssr_provider.ts";
+import AlertDialogProvider from "./alert_dialog_provider.ts";
 import WithAlertDialog from "./with_alert_dialog.ts";
+import WithDialogTitle from "./with_dialog_title.ts";
+import WithDialogDescribe from "./with_dialog_describe.ts";
 import { fireEvent, render } from "@testing-library/react";
 
 const describeTests = describe({
@@ -24,12 +27,15 @@ const describeTests = describe({
 it(describeTests, "should render as", (t) => {
   const { container } = render(
     <WithAlertDialog isShow>
-      <div></div>
+      <div>
+      </div>
     </WithAlertDialog>,
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          {children as ReactElement}
+          <AlertDialogProvider>
+            {children as ReactElement}
+          </AlertDialogProvider>
         </SSRProvider>
       ),
     },
@@ -37,6 +43,60 @@ it(describeTests, "should render as", (t) => {
 
   assertSnapshot(t, container.innerHTML);
 });
+
+it(
+  describeTests,
+  "should have aria-labelledby attribute when WithDialogTitle is exists",
+  (t) => {
+    const { container } = render(
+      <WithAlertDialog isShow>
+        <div>
+          <WithDialogTitle>
+            <h2>test</h2>
+          </WithDialogTitle>
+        </div>
+      </WithAlertDialog>,
+      {
+        wrapper: ({ children }) => (
+          <SSRProvider>
+            <AlertDialogProvider>
+              {children as ReactElement}
+            </AlertDialogProvider>
+          </SSRProvider>
+        ),
+      },
+    );
+
+    assertSnapshot(t, container.innerHTML);
+  },
+);
+
+it(
+  describeTests,
+  "should have aria-describedby attribute when WithDialogDescribe is exists",
+  (t) => {
+    const { container } = render(
+      <WithAlertDialog isShow>
+        <div>
+          <WithDialogDescribe>
+            <p>test</p>
+          </WithDialogDescribe>
+        </div>
+      </WithAlertDialog>,
+      {
+        wrapper: ({ children }) => (
+          <SSRProvider>
+            <AlertDialogProvider>
+              {children as ReactElement}
+            </AlertDialogProvider>
+          </SSRProvider>
+        ),
+      },
+    );
+
+    assertSnapshot(t, container.innerHTML);
+  },
+);
 
 it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
@@ -51,22 +111,27 @@ it(describeTests, "should render children as props", (t) => {
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          {children as ReactElement}
+          <AlertDialogProvider>
+            {children as ReactElement}
+          </AlertDialogProvider>
         </SSRProvider>
       ),
     },
   );
 
   expect(mockFn).toHaveBeenCalledWith({
-    "aria-describedby": anyString(),
-    "aria-labelledby": anyString(),
+    "aria-describedby": undefined,
+    "aria-labelledby": undefined,
     "aria-modal": anyString(),
     role: anyString(),
+    ref: anyObject(),
+    hidden: undefined,
   });
   expect(mockFn).toHaveBeenCalledWith({
     focusPrev: anyFunction(),
     focusNext: anyFunction(),
-    isShow: anyBoolean(),
+    focusFirst: anyFunction(),
+    focusLast: anyFunction(),
   });
 });
 
@@ -84,7 +149,9 @@ it(
       {
         wrapper: ({ children }) => (
           <SSRProvider>
-            {children as ReactElement}
+            <AlertDialogProvider>
+              {children as ReactElement}
+            </AlertDialogProvider>
           </SSRProvider>
         ),
       },
@@ -92,16 +159,11 @@ it(
 
     const el1 = getByTestId("test1");
     const el2 = getByTestId("test2");
-    expect(el1).not.toHaveFocus();
-    fireEvent.keyDown(document, {
-      code: "Tab",
-    });
-
     expect(el1).toHaveFocus();
-
     fireEvent.keyDown(document, {
       code: "Tab",
     });
+
     expect(el2).toHaveFocus();
 
     fireEvent.keyDown(document, {

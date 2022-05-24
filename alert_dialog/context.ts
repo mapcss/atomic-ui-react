@@ -1,15 +1,13 @@
 // This module is browser compatible.
 
 import { createContext } from "react";
-import { noop } from "../deps.ts";
-import { Context } from "./types.ts";
 
-export const IdMapContext = createContext({
-  title: "",
-  describe: "",
+export const ExistenceContext = createContext({
+  title: false,
+  describe: false,
 });
-export const ContextContext = createContext<Context>({
-  isShow: false,
-  focusNext: noop,
-  focusPrev: noop,
-});
+
+export const IdsContext = createContext<
+  | { id: string; titleId: string | undefined; describeId: string | undefined }
+  | undefined
+>(undefined);

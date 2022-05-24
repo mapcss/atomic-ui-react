@@ -1,7 +1,6 @@
 // This module is browser compatible.
 
 import { AllHTMLAttributes, useCallback, useMemo } from "react";
-import { joinChars } from "../util.ts";
 import useFocusCallback, {
   ReturnValue as UseFocusCallbackReturnValue,
   Targets,
@@ -11,10 +10,9 @@ import useKeyboardEventHandler, {
 } from "../hooks/use_keyboard_event_handler.ts";
 import useEventListener from "../hooks/use_event_listener.ts";
 import useFocus, { Target } from "../hooks/use_focus.ts";
+import { trueOr } from "../util.ts";
 
 export type Params = {
-  id: string;
-
   isShow: boolean;
 
   targets: Targets;
@@ -27,34 +25,31 @@ export type Options = {
    * This function is executed on the client side.
    */
   initialFocus: Target;
+
+  titleId: string;
+
+  describeId: string;
 };
 
 export type Attributes = Pick<
   AllHTMLAttributes<Element>,
-  "role" | "aria-modal" | "aria-labelledby" | "aria-describedby"
+  "role" | "aria-modal" | "aria-labelledby" | "aria-describedby" | "hidden"
 >;
 
 export type Contexts = UseFocusCallbackReturnValue;
 export type Returns = [Attributes, Contexts];
 
 export default function useAriaAlertDialog(
-  { id, isShow, targets }: Readonly<Params>,
+  { isShow, targets }: Readonly<Params>,
   {
     keyEntries = defaultKeyEntries,
     initialFocus: _initialFocus,
+    titleId,
+    describeId,
   }: Readonly<
     Partial<Options>
   > = {},
 ): Returns {
-  const titleId = useMemo<string>(
-    () => joinChars([id, "alert", "dialog", "title"], "-")!,
-    [id],
-  );
-  const describeId = useMemo<string>(
-    () => joinChars([id, "alert", "dialog", "describe"], "-")!,
-    [id],
-  );
-
   const defaultInitialFocus = useCallback<Target>(() => {
     const els = targets();
     return Array.from(els)[0];
@@ -78,12 +73,13 @@ export default function useAriaAlertDialog(
     "aria-modal": "true",
     "aria-labelledby": titleId,
     "aria-describedby": describeId,
-  }), [titleId, describeId]);
+    hidden: trueOr(!isShow),
+  }), [titleId, describeId, isShow]);
 
   const entries = useMemo<KeyEntries>(() => keyEntries(contexts), [keyEntries]);
   const keyboardHandler = useKeyboardEventHandler(entries);
 
-  const target = useCallback(() => window, []);
+  const target = useCallback(() => document, []);
 
   useEventListener({
     target,

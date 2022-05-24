@@ -1,6 +1,4 @@
 import {
-  anyBoolean,
-  anyFunction,
   anyString,
   assertSnapshot,
   describe,
@@ -10,8 +8,8 @@ import {
   setupJSDOM,
 } from "../dev_deps.ts";
 import SSRProvider from "../ssr/ssr_provider.ts";
-import WithAlertDialog from "./with_alert_dialog.ts";
 import WithDialogDescribe from "./with_dialog_describe.ts";
+import AlertDialogProvider from "./alert_dialog_provider.ts";
 import { render } from "@testing-library/react";
 
 const describeTests = describe({
@@ -29,11 +27,9 @@ it(describeTests, "should render as", (t) => {
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <WithAlertDialog isShow>
-            <div>
-              {children}
-            </div>
-          </WithAlertDialog>
+          <AlertDialogProvider>
+            {children as never}
+          </AlertDialogProvider>
         </SSRProvider>
       ),
     },
@@ -46,20 +42,17 @@ it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   render(
     <WithDialogDescribe>
-      {(attributes, context) => {
+      {(attributes) => {
         mockFn(attributes);
-        mockFn(context);
-        return <div></div>;
+        return <div {...attributes}></div>;
       }}
     </WithDialogDescribe>,
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <WithAlertDialog isShow>
-            <div>
-              {children}
-            </div>
-          </WithAlertDialog>
+          <AlertDialogProvider>
+            {children as never}
+          </AlertDialogProvider>
         </SSRProvider>
       ),
     },
@@ -67,10 +60,5 @@ it(describeTests, "should render children as props", (t) => {
 
   expect(mockFn).toHaveBeenCalledWith({
     id: anyString(),
-  });
-  expect(mockFn).toHaveBeenCalledWith({
-    focusPrev: anyFunction(),
-    focusNext: anyFunction(),
-    isShow: anyBoolean(),
   });
 });
