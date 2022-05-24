@@ -13,7 +13,7 @@ export type { Props as ToolbarProviderProps } from "./toolbar_provider.ts";
 export { default as useToolbarItem } from "./use_toolbar_item.ts";
 export type {
   Attributes as ToolbarItemAttributes,
-  Context as ToolbarItemContext,
+  Contexts as ToolbarItemContexts,
 } from "./use_toolbar_item.ts";
 export { default as useToolbar } from "./use_toolbar.ts";
 export type { Attributes as ToolbarAttributes } from "./use_toolbar.ts";

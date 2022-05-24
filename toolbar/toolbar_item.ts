@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Tag, WithIntrinsicElements } from "../types.ts";
 import WithToolbarItem from "./with_toolbar_item.ts";
-import { Context } from "./use_toolbar_item.ts";
+import { Contexts } from "./use_toolbar_item.ts";
 import { useAs } from "../_shared/hooks.ts";
 import { mergeProps } from "../util.ts";
 
@@ -17,7 +17,7 @@ type _Props<As extends Tag> = {
    */
   as?: As;
 
-  propsAs?: (context: Context) => ComponentProps<As>;
+  propsAs?: (contexts: Contexts) => ComponentProps<As>;
 };
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
@@ -27,13 +27,13 @@ function _ToolbarItem<As extends Tag = "button">(
   _: Ref<HTMLElement | SVGElement>,
 ): JSX.Element {
   return WithToolbarItem({
-    children: (attributes, context) => {
+    children: (attributes, contexts) => {
       const tag = useAs(as, "button");
       const _propsAs = useMemo(
         () => {
-          return propsAs?.(context) ?? {};
+          return propsAs?.(contexts) ?? {};
         },
-        [propsAs, JSON.stringify(context)],
+        [propsAs, JSON.stringify(contexts)],
       );
 
       const props = mergeProps(mergeProps(attributes, rest), _propsAs);
