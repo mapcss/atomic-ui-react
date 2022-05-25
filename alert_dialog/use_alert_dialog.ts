@@ -1,6 +1,7 @@
 // This module is browser compatible.
 
 import { AllHTMLAttributes, useCallback, useMemo } from "react";
+import { VFn } from "../deps.ts";
 import useFocusCallback, {
   ReturnValue as UseFocusCallbackReturnValue,
   Targets,
@@ -19,6 +20,9 @@ export type Params = {
 };
 
 export type Options = {
+  /** Called when the dialog is dismissed */
+  onClose: VFn;
+
   keyEntries: (contexts: Contexts) => KeyEntries;
 
   /** A function for return element that should receive focus first.
@@ -36,12 +40,16 @@ export type Attributes = Pick<
   "role" | "aria-modal" | "aria-labelledby" | "aria-describedby" | "hidden"
 >;
 
-export type Contexts = UseFocusCallbackReturnValue;
+export type Contexts = UseFocusCallbackReturnValue & {
+  /** Call `onClose` callback */
+  close?: VFn;
+};
 export type Returns = [Attributes, Contexts];
 
 export default function useAriaAlertDialog(
   { isShow, targets }: Readonly<Params>,
   {
+    onClose,
     keyEntries = defaultKeyEntries,
     initialFocus: _initialFocus,
     titleId,
@@ -64,7 +72,8 @@ export default function useAriaAlertDialog(
     focusLast,
     focusNext,
     focusPrev,
-  }), [focusFirst, focusLast, focusNext, focusPrev]);
+    close: onClose,
+  }), [focusFirst, focusLast, focusNext, focusPrev, onClose]);
 
   useFocus(initialFocus, { use: isShow }, [initialFocus, isShow]);
 
@@ -96,7 +105,9 @@ export default function useAriaAlertDialog(
   return [attributes, contexts];
 }
 
-function defaultKeyEntries({ focusNext, focusPrev }: Contexts): KeyEntries {
+function defaultKeyEntries(
+  { focusNext, focusPrev, close }: Contexts,
+): KeyEntries {
   return [
     [{ code: "Tab", shiftKey: true }, (ev) => {
       ev.preventDefault();
@@ -105,6 +116,10 @@ function defaultKeyEntries({ focusNext, focusPrev }: Contexts): KeyEntries {
     ["Tab", (ev) => {
       ev.preventDefault();
       focusNext();
+    }],
+    ["Escape", (ev) => {
+      ev.preventDefault();
+      close?.();
     }],
   ];
 }

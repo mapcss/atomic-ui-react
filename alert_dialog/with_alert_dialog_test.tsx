@@ -132,6 +132,7 @@ it(describeTests, "should render children as props", (t) => {
     focusNext: anyFunction(),
     focusFirst: anyFunction(),
     focusLast: anyFunction(),
+    close: undefined,
   });
 });
 
@@ -176,5 +177,34 @@ it(
       shiftKey: true,
     });
     expect(el2).toHaveFocus();
+  },
+);
+
+it(
+  describeTests,
+  "should call onClose callback when escape is keyed",
+  () => {
+    const mockFn = fn();
+    render(
+      <WithAlertDialog isShow onClose={mockFn}>
+        <div></div>
+      </WithAlertDialog>,
+      {
+        wrapper: ({ children }) => (
+          <SSRProvider>
+            <AlertDialogProvider>
+              {children as ReactElement}
+            </AlertDialogProvider>
+          </SSRProvider>
+        ),
+      },
+    );
+
+    expect(mockFn).not.toHaveBeenCalled();
+
+    fireEvent.keyDown(document, {
+      code: "Escape",
+    });
+    expect(mockFn).toHaveBeenCalledTimes(1);
   },
 );

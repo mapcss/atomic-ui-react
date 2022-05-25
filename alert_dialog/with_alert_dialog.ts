@@ -34,7 +34,7 @@ export type Props =
   & Pick<Params, "isShow">
   & Partial<Options>;
 export default function WithAlertDialog(
-  { children, isShow, keyEntries, initialFocus }: Readonly<
+  { children, isShow, keyEntries, initialFocus, onClose }: Readonly<
     Props
   >,
 ): JSX.Element | never {
@@ -50,6 +50,7 @@ export default function WithAlertDialog(
   );
 
   const [attributes, contexts] = useAlertDialog({ isShow, targets }, {
+    onClose,
     keyEntries,
     initialFocus,
     titleId,
