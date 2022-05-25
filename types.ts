@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { DOMAttributes } from "react";
+import { AllHTMLAttributes, DOMAttributes } from "react";
 
 export type AllHandlerMap = Omit<
   DOMAttributes<Element>,
@@ -27,3 +27,16 @@ export type WithIntrinsicElements<Props, As extends Tag> =
   & Props
   & Omit<JSX.IntrinsicElements[As], keyof Props>;
 export type KeyboardEventHandler = (ev: KeyboardEvent) => void;
+
+export type ElementProps<
+  As extends Tag,
+  Contexts extends Record<PropertyKey, unknown>,
+  E = Element,
+> = {
+  renderAttributes?: (contexts: Contexts) => AllHTMLAttributes<E>;
+} & AsProps<As>;
+
+export type AsProps<As extends Tag> = {
+  /** Render tag as */
+  as?: As;
+};

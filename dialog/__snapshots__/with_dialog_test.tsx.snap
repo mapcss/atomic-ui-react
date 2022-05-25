@@ -1,0 +1,7 @@
+export const snapshot = {};
+
+snapshot[`WithAlertDialog > should render as child 1`] = `'<div role="dialog" aria-modal="true"></div>'`;
+
+snapshot[`WithAlertDialog > should have aria-labelledby attribute when hasTitle is true 1`] = `'<div role="dialog" aria-modal="true" aria-labelledby="atomic-ui-0-dialog-title"></div>'`;
+
+snapshot[`WithAlertDialog > should have aria-describedby attribute when hasDescribe is true 1`] = `'<div role="dialog" aria-modal="true" aria-describedby="atomic-ui-0-dialog-describe"></div>'`;
