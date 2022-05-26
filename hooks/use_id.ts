@@ -1,47 +1,68 @@
 // This module is browser compatible.
 
-import { useEffect, useRef, useState } from "react";
-import useSSRSafeId from "../ssr/use_ssr_safe_id.ts";
-import useIsomorphicLayoutEffect from "./use_isomorphic_layout_effect.ts";
+import { useMemo } from "react";
+import useKeyId, { Options as UseKeyIdOptions } from "./use_key_id.ts";
+import { joinChars } from "../util.ts";
+import useSSRStore from "../ssr/use_ssr_store.ts";
 
-const idsUpdaterMap: Map<string, (v: string) => void> = new Map();
+const DEFAULT_PREFIX = "atomic-ui";
+function defaultFormatId({ prefix, index }: Contexts): string {
+  return joinChars([prefix, index], "-")!;
+}
 
-export default function useId(defaultId?: string): string {
-  const isRendering = useRef(true);
-  isRendering.current = true;
-  const [value, setValue] = useState(defaultId);
-  const nextId = useRef<string | undefined>(undefined);
+export type Options = {
+  /** ID prefix
+   * @default `atomic-ui`
+   */
+  prefix: string;
 
-  const res = useSSRSafeId(value);
+  /** Change the format of the Id.
+   * @defaultValue {@link defaultFormatId }
+   */
+  formatId: (contexts: Contexts) => string;
+} & UseKeyIdOptions;
 
-  // don't memo this, we want it new each render so that the Effects always run
-  const updateValue = (val: string) => {
-    if (!isRendering.current) {
-      setValue(val);
-    } else {
-      nextId.current = val;
-    }
-  };
+export type Contexts =
+  & Pick<Options, "prefix" | "step" | "init">
+  & Pick<Returns, "index">;
 
-  idsUpdaterMap.set(res, updateValue);
+export type Returns = {
+  /** Incremental Id for the same prefix. */
+  index: number;
 
-  useIsomorphicLayoutEffect(() => {
-    isRendering.current = false;
-  }, [updateValue]);
+  /** Unique Id for the same prefix.
+   * The format of the id can be changed through the `formatId` function.
+   */
+  id: string;
+};
 
-  useIsomorphicLayoutEffect(() => {
-    const r = res;
-    return () => {
-      idsUpdaterMap.delete(r);
-    };
-  }, [res]);
+/** Returns a unique ID for the same prefix.
+ * If prefix is specified, it returns a unique ID for the same prefix.
+ * ```tsx
+ * import { useId } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+ * export default () => {
+ *   const { id } = useId() // atomic-ui-0
+ * };
+ * ```
+ * @remark
+ * When running on the Server side, it must be wrapped in the `SSRProvider` component.
+ */
+export default function useId(
+  {
+    prefix = DEFAULT_PREFIX,
+    step = 1,
+    init = 0,
+    formatId = defaultFormatId,
+  }: Readonly<
+    Partial<Options>
+  > = {},
+): Returns {
+  const store = useSSRStore();
+  const index = useKeyId({ key: prefix, store }, { step, init });
+  const returns = useMemo<Returns>(() => ({
+    id: formatId({ index, prefix, step, init }),
+    index,
+  }), [prefix, index, formatId, step, init]);
 
-  useEffect(() => {
-    const newId = nextId.current;
-    if (newId) {
-      setValue(newId);
-      nextId.current = undefined;
-    }
-  }, [setValue, updateValue]);
-  return res;
+  return returns;
 }

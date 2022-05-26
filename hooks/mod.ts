@@ -8,6 +8,11 @@ export type {
 export { default as useIsomorphicLayoutEffect } from "./use_isomorphic_layout_effect.ts";
 export { default as useIsFirstMount } from "./use_is_first_mount.ts";
 export { default as useId } from "./use_id.ts";
+export type {
+  Contexts as UseIdContexts,
+  Options as UseIdOptions,
+  Returns as UseIdReturns,
+} from "./use_id.ts";
 export type { ReturnValue as UseIsFirstMountReturnValue } from "./use_is_first_mount.ts";
 export { default as useTimeout } from "./use_timeout.ts";
 export type {
@@ -35,3 +40,9 @@ export { default as useKeyboardEventHandler } from "./use_keyboard_event_handler
 export type { KeyEntries } from "./use_keyboard_event_handler.ts";
 export { default as useChildRef } from "./use_child_ref.ts";
 export type { ReturnValue as UseChildRefReturnValue } from "./use_child_ref.ts";
+export { default as useKeyId } from "./use_key_id.ts";
+export type {
+  Options as UseKeyIdOptions,
+  Params as UseKeyIdParams,
+  Store as KeyIdStore,
+} from "./use_key_id.ts";
