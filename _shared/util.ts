@@ -1,7 +1,7 @@
 // This module is browser compatible.
 
 import { isLength0, not } from "../deps.ts";
-import { HasFocusElement } from "./types.ts";
+import { HasFocusElement } from "../types.ts";
 export type TempIdReturnValue = {
   readonly current: number;
   readonly next: number;

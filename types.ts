@@ -40,3 +40,5 @@ export type AsProps<As extends Tag> = {
   /** Render tag as */
   as?: As;
 };
+
+export type HasFocusElement = HTMLElement | SVGElement | MathMLElement;
