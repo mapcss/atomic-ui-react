@@ -52,7 +52,7 @@ export default function TabProvider(
     isHorizontal = DEFAULT_IS_HORIZONTAL,
     onChange,
   } = props;
-  const id = useId();
+  const { id } = useId();
   const refs: RefObject<HTMLElement>[] = [];
   const tabCount = tempId();
   const tabPanelCount = tempId();

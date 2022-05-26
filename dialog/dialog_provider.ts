@@ -10,7 +10,7 @@ export type Props = {
 };
 
 export default function DialogProvider({ children }: Props): JSX.Element {
-  const id = useId();
+  const { id } = useId();
   const titleId = useMemo<string>(
     () => joinChars([id, "dialog", "title"], "-")!,
     [id],

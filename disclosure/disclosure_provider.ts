@@ -17,7 +17,7 @@ export type Props = {
 export default function DisclosureProvider(
   { children, isDefaultOpen }: Props,
 ): JSX.Element {
-  const id = useId();
+  const { id } = useId();
   const stateSet = useBoolean(isDefaultOpen);
 
   return createElement(

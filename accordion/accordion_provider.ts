@@ -24,7 +24,7 @@ export default function AccordionProvider(
   { children, defaultIndex = 0 }: Readonly<Props>,
 ): JSX.Element {
   const stateSet = useState<number>(defaultIndex);
-  const id = useId();
+  const { id } = useId();
   const headerCount = tempId();
   const panelCount = tempId();
 
