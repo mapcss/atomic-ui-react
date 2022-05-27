@@ -1,13 +1,35 @@
 // This module is browser compatible.
 
-import {
-  createElement,
-  ForwardedRef,
-  forwardRef,
-  MouseEventHandler,
-  useMemo,
-} from "react";
-import useAria, { Param } from "./use_switch_aria.ts";
+import { createElement, forwardRef as _forwardRef, Ref } from "react";
+import { Tag, WithIntrinsicElements } from "../types.ts";
+import { useAs } from "../_shared/hooks.ts";
+import WithSwitch, { Props as WithSwitchProps } from "./with_switch.ts";
+
+type _Props<As extends Tag> = {
+  /** The element the Switch should render as.
+   * @default `button`
+   */
+  as?: As;
+} & Omit<WithSwitchProps, "children">;
+
+export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
+
+function _Switch<As extends Tag = "button">(
+  { as, children, ...rest }: Props<As>,
+  ref: Ref<Element>,
+): JSX.Element {
+  return WithSwitch({
+    children: (attrs) => {
+      const tag = useAs(as, "button");
+      return createElement(tag, { ref, ...attrs, children });
+    },
+    ...rest,
+  });
+}
+
+const Switch = _forwardRef(_Switch);
+
+export default Switch;
 
 declare module "react" {
   // deno-lint-ignore ban-types
@@ -15,50 +37,3 @@ declare module "react" {
     render: (props: P, ref: Ref<T>) => ReactElement | null,
   ): (props: P & RefAttributes<T>) => ReactElement | null;
 }
-
-type _Props<As extends keyof JSX.IntrinsicElements> = {
-  /** The element the Switch should render as.
-   * @default `button`
-   */
-  as?: As;
-
-  /** The function to call when the switch is toggled. */
-  onChange: (isChecked: boolean) => void;
-} & Partial<Param>;
-
-export type Props<As extends keyof JSX.IntrinsicElements> =
-  & _Props<As>
-  & Omit<JSX.IntrinsicElements[As], keyof _Props<As>>;
-
-function _Switch<As extends keyof JSX.IntrinsicElements>(
-  { isChecked, onChange, onClick, as, ...rest }: Props<As>,
-  ref: ForwardedRef<As>,
-): JSX.Element {
-  const _as = as ?? "button";
-
-  const ariaProps = useAria({ isChecked });
-  const handleClick = useMemo<MouseEventHandler>(() => {
-    return (ev) => {
-      onClick?.(ev as never);
-      onChange(!isChecked);
-    };
-  }, [isChecked, onClick, onChange]);
-  const props = useMemo(() => ({
-    ref,
-    ...ariaProps,
-    tabIndex: 0,
-    onClick: handleClick,
-  }), [ariaProps, handleClick]);
-
-  return createElement(
-    _as,
-    {
-      ...props,
-      ...rest,
-    },
-  );
-}
-
-const Switch = forwardRef(_Switch);
-
-export default Switch;
