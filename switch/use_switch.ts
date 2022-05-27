@@ -4,7 +4,7 @@ import { AllHTMLAttributes } from "react";
 import useAttributesWithContext, {
   AllAttributesWithContext,
   AttributesHandler,
-} from "../hooks/use_attrributes_with_context.ts";
+} from "../hooks/use_attributes_with_context.ts";
 import { mappingKey } from "../util.ts";
 
 export type Params = {
