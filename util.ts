@@ -26,6 +26,7 @@ import {
   isString,
   isUndefined,
 } from "./deps.ts";
+import { KeyboardEventHandler } from "./types.ts";
 
 export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
   return value.filter(Boolean) as never;
@@ -370,4 +371,56 @@ export function visitDisplayName(
       }
     },
   });
+}
+
+export type KeyOrCodeOrKeyboardEvent = string | Partial<KeyboardEvent>;
+
+export type KeyEntries = Iterable<[
+  KeyOrCodeOrKeyboardEvent,
+  KeyboardEventHandler,
+]>;
+
+export type Option = {
+  beforeAll: KeyboardEventHandler;
+
+  afterAll: KeyboardEventHandler;
+};
+
+export function mappingKey(
+  keyEntries: Readonly<KeyEntries>,
+  { beforeAll, afterAll }: Readonly<Partial<Option>> = {},
+): KeyboardEventHandler {
+  let beforeAllDone = false;
+
+  const callback: KeyboardEventHandler = (ev) => {
+    function callBeforeAll(): void {
+      if (!beforeAllDone) {
+        beforeAllDone = true;
+        beforeAll?.(ev);
+      }
+    }
+    for (const [maybeCode, callback] of keyEntries) {
+      if (isString(maybeCode)) {
+        if ([ev.code, ev.key].includes(maybeCode)) {
+          callBeforeAll();
+          callback(ev);
+          break;
+        }
+        continue;
+      }
+
+      const match = Object.entries(maybeCode).every(([key, value]) => {
+        return ev[key as keyof globalThis.KeyboardEvent] === value;
+      });
+      if (match) {
+        callBeforeAll();
+        callback(ev);
+        break;
+      }
+    }
+
+    afterAll?.(ev);
+  };
+
+  return callback;
 }

@@ -42,3 +42,15 @@ export type AsProps<As extends Tag> = {
 };
 
 export type HasFocusElement = HTMLElement | SVGElement | MathMLElement;
+
+export type HandlerWithContext<
+  Context,
+  K extends keyof HandlersWithContext<Context>,
+> = Required<HandlersWithContext<Context>>[K];
+
+export type HandlersWithContext<Context> = {
+  [k in keyof AllHandlerMap]?: (
+    event: Parameters<Required<AllHandlerMap>[k]>[0],
+    context: Context,
+  ) => ReturnType<Required<AllHandlerMap>[k]>;
+};
