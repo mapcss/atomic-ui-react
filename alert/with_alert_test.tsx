@@ -7,7 +7,7 @@ Deno.test("WithAlert should render as", (t) => {
     t,
     renderToStaticMarkup(
       <WithAlert>
-        <div>test</div>
+        {(attributes) => <div {...attributes}>test</div>}
       </WithAlert>,
     ),
   );
