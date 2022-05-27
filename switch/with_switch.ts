@@ -11,7 +11,7 @@ export type Props =
     children: (attributes: Attributes, contexts: Contexts) => ReactElement;
   }
   & Params
-  & Partial<Options>;
+  & Partial<Omit<Options, "children">>;
 
 export default function WithSwitch(
   { children, isChecked, onValueChange, ...rest }: Readonly<Props>,

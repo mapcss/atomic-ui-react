@@ -1,12 +1,10 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, useCallback, useMemo } from "react";
-import {
-  AllHandlerMap,
-  HandlersWithContext,
-  HandlerWithContext,
-} from "../types.ts";
-import useEventHandlersWithContext from "../_shared/use_event_handlers_with_context.ts";
+import { AllHTMLAttributes } from "react";
+import useAttributesWithContext, {
+  AllAttributesWithContext,
+  AttributesHandler,
+} from "../hooks/use_attrributes_with_context.ts";
 import { mappingKey } from "../util.ts";
 
 export type Params = {
@@ -17,83 +15,63 @@ export type Params = {
   onValueChange: (isChecked: boolean) => void;
 };
 
-export type CallbackContexts = {
-  toggle: () => void;
-};
+export type Contexts = Params;
 
-export type Contexts = CallbackContexts;
+export type Options = AllAttributesWithContext<Contexts, Element>;
 
-export type Options = HandlersWithContext<Contexts>;
-
-export type Attributes =
-  & Pick<
-    AllHTMLAttributes<Element>,
-    "role" | "aria-checked" | "tabIndex"
-  >
-  & AllHandlerMap;
+export type Attributes = Pick<
+  AllHTMLAttributes<Element>,
+  "role" | "aria-checked" | "tabIndex"
+>;
 
 export type Returns = [Attributes, Contexts];
 
 export default function useSwitch(
   { isChecked, onValueChange }: Readonly<Params>,
-  {
-    ...handlerWithContext
-  }: Readonly<
+  { ...allAttributesWithContext }: Readonly<
     Partial<Options>
   > = {},
 ): Returns {
-  const toggle = useCallback(() => onValueChange(!isChecked), [
-    onValueChange,
-    isChecked,
-  ]);
-
   const contexts: Contexts = {
-    toggle,
+    isChecked,
+    onValueChange,
   };
-  const onClick = useCallback<HandlerWithContext<Contexts, "onClick">>(
-    defaultOnClick,
-    [],
-  );
 
-  const onKeyDown = useCallback<HandlerWithContext<Contexts, "onKeyDown">>(
-    defaultOnKeyDown,
-    [],
-  );
-
-  const handlers = useEventHandlersWithContext({
-    handlers: { onClick, onKeyDown, ...handlerWithContext },
+  const attributes = useAttributesWithContext({
+    attributes: { ...defaultAttributes, ...allAttributesWithContext },
     context: contexts,
   });
-
-  const attributes = useMemo<Attributes>(() => {
-    return {
-      role: "switch",
-      "aria-checked": isChecked,
-      tabIndex: 0,
-      ...handlers,
-    };
-  }, [isChecked, ...Object.entries(handlers).flat()]);
 
   return [attributes, contexts];
 }
 
-const defaultOnKeyDown: HandlerWithContext<Contexts, "onKeyDown"> = (
+const defaultOnKeyDown: AttributesHandler<Contexts, "onKeyDown"> = (
   ev,
-  { toggle },
+  { isChecked, onValueChange },
 ) => {
+  const toggle = () => {
+    ev.preventDefault();
+    onValueChange(!isChecked);
+  };
   mappingKey([
-    ["Space", (ev) => {
-      ev.preventDefault();
-      toggle();
-    }],
-    ["Enter", (ev) => {
-      ev.preventDefault();
-      toggle();
-    }],
+    ["Space", toggle],
+    ["Enter", toggle],
   ])(ev as unknown as KeyboardEvent);
 };
 
-const defaultOnClick: HandlerWithContext<Contexts, "onClick"> = (
+const defaultOnClick: AttributesHandler<Contexts, "onClick"> = (
   _,
-  { toggle },
-) => toggle();
+  { isChecked, onValueChange },
+) => onValueChange(!isChecked);
+
+const defaultAriaChecked: AttributesHandler<Contexts, "aria-checked"> = (
+  { isChecked },
+) => isChecked;
+
+const defaultAttributes = {
+  onClick: defaultOnClick,
+  onKeyDown: defaultOnKeyDown,
+  role: "switch",
+  tabIndex: 0,
+  "aria-checked": defaultAriaChecked,
+};

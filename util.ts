@@ -225,7 +225,7 @@ export function mergeProps<T extends Props, U extends Props>(
   return result as T & U;
 }
 
-function isEventHandlerName(value: string): value is `on${string}` {
+export function isEventHandlerName(value: string): value is `on${string}` {
   return value[0] === "o" &&
     value[1] === "n" &&
     value.charCodeAt(2) >= /* 'A' */ 65 &&
