@@ -10,6 +10,7 @@ export { default as useIsFirstMount } from "./use_is_first_mount.ts";
 export { default as useId } from "./use_id.ts";
 export type {
   Contexts as UseIdContexts,
+  FormatId,
   Options as UseIdOptions,
   Returns as UseIdReturns,
 } from "./use_id.ts";

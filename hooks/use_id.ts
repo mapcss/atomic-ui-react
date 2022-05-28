@@ -10,20 +10,27 @@ function defaultFormatId({ prefix, index }: Contexts): string {
   return joinChars([prefix, index], "-")!;
 }
 
+export type FormatId = (contexts: Contexts) => string;
+
 export type Options = {
-  /** ID prefix
+  /** Id prefix.
    * @default `atomic-ui`
    */
   prefix: string;
 
-  /** Change the format of the Id.
+  /** Format of the Id.
    * @defaultValue {@link defaultFormatId }
    */
-  formatId: (contexts: Contexts) => string;
-} & UseKeyIdOptions;
+  formatId: FormatId;
+
+  /** Initial index.
+   * @default 0
+   */
+  initialIndex: number;
+} & Pick<UseKeyIdOptions, "step">;
 
 export type Contexts =
-  & Pick<Options, "prefix" | "step" | "init">
+  & Pick<Options, "prefix" | "step" | "initialIndex">
   & Pick<Returns, "index">;
 
 export type Returns = {
@@ -31,38 +38,48 @@ export type Returns = {
   index: number;
 
   /** Unique Id for the same prefix.
-   * The format of the id can be changed through the `formatId` function.
+   * This is formatted through the {@link Options.formatId} function.
    */
   id: string;
 };
 
-/** Returns a unique ID for the same prefix.
- * If prefix is specified, it returns a unique ID for the same prefix.
+/** Hooks for ensure a unique ID for the same prefix.
+ * @param options This options
  * ```tsx
  * import { useId } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
  * export default () => {
  *   const { id } = useId() // atomic-ui-0
  * };
  * ```
- * @remark
- * When running on the Server side, it must be wrapped in the `SSRProvider` component.
+ * @remark When running on the Server side, it must be wrapped in the `SSRProvider` component.
  */
 export default function useId(
   {
     prefix = DEFAULT_PREFIX,
     step = 1,
-    init = 0,
+    initialIndex = 0,
     formatId = defaultFormatId,
   }: Readonly<
     Partial<Options>
   > = {},
 ): Returns {
   const store = useSSRStore();
-  const index = useKeyId({ key: prefix, store }, { step, init });
+  const index = useKeyId({ key: prefix, store }, { step, init: initialIndex });
+
+  const id = useMemo<string>(
+    () => formatId({ index, prefix, step, initialIndex }),
+    [
+      formatId,
+      index,
+      prefix,
+      step,
+      initialIndex,
+    ],
+  );
   const returns = useMemo<Returns>(() => ({
-    id: formatId({ index, prefix, step, init }),
+    id,
     index,
-  }), [prefix, index, formatId, step, init]);
+  }), [id, index]);
 
   return returns;
 }

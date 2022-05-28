@@ -49,6 +49,67 @@ export default () => {
 
 `boolean`
 
+### useId
+
+[Source](./use_id.ts) [Test](./use_id_test.ts)
+
+Hooks for ensure a unique ID for the same prefix.
+
+#### Example
+
+```tsx
+import { useId } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  const { id } = useId(); // atomic-ui-0
+};
+```
+
+#### Arguments
+
+Accepts up to 1 arguments.
+
+| N | Name    |                                  Required / Default                                  | Description                                        |
+| - | ------- | :----------------------------------------------------------------------------------: | -------------------------------------------------- |
+| 1 | options | `{ prefix: "atomic-ui", step = 1, initialIndex = 0, formatId = defaultFormatId}`[^4] | `Readonly<Partial<Options>>`[^5]<br> This options. |
+
+[^5]: `Options`
+
+| Name         | Description                                                |
+| ------------ | ---------------------------------------------------------- |
+| prefix       | `string`<br>Id prefix.                                     |
+| formatId     | `(contexts: Contexts) => string`[^6]<br> Format of the Id. |
+| step         | `number`<br> Incremental step.                             |
+| initialIndex | `number`<br> Initial index.                                |
+
+[^4]: defaultFormatId
+
+@see [defaultFormatId](./use_id.ts#L9)
+
+[^6]: Contexts
+
+`Pick<Options, "prefix" | "step" | "initialIndex"> & Pick<Returns, "index">;`
+
+#### Returns
+
+| Name  | Description                                                                                   |
+| ----- | --------------------------------------------------------------------------------------------- |
+| id    | `string`<br>Unique Id for the same prefix. This is formatted through the `formatId` function. |
+| index | `number`<br>Incremental Id for the same prefix.                                               |
+
+#### Dependency
+
+`useId` depends on [SSRProvider](../ssr/ssr_provider.ts) by default. If useId is
+used on the server side, the application must be wrapped in an `SSRProvider`
+component.
+
+If you forget to do so, useId will output the following warning:
+
+```ts
+// [atomic-ui] When server rendering, you must wrap your application in an <SSRProvider> to ensure consistent ids are generated between the client and server.
+```
+
+See [Server side rendering](../ssr/) for details.
+
 ### usePrevious
 
 [Source](./use_previous.ts) [Test](./use_previous_test.ts)
