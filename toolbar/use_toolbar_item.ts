@@ -5,12 +5,10 @@ import {
   useCallback,
   useMemo,
 } from "react";
-import { filterTruthy, isSameNode } from "../util.ts";
+import { filterTruthy, isSameNode, KeyEntries } from "../util.ts";
 import { isLength0 } from "../deps.ts";
 import { AllHandlerMap, KeyboardHandler } from "../types.ts";
-import useKeyboardEventHandler, {
-  KeyEntries,
-} from "../hooks/use_keyboard_event_handler.ts";
+import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
 import useFocusCallback, {
   ReturnValue as UseFocusCallbackReturnValue,
 } from "../hooks/use_focus_callback.ts";

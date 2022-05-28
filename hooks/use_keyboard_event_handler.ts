@@ -2,14 +2,10 @@
 
 import { useMemo } from "react";
 import { isString } from "../deps.ts";
+import { KeyEntries } from "../util.ts";
 import { KeyboardEventHandler } from "../types.ts";
 
 export type KeyOrCodeOrKeyboardEvent = string | Partial<KeyboardEvent>;
-
-export type KeyEntries = Iterable<[
-  KeyOrCodeOrKeyboardEvent,
-  KeyboardEventHandler,
-]>;
 
 export type Option = {
   beforeAll: KeyboardEventHandler;

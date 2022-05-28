@@ -7,16 +7,14 @@ import {
   KeyboardHandler,
 } from "../types.ts";
 import { TAB } from "./constant.ts";
-import useKeyboardEventListener, {
-  KeyEntries,
-} from "../hooks/use_keyboard_event_handler.ts";
+import useKeyboardEventListener from "../hooks/use_keyboard_event_handler.ts";
 import { useEventHandler } from "../_shared/hooks.ts";
 import useFocusCallback, {
   ReturnValue as UseFocusCallbackReturnValue,
   Targets,
 } from "../hooks/use_focus_callback.ts";
 import { isAriaDisabled } from "./assert.ts";
-import { booleanish, onNotNullable } from "../util.ts";
+import { booleanish, KeyEntries, onNotNullable } from "../util.ts";
 
 export type Params = {
   index: number;

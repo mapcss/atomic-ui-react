@@ -1,13 +1,12 @@
 // This module is browser compatible.
 
 import { AllHTMLAttributes, useMemo } from "react";
-import { joinChars } from "../util.ts";
+import { joinChars, KeyEntries } from "../util.ts";
 import { VFn } from "../deps.ts";
 import useFocusCallback, {
   ReturnValue as UseFocusCallbackReturnValue,
   Targets,
 } from "../hooks/use_focus_callback.ts";
-import { KeyEntries } from "../hooks/use_keyboard_event_handler.ts";
 import { AllHandlerWithoutKeyBoard, KeyboardHandler } from "../types.ts";
 import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
 import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
