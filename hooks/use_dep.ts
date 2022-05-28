@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { useRef } from "react";
 import usePrevious from "./use_previous.ts";
 

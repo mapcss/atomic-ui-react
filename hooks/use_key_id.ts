@@ -1,3 +1,5 @@
+// This module is browser compatible.
+
 import { useRef } from "react";
 import { isNumber } from "../deps.ts";
 import useIsFirstMount from "./use_is_first_mount.ts";
