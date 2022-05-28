@@ -2,7 +2,7 @@ import usePrevious from "./use_previous.ts";
 import { renderHook } from "@testing-library/react-hooks";
 import { expect } from "../dev_deps.ts";
 
-Deno.test("usePrevious should", () => {
+Deno.test("usePrevious should return previous rendering value", () => {
   const { rerender, result } = renderHook(({ value }) => usePrevious(value), {
     initialProps: {
       value: false as unknown,
