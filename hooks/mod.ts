@@ -49,3 +49,5 @@ export type {
 export { default as usePrevious } from "./use_previous.ts";
 export { default as useDep } from "./use_dep.ts";
 export type { Compare } from "./use_dep.ts";
+export { default as useUpdateEffect } from "./use_update_effect.ts";
+export type { Options as UseUpdateEffectOptions } from "./use_update_effect.ts";
