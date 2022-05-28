@@ -58,7 +58,6 @@ export default function useDisclosureProvider(
         setIsOpen,
       });
     },
-    undefined,
     [onChangeOpen, id, isOpen, setIsOpen],
   );
 
