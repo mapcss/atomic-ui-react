@@ -10,4 +10,4 @@ export type Dispatches = {
   setIsOpen: (isOpen: boolean) => void;
 };
 
-export type SharedContexts = States & Dispatches
+export type SharedContexts = States & Dispatches;

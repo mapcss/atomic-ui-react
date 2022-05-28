@@ -1,7 +1,8 @@
 import { AllHTMLAttributes, useMemo } from "react";
 import { filterKeys, isFunction, mapValues, not } from "../deps.ts";
-import { isEventHandlerName } from "../util.ts";
+import { equal, isEventHandlerName } from "../util.ts";
 import useEventHandlersWithContext from "../_shared/use_event_handlers_with_context.ts";
+import useDep from "./use_dep.ts";
 
 export type Params<Context, E> = {
   attributes: E;
@@ -18,7 +19,8 @@ export default function useAttributesWithContext<
 >(
   { attributes, context }: Params<Context, T>,
 ): AllHTMLAttributes<Element> {
-  const serialized = Object.entries(attributes).flat();
+  const $attributes = useDep(attributes, equal);
+
   const eventHandlers = useMemo<AllCallbacks<Element>>(() => {
     return filterKeys(
       attributes,
@@ -26,26 +28,28 @@ export default function useAttributesWithContext<
     ) as AllCallbacks<
       Element
     >;
-  }, [filterKeys, isEventHandlerName, ...serialized]);
+  }, [filterKeys, isEventHandlerName, $attributes]);
 
-  const { style, ...rest } = useMemo(() => {
+  const withoutCallbackAttributes = useMemo(() => {
     return filterKeys(
       attributes,
       not(isEventHandlerName),
     ) as WithContextCallback<AllAttributesWithoutCallback<T>, Context>;
-  }, [filterKeys, isEventHandlerName, ...serialized]);
+  }, [filterKeys, isEventHandlerName, not, $attributes]);
+
+  const $withoutCallbackAttributes = useDep(withoutCallbackAttributes, equal);
+  const $context = useDep(context, equal);
 
   const attrs = useMemo(() => {
     return mapValues(
-      { style, ...rest },
+      withoutCallbackAttributes,
       (attr) => isFunction(attr) ? attr(context) : attr,
     );
   }, [
     mapValues,
     isFunction,
-    JSON.stringify(style),
-    ...Object.entries(rest).flat(),
-    ...Object.entries(context).flat(),
+    $withoutCallbackAttributes,
+    $context,
   ]);
 
   const handlers = useEventHandlersWithContext({

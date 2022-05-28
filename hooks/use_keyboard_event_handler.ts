@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { useCallback } from "react";
+import { useMemo } from "react";
 import { isString } from "../deps.ts";
 import { KeyboardEventHandler } from "../types.ts";
 
@@ -22,9 +22,13 @@ export default function useKeyboardEventHandler(
   keyEntries: Readonly<KeyEntries>,
   option: Readonly<Partial<Option>> = {},
 ): KeyboardEventHandler {
-  const callback = useCallback<KeyboardEventHandler>(
-    mappingKey(keyEntries, option),
-    [JSON.stringify(keyEntries), option.beforeAll, option.afterAll],
+  const callback = useMemo<KeyboardEventHandler>(
+    () => mappingKey(keyEntries, option),
+    [
+      ...Array.from(keyEntries).flat(1),
+      option.afterAll,
+      option.beforeAll,
+    ],
   );
 
   return callback;

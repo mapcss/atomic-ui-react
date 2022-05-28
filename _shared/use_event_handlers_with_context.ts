@@ -18,8 +18,8 @@ export default function useEventHandlersWithContext<
 >(
   { handlers, context }: Readonly<Params<Context>>,
 ): AllHandlerMap {
-  const d = useDep(handlers, equal);
-  const e = useDep(context, equal);
+  const $handler = useDep(handlers, equal);
+  const $context = useDep(context, equal);
 
   const memorized = useMemo<AllHandlerMap>(() => {
     return mapValues(
@@ -27,7 +27,7 @@ export default function useEventHandlersWithContext<
       // deno-lint-ignore no-explicit-any
       (handler) => handler ? (ev: any) => handler(ev, context) : undefined,
     );
-  }, [d, e]);
+  }, [$handler, $context]);
 
   return memorized;
 }
