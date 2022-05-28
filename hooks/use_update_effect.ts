@@ -18,6 +18,10 @@ export type Options = {
 
 /** Accepts a function that contains imperative, possibly effectful code.
  * It is not called at first rendering, and the side effect is executed only at re-rendering.
+ * @param effect Imperative function that can return a cleanup function.
+ * @param deps If present, effect will only activate if the values in the list change.
+ * @remark If an empty dependency list is passed, the `effect` will never be executed.
+ * @param options This options.
  * ```tsx
  * import { useUpdateEffect } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
  *
@@ -27,11 +31,7 @@ export type Options = {
  * ```
  */
 export default function useUpdateEffect(
-  /** Imperative function that can return a cleanup function. */
   effect: EffectCallback,
-  /** If present, effect will only activate if the values in the list change.
-   * @remark If an empty dependency list is passed, the `effect` will never be executed.
-   */
   deps?: DependencyList,
   { effector = useEffect }: Readonly<Partial<Options>> = {},
 ): void {

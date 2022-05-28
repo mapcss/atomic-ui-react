@@ -107,7 +107,8 @@ Accepts up to 3 arguments.
 | :-: | ------- | :----------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |  1  | effect  | :white_check_mark: | `EffectCallback`[^1] <br> Imperative function that can return a cleanup function.                                                                                                                          |
 |  2  | deps    |         -          | `DependencyList`[^2] <br> If present, effect will only activate if the values in the list change.<br> <blockquote>If an empty dependency list is passed, the `effect` will never be executed.</blockquote> |
-|  3  | options |         -          | `Readonly<Partial<Options>>`                                                                                                                                                                               |
+|  3  | options |         -          | `Readonly<Partial<Options>>` <br> This options.                                                                                                                                                            |
+|     |         |                    |                                                                                                                                                                                                            |
 
 `Options`
 

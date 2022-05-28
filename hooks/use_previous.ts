@@ -3,6 +3,7 @@
 import { useRef } from "react";
 
 /** Hooks that return values from previous rendering value.
+ * @param value Current value.
  * ```tsx
  * import { usePrevious } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
  * export default () => {
@@ -13,7 +14,6 @@ import { useRef } from "react";
  * ```
  */
 export default function usePrevious<T>(
-  /** Current value. */
   value: T,
 ): T | undefined {
   const ref = useRef<T | undefined>(undefined);
