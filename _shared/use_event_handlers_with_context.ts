@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { AllHandlerMap, HandlersWithContext } from "../types.ts";
+import { equal } from "../util.ts";
 import { mapValues } from "../deps.ts";
+import useDep from "../hooks/use_dep.ts";
 
 export type Params<Context> = {
   handlers: HandlersWithContext<Context>;
@@ -15,25 +17,17 @@ export default function useEventHandlersWithContext<
   Context extends Record<PropertyKey, unknown>,
 >(
   { handlers, context }: Readonly<Params<Context>>,
-  { serializeContext }: Readonly<
-    Partial<
-      Options<Context>
-    >
-  > = {},
 ): AllHandlerMap {
-  const _serializeContext = useMemo(
-    () => serializeContext ?? defaultSerializeContext,
-    [serializeContext],
-  );
+  const d = useDep(handlers, equal);
+  const e = useDep(context, equal);
 
   const memorized = useMemo<AllHandlerMap>(() => {
-    // deno-lint-ignore no-explicit-any
-    return mapValues(handlers, (handler) => (ev: any) => handler(ev, context));
-  }, [...Object.entries(handlers).flat(), ..._serializeContext(context)]);
+    return mapValues(
+      handlers,
+      // deno-lint-ignore no-explicit-any
+      (handler) => handler ? (ev: any) => handler(ev, context) : undefined,
+    );
+  }, [d, e]);
 
   return memorized;
 }
-
-const defaultSerializeContext = <Context>(context: Context) => {
-  return Object.entries(context).flat();
-};
