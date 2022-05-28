@@ -46,3 +46,6 @@ export type {
   Params as UseKeyIdParams,
   Store as KeyIdStore,
 } from "./use_key_id.ts";
+export { default as usePrevious } from "./use_previous.ts";
+export { default as useDep } from "./use_dep.ts";
+export type { Compare } from "./use_dep.ts";
