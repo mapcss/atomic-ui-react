@@ -32,39 +32,12 @@ it(describeTests, "should be render as", (t) => {
   assertSnapshot(t, container.innerHTML);
 
   rerender(
-    <DisclosureContent style={{ display: "unset" }}>test</DisclosureContent>,
+    <DisclosureContent style={{ display: "block" }}>test</DisclosureContent>,
   );
   assertSnapshot(t, container.innerHTML);
 
   rerender(
-    <DisclosureContent
-      className="test"
-      renderAttributes={() => ({
-        className: "test2",
-      })}
-    >
-      test
-    </DisclosureContent>,
-  );
-  assertSnapshot(t, container.innerHTML);
-
-  rerender(
-    <DisclosureContent
-      renderAttributes={() => ({
-        style: {
-          display: undefined,
-        },
-      })}
-    >
-      test
-    </DisclosureContent>,
-  );
-  rerender(
-    <DisclosureContent
-      renderAttributes={({ isOpen }) => ({
-        className: isOpen ? "open" : "close",
-      })}
-    >
+    <DisclosureContent>
       test
     </DisclosureContent>,
   );

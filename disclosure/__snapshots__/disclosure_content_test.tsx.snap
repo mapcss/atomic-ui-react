@@ -6,10 +6,8 @@ snapshot[`DisclosureContent > should be render as 2`] = `'<p id="atomic-ui-0" hi
 
 snapshot[`DisclosureContent > should be render as 3`] = `'<div id="atomic-ui-0" hidden="" class="test">test</div>'`;
 
-snapshot[`DisclosureContent > should be render as 4`] = `'<div id="atomic-ui-0" hidden="" style="display: unset;">test</div>'`;
+snapshot[`DisclosureContent > should be render as 4`] = `'<div id="atomic-ui-0" hidden="" style="display: block;">test</div>'`;
 
-snapshot[`DisclosureContent > should be render as 5`] = `'<div id="atomic-ui-0" hidden="" style="" class="test test2">test</div>'`;
-
-snapshot[`DisclosureContent > should be render as 6`] = `'<div id="atomic-ui-0" hidden="" style="" class="close">test</div>'`;
+snapshot[`DisclosureContent > should be render as 5`] = `'<div id="atomic-ui-0" hidden="" style="">test</div>'`;
 
 snapshot[`DisclosureContent > should be render if disclosure open 1`] = `'<div id="atomic-ui-0">test</div>'`;

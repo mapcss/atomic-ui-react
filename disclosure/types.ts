@@ -1,4 +1,4 @@
-export type StateMap = {
+export type States = {
   /** The global unique id for disclosure. */
   id: string;
 
@@ -6,13 +6,8 @@ export type StateMap = {
   isOpen: boolean;
 };
 
-export type DispatchMap = {
-  /** Change `isOpen` state to `true` */
-  open: () => void;
-
-  /** Change `isOpen` state to `false` */
-  close: () => void;
-
-  /** Toggle `isOpen` state */
-  toggle: () => void;
+export type Dispatches = {
+  setIsOpen: (isOpen: boolean) => void;
 };
+
+export type SharedContexts = States & Dispatches

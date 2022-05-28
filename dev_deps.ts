@@ -3,6 +3,7 @@ export {
   anyFunction,
   anyNumber,
   anyObject,
+  anyOf,
   anyString,
   defineExpect,
   defineGlobalThis,

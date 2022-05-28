@@ -1,28 +1,34 @@
 // This module is browser compatible.
 
 import { createElement, ReactNode } from "react";
-import useId from "../hooks/use_id.ts";
-import useBoolean from "../hooks/use_boolean.ts";
-import { BooleanContext, IdContext } from "../_shared/context.ts";
+import { IdContext, OpenContext } from "./context.ts";
+import useDisclosureProvider, {
+  Exclusive,
+  Options,
+} from "./use_disclosure_provider.ts";
 
-export type Props = {
-  children: ReactNode;
-
-  /** Default state of `isOpen`.
-   * @default false
-   */
-  isDefaultOpen?: boolean;
-};
+export type Props =
+  & {
+    children: ReactNode;
+  }
+  & Exclusive
+  & Partial<Pick<Options, "onChangeOpen">>;
 
 export default function DisclosureProvider(
-  { children, isDefaultOpen }: Props,
+  { children, isOpen, setIsOpen, onChangeOpen, isDefaultOpen }: Props,
 ): JSX.Element {
-  const { id } = useId();
-  const stateSet = useBoolean(isDefaultOpen);
+  const [states, dispatches] = useDisclosureProvider({
+    onChangeOpen,
+    isDefaultOpen,
+    isOpen: isOpen as never,
+    setIsOpen: setIsOpen as never,
+  });
 
   return createElement(
     IdContext.Provider,
-    { value: id },
-    createElement(BooleanContext.Provider, { value: stateSet }, children),
+    { value: states.id },
+    createElement(OpenContext.Provider, {
+      value: [states.isOpen, dispatches.setIsOpen],
+    }, children),
   );
 }

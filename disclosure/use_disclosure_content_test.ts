@@ -4,7 +4,8 @@ import { renderHook } from "@testing-library/react-hooks";
 
 Deno.test("useDisclosureContent should return attributes", () => {
   const { result, rerender } = renderHook(
-    ({ id, isOpen }) => useDisclosureContent({ id, isOpen }),
+    ({ id, isOpen }) =>
+      useDisclosureContent({ id, isOpen, setIsOpen: () => {} }, {}),
     {
       initialProps: {
         isOpen: true,
@@ -13,13 +14,13 @@ Deno.test("useDisclosureContent should return attributes", () => {
     },
   );
 
-  expect(result.current).toEqual({
+  expect(result.current[0]).toEqual({
     id: "",
-    hidden: undefined,
+    hidden: false,
   });
 
   rerender({ isOpen: false, id: "0" });
-  expect(result.current).toEqual({
+  expect(result.current[0]).toEqual({
     id: "0",
     hidden: true,
   });

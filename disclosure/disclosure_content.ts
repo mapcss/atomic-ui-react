@@ -1,44 +1,30 @@
 // This module is browser compatible.
 
-import {
-  AllHTMLAttributes,
-  cloneElement,
-  createElement,
-  forwardRef as _forwardRef,
-  Ref,
-} from "react";
+import { createElement, forwardRef as _forwardRef, Ref } from "react";
 import { Tag } from "../types.ts";
-import { mergeProps } from "../util.ts";
 import { useAs } from "../_shared/hooks.ts";
-import WithDisclosureContent from "./with_disclosure_content.ts";
-import { DispatchMap, StateMap } from "./types.ts";
+import WithDisclosureContent, {
+  Props as WithDisclosureProps,
+} from "./with_disclosure_content.ts";
 import { WithIntrinsicElements } from "../types.ts";
 
 type _Props<As extends Tag> = {
   as?: As;
-
-  renderAttributes?: (
-    context: StateMap & DispatchMap,
-  ) => AllHTMLAttributes<Element>;
-};
+} & Omit<WithDisclosureProps, "children">;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
-function _DisclosureContent<As extends Tag>(
-  { as, renderAttributes, ...props }: Props<As>,
+function _DisclosureContent<As extends Tag = "div">(
+  { as, children, ...props }: Props<As>,
   ref: Ref<Element>,
 ): JSX.Element {
   return WithDisclosureContent({
-    children: (attrs, contexts) => {
+    children: (attrs) => {
       const tag = useAs(as, "div");
-      const attributes = renderAttributes?.(contexts) ?? {};
-      const root = createElement(tag, { ref });
 
-      return cloneElement(
-        root,
-        mergeProps(mergeProps(attrs, props), attributes),
-      );
+      return createElement(tag, { ref, ...attrs, children });
     },
+    ...props,
   });
 }
 

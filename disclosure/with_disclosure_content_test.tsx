@@ -21,7 +21,7 @@ it(describeTests, "should throw error when it not wrap Context", () => {
   expect(() =>
     render(
       <WithDisclosureContent>
-        <p>test</p>
+        {(attrs) => <p {...attrs}>test</p>}
       </WithDisclosureContent>,
     )
   ).toThrow();
@@ -33,7 +33,7 @@ it(
   (t) => {
     const { container } = render(
       <WithDisclosureContent>
-        <p>test</p>
+        {(attrs) => <p {...attrs}>test</p>}
       </WithDisclosureContent>,
       {
         wrapper: ({ children }) => {
@@ -53,7 +53,7 @@ it(
 it(describeTests, "should render when the internal `isOpen` is true", (t) => {
   const { container } = render(
     <WithDisclosureContent>
-      <p>test</p>
+      {(attrs) => <p {...attrs}>test</p>}
     </WithDisclosureContent>,
     {
       wrapper: ({ children }) => {

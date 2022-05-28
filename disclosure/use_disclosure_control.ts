@@ -1,20 +1,22 @@
 // This module is browser compatible.
 
-import { HTMLAttributes, useMemo } from "react";
-import { StateMap } from "./types.ts";
-import { VFn } from "../deps.ts";
-import {
-  AllHandlerMap,
-  AllHandlerWithoutKeyBoard,
-  KeyboardHandler,
-} from "../types.ts";
-import { KeyEntries } from "../hooks/use_keyboard_event_handler.ts";
-import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
-import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
+import { HTMLAttributes, KeyboardEvent, useMemo } from "react";
+import { SharedContexts } from "./types.ts";
+import { AllHandlerMap } from "../types.ts";
+import useAttributesWithContext, {
+  AllAttributesWithContext,
+  AttributesHandler,
+} from "../hooks/use_attributes_with_context.ts";
+import { mappingKey } from "../util.ts";
 
-export type Params = {
-  dispatch: VFn;
-} & StateMap;
+export type Params = SharedContexts;
+
+export type Options = {
+  /**
+   * @default `toggle`
+   */
+  mutateType?: "toggle" | "on" | "off";
+};
 
 export type Attributes =
   & Pick<
@@ -23,72 +25,84 @@ export type Attributes =
   >
   & AllHandlerMap;
 
-export type Options = {
-  /**
-   * @defaultValue [`onClick`]
-   */
-  on: Iterable<AllHandlerWithoutKeyBoard>;
+export type AttributesWithContext = AllAttributesWithContext<Contexts, Element>;
 
-  /**
-   * @defaultValue [`onKeyDown`]
-   */
-  onKey: Iterable<KeyboardHandler>;
-
-  /**
-   * @defaultValue {@link defaultKeyEntries}
-   */
-  keyEntries: (contexts: Contexts) => KeyEntries;
+export type Contexts = Params & Required<Options> & {
+  mutateValue: boolean;
 };
-
-export type Contexts = {
-  dispatch: VFn;
-} & StateMap;
 
 export type Returns = [Attributes, Contexts];
 
 export default function useDisclosureControl(
-  { dispatch, id, isOpen }: Readonly<Params>,
-  {
-    on = ["onClick"],
-    onKey = ["onKeyDown"],
-    keyEntries = defaultKeyEntries,
-  }: Readonly<
-    Partial<Options>
-  > = {},
+  { setIsOpen, id, isOpen }: Readonly<Params>,
+  { mutateType = "toggle" }: Readonly<Partial<Options>>,
+  allAttributes: AttributesWithContext,
 ): Returns {
-  const contexts = useMemo<Contexts>(() => ({ dispatch, id, isOpen }), [
-    dispatch,
-  ]);
+  const mutateValue = useMemo<boolean>(() => {
+    switch (mutateType) {
+      case "on": {
+        return true;
+      }
+      case "off": {
+        return false;
+      }
+      case "toggle": {
+        return !isOpen;
+      }
+    }
+  }, [isOpen, mutateType]);
 
-  const handlers = useEventHandler(on, dispatch);
+  const contexts = useMemo<Contexts>(
+    () => ({ setIsOpen, id, isOpen, mutateType, mutateValue }),
+    [
+      setIsOpen,
+      id,
+      isOpen,
+      mutateType,
+      mutateValue,
+    ],
+  );
 
-  const entries = useMemo<KeyEntries>(() => keyEntries(contexts), [
-    keyEntries,
-    contexts.id,
-    contexts.dispatch,
-    contexts.isOpen,
-  ]);
-
-  const beforeAll = usePreventDefault();
-  const keyboardHandler = useKeyboardEventHandler(entries, { beforeAll });
-  const keyboardHandlers = useEventHandler(onKey, keyboardHandler);
-
-  const attributes = useMemo<Attributes>(() => {
-    return {
-      "aria-controls": id,
-      "aria-expanded": isOpen,
-      role: "button",
-      ...handlers,
-      ...keyboardHandlers,
-    };
-  }, [id, isOpen, keyboardHandlers, handlers]);
+  const attributes = useAttributesWithContext({
+    attributes: { ...defaultAttributes, ...allAttributes },
+    context: contexts,
+  });
 
   return [attributes, contexts];
 }
 
-export function defaultKeyEntries({ dispatch }: Contexts): KeyEntries {
-  return [
-    ["Space", dispatch],
-    ["Enter", dispatch],
-  ];
-}
+const defaultOnKeyDown: AttributesHandler<Contexts, "onKeyDown"> = (
+  ev,
+  { setIsOpen, mutateValue },
+) => {
+  const runner = mappingKey<KeyboardEvent>([
+    ["Space", (ev) => {
+      ev.preventDefault();
+      setIsOpen(mutateValue);
+    }],
+    ["Enter", (ev) => {
+      ev.preventDefault();
+      setIsOpen(mutateValue);
+    }],
+  ]);
+  runner(ev);
+};
+const defaultOnClick: AttributesHandler<Contexts, "onClick"> = (
+  _,
+  { setIsOpen, mutateValue },
+) => setIsOpen(mutateValue);
+const defaultRole: AttributesHandler<Contexts, "role"> = "button";
+const defaultAriaControls: AttributesHandler<Contexts, "aria-controls"> = (
+  { id },
+) => id;
+const defaultAriaExpanded: AttributesHandler<Contexts, "aria-expanded"> = (
+  { isOpen },
+) => isOpen;
+
+const defaultAttributes = {
+  "aria-controls": defaultAriaControls,
+  "aria-expanded": defaultAriaExpanded,
+  role: defaultRole,
+  onKeyDown: defaultOnKeyDown,
+  onClick: defaultOnClick,
+};
