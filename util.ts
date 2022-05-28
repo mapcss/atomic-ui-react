@@ -375,24 +375,26 @@ export function visitDisplayName(
 
 export type KeyOrCodeOrKeyboardEvent = string | Partial<KeyboardEvent>;
 
-export type KeyEntries = Iterable<[
+export type KeyEntries<Ev = KeyboardEvent> = Iterable<[
   KeyOrCodeOrKeyboardEvent,
-  KeyboardEventHandler,
+  KeyboardEventHandler<Ev>,
 ]>;
 
-export type Option = {
-  beforeAll: KeyboardEventHandler;
+export type Options<Ev = KeyboardEvent> = {
+  beforeAll: KeyboardEventHandler<Ev>;
 
-  afterAll: KeyboardEventHandler;
+  afterAll: KeyboardEventHandler<Ev>;
 };
 
-export function mappingKey(
-  keyEntries: Readonly<KeyEntries>,
-  { beforeAll, afterAll }: Readonly<Partial<Option>> = {},
-): KeyboardEventHandler {
+export function mappingKey<
+  Ev extends Pick<KeyboardEvent, "key" | "code"> = KeyboardEvent,
+>(
+  keyEntries: Readonly<KeyEntries<Ev>>,
+  { beforeAll, afterAll }: Readonly<Partial<Options<Ev>>> = {},
+): KeyboardEventHandler<Ev> {
   let beforeAllDone = false;
 
-  const callback: KeyboardEventHandler = (ev) => {
+  const callback: KeyboardEventHandler<Ev> = (ev) => {
     function callBeforeAll(): void {
       if (!beforeAllDone) {
         beforeAllDone = true;
@@ -410,7 +412,8 @@ export function mappingKey(
       }
 
       const match = Object.entries(maybeCode).every(([key, value]) => {
-        return ev[key as keyof globalThis.KeyboardEvent] === value;
+        type Key = keyof Ev;
+        return ev[key as Key] === value as never;
       });
       if (match) {
         callBeforeAll();
@@ -423,4 +426,63 @@ export function mappingKey(
   };
 
   return callback;
+}
+
+export function equal(
+  a: unknown,
+  b: unknown,
+): boolean {
+  const seen = new Map();
+
+  const compare = (c: unknown, d: unknown): boolean => {
+    if (equalPrimitive(c, d)) return true;
+
+    if (!isObject(c) || !isObject(d)) return false;
+    if (!constructorsEqual(c, d)) return false;
+
+    if (seen.get(c) === d) {
+      return true;
+    }
+
+    seen.set(c, d);
+
+    if (c.constructor === Object || d.constructor === Array) {
+      const merged = { ...c, ...d };
+      const keys = [
+        ...Object.getOwnPropertyNames(merged),
+        ...Object.getOwnPropertySymbols(merged),
+      ];
+
+      for (const key of keys) {
+        type Key = keyof typeof merged;
+        const hasC = Object.hasOwn(c, key);
+        const hasD = Object.hasOwn(d, key);
+
+        if (!hasC || !hasD) return false;
+
+        if (!compare(c[key as Key], d[key as Key])) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    return false;
+  };
+
+  return compare(a, b);
+}
+
+// deno-lint-ignore ban-types
+function constructorsEqual(a: object, b: object) {
+  return a.constructor === b.constructor ||
+    a.constructor === Object && !b.constructor ||
+    !a.constructor && b.constructor === Object;
+}
+
+function equalPrimitive(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (Number.isNaN(a) && Number.isNaN(b)) return true;
+
+  return false;
 }
