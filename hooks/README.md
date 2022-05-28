@@ -5,6 +5,50 @@ project.
 
 ## API
 
+### useDep
+
+[Source](./use_dep.ts) [Test](./use_dep_test.ts)
+
+Hooks for `deps` that define custom equivalence function. Custom equivalent
+functions can suppress re-execution of hooks. This is useful when `deps`
+contains objects.
+
+> If the object's properties are obvious, it is recommended to enumerate the
+> values in `deps`.
+
+#### Example
+
+```tsx
+import {
+  equal,
+  useDep,
+} from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useEffect } from "react";
+export default () => {
+  const object: Record<PropertyKey, unknown> = {};
+  const $object = useDep(object, (prev, current) => equal(prev, current));
+
+  useEffect(() => {
+    console.log(object);
+  }, [$object]);
+};
+```
+
+#### Generics
+
+- `T`
+
+#### Arguments
+
+| N | Name    | Required / Default | Description                                                                                                                                                  |
+| - | ------- | :----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1 | dep     | :white_check_mark: | `T`<br> Value to which the custom comparison function is adapted. This specifies the value that should be the argument of `deps`.                            |
+| 2 | compare | :white_check_mark: | `(prev: T, current: T) => boolean`<br> Comparison function. The first argument is the value at the last rendering, the second argument is the current value. |
+
+#### Return
+
+`boolean`
+
 ### usePrevious
 
 [Source](./use_previous.ts) [Test](./use_previous_test.ts)
@@ -24,7 +68,7 @@ export default () => {
 
 #### Generics
 
-`T`
+- `T`
 
 #### Arguments
 
@@ -32,11 +76,11 @@ Accepts up to 1 arguments.
 
 | N | Name  | Required / Default | Description            |
 | - | ----- | :----------------: | ---------------------- |
-| 1 | value |         -          | `T`<br> Current value. |
+| 1 | value | :white_check_mark: | `T`<br> Current value. |
 
-#### Returns
+#### Return
 
-`T` | `undefined`
+`T | undefined`
 
 ### useUpdateEffect
 
@@ -95,6 +139,6 @@ import { useEffect } from "react";
 import { useLayoutEffect } from "react";
 ```
 
-#### Returns
+#### Return
 
 `void`
