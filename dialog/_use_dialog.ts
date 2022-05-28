@@ -6,12 +6,10 @@ import useFocusCallback, {
   ReturnValue as UseFocusCallbackReturnValue,
   Targets,
 } from "../hooks/use_focus_callback.ts";
-import useKeyboardEventHandler, {
-  KeyEntries,
-} from "../hooks/use_keyboard_event_handler.ts";
+import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
 import useEventListener from "../hooks/use_event_listener.ts";
 import useFocus, { Target } from "../hooks/use_focus.ts";
-import { trueOr } from "../util.ts";
+import { KeyEntries, trueOr } from "../util.ts";
 
 export type Params = {
   isShow: boolean;

@@ -5,7 +5,42 @@ project.
 
 ## API
 
+### usePrevious
+
+[Source](./use_previous.ts) [Test](./use_previous_test.ts)
+
+Hooks that return values from previous rendering value.
+
+#### Example
+
+```tsx
+import { usePrevious } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  const prev = usePrevious(false); // undefined
+  // rerender
+  prev; // false
+};
+```
+
+#### Generics
+
+`T`
+
+#### Arguments
+
+Accepts up to 1 arguments.
+
+| N | Name  | Required / Default | Description            |
+| - | ----- | :----------------: | ---------------------- |
+| 1 | value |         -          | `T`<br> Current value. |
+
+#### Returns
+
+`T` | `undefined`
+
 ### useUpdateEffect
+
+[Source](./use_update_effect.ts.ts) [Test](./use_update_effect_test.ts)
 
 Accepts a function that contains imperative, possibly effectful code. It is not
 called at first rendering, and the side effect is executed only at re-rendering.
@@ -22,7 +57,7 @@ export default () => {
 
 #### Arguments
 
-Accepts up to three arguments.
+Accepts up to 3 arguments.
 
 |  N  | Name    | Required / Default | Description                                                                                                                                                                                                |
 | :-: | ------- | :----------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
