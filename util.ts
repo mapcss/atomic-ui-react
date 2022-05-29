@@ -486,3 +486,16 @@ function equalPrimitive(a: unknown, b: unknown): boolean {
 
   return false;
 }
+
+export type MergeBy<
+  T extends Record<any, any>,
+  U extends Record<any, any>,
+> = {
+  [k in keyof T | keyof U]: T[k] | U[k];
+};
+
+export type Intersection<T extends Record<any, any>, U> = {
+  [k in keyof U]: T[k];
+};
+
+export type Merge<T, U> = Omit<Omit<T, keyof U> & U, never>;

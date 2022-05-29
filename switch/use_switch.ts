@@ -1,10 +1,10 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes } from "react";
-import useAttributesWithContext, {
-  AllAttributesWithContext,
+import { AllHTMLAttributes, KeyboardEvent } from "react";
+import useAttributesWith, {
+  AllAttributesWith,
   AttributesHandler,
-} from "../hooks/use_attributes_with_context.ts";
+} from "../hooks/use_attributes_with.ts";
 import { mappingKey } from "../util.ts";
 
 export type Params = {
@@ -17,35 +17,28 @@ export type Params = {
 
 export type Contexts = Params;
 
-export type Options = AllAttributesWithContext<Contexts, Element>;
+export type AllAttributesWithContexts = Partial<AllAttributesWith<[Contexts]>>;
 
-export type Attributes = Pick<
-  AllHTMLAttributes<Element>,
-  "role" | "aria-checked" | "tabIndex"
->;
-
-export type Returns = [Attributes, Contexts];
+export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useSwitch(
   { isChecked, onValueChange }: Readonly<Params>,
-  { ...allAttributesWithContext }: Readonly<
-    Partial<Options>
-  > = {},
+  allAttributesWith: AllAttributesWithContexts = {},
 ): Returns {
   const contexts: Contexts = {
     isChecked,
     onValueChange,
   };
 
-  const attributes = useAttributesWithContext({
-    attributes: { ...defaultAttributes, ...allAttributesWithContext },
-    context: contexts,
-  });
+  const attributes = useAttributesWith(
+    [contexts],
+    { ...defaultAttributes, ...allAttributesWith },
+  );
 
   return [attributes, contexts];
 }
 
-const defaultOnKeyDown: AttributesHandler<Contexts, "onKeyDown"> = (
+const defaultOnKeyDown: AttributesHandler<[Contexts], "onKeyDown"> = (
   ev,
   { isChecked, onValueChange },
 ) => {
@@ -53,25 +46,35 @@ const defaultOnKeyDown: AttributesHandler<Contexts, "onKeyDown"> = (
     ev.preventDefault();
     onValueChange(!isChecked);
   };
-  mappingKey([
+  mappingKey<KeyboardEvent>([
     ["Space", toggle],
     ["Enter", toggle],
-  ])(ev as unknown as KeyboardEvent);
+  ])(ev);
 };
 
-const defaultOnClick: AttributesHandler<Contexts, "onClick"> = (
+const defaultOnClick: AttributesHandler<[Contexts], "onClick"> = (
   _,
   { isChecked, onValueChange },
 ) => onValueChange(!isChecked);
 
-const defaultAriaChecked: AttributesHandler<Contexts, "aria-checked"> = (
+const defaultAriaChecked: AttributesHandler<[Contexts], "aria-checked"> = (
   { isChecked },
 ) => isChecked;
 
-const defaultAttributes = {
+const defaultAttributes: Pick<
+  AllAttributesWith<[Contexts]>,
+  DefaultAttribute
+> = {
   onClick: defaultOnClick,
   onKeyDown: defaultOnKeyDown,
   role: "switch",
   tabIndex: 0,
   "aria-checked": defaultAriaChecked,
 };
+
+type DefaultAttribute =
+  | "role"
+  | "tabIndex"
+  | "onClick"
+  | "onKeyDown"
+  | "aria-checked";
