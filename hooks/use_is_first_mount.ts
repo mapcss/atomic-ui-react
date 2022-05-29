@@ -1,39 +1,25 @@
 // This module is browser compatible.
 
-import { RefObject, useRef } from "react";
+import { useRef } from "react";
 
-export type ReturnValue = {
-  isFirstMount: boolean;
-  _ref: RefObject<boolean>;
-};
-
-/**
- * Ref of first mount or not.
- *
- * @example
+/** Whether first mount or not.
  * ```tsx
- * import { useIsFirstMount } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
- * // in-component
- * const { isFirstMount } = useIsFirstMount()
- * // isFirstMount: true
- * // re-render
- * // isFirstMount: false
+ * import { useIsFirstMount } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ *
+ * export default () => {
+ *   const isFirstMount = useIsFirstMount(); // true
+ *   // re-render
+ *   isFirstMount; // false
+ * };
  * ```
  */
-export default function useIsFirstMount(): ReturnValue {
-  const isFirstMount = useRef<boolean>(true);
+export default function useIsFirstMount(): boolean {
+  const ref = useRef<boolean>(true);
+  const current = ref.current;
 
-  if (isFirstMount.current) {
-    isFirstMount.current = false;
-
-    return {
-      isFirstMount: true,
-      _ref: isFirstMount,
-    };
+  if (current) {
+    ref.current = false;
   }
 
-  return {
-    isFirstMount: isFirstMount.current,
-    _ref: isFirstMount,
-  };
+  return current;
 }

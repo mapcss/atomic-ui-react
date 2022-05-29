@@ -11,7 +11,6 @@ export type {
   Options as UseIdOptions,
   Returns as UseIdReturns,
 } from "./use_id.ts";
-export type { ReturnValue as UseIsFirstMountReturnValue } from "./use_is_first_mount.ts";
 export { default as useTimeout } from "./use_timeout.ts";
 export type {
   Handler as TimeoutHandler,
