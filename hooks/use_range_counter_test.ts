@@ -76,7 +76,7 @@ Deno.test("last", () => {
 });
 
 Deno.test("useRangeCounter should return cycle counter value", () => {
-  const { result } = renderHook(() => useRangeCounter(5));
+  const { result } = renderHook(() => useRangeCounter(5, 0));
 
   expect(result.current[0]).toBe(0);
 
@@ -91,4 +91,40 @@ Deno.test("useRangeCounter should return cycle counter value", () => {
 
   act(() => result.current[1]({ type: "first" }));
   expect(result.current[0]).toBe(0);
+});
+
+Deno.test("useRangeCounter should return 0 when initial state is undefined and called next", () => {
+  const { result } = renderHook(() => useRangeCounter(5));
+
+  expect(result.current[0]).toBeUndefined();
+
+  act(() => result.current[1]({ type: "next" }));
+  expect(result.current[0]).toBe(0);
+});
+
+Deno.test("useRangeCounter should return 0 when initial state is undefined and called first", () => {
+  const { result } = renderHook(() => useRangeCounter(5));
+
+  expect(result.current[0]).toBeUndefined();
+
+  act(() => result.current[1]({ type: "first" }));
+  expect(result.current[0]).toBe(0);
+});
+
+Deno.test("useRangeCounter should return last number when initial state is undefined and called prev", () => {
+  const { result } = renderHook(() => useRangeCounter(5));
+
+  expect(result.current[0]).toBeUndefined();
+
+  act(() => result.current[1]({ type: "prev" }));
+  expect(result.current[0]).toBe(5);
+});
+
+Deno.test("useRangeCounter should return last number when initial state is undefined and called last", () => {
+  const { result } = renderHook(() => useRangeCounter(5));
+
+  expect(result.current[0]).toBeUndefined();
+
+  act(() => result.current[1]({ type: "last" }));
+  expect(result.current[0]).toBe(5);
 });
