@@ -15,7 +15,7 @@ export type Params = {
 };
 
 export type Options = {
-  /** Incremental step
+  /** Incremental step.
    * @default 1
    */
   step: number;
