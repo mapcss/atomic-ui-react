@@ -5,6 +5,41 @@ project.
 
 ## API
 
+### useBoolean
+
+[Source](./use_boolean.ts) [Test](./use_boolean_test.ts)
+
+Manage boolean (on - off) states.
+
+#### Example
+
+```tsx
+import { useBoolean } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  const [state, { on, off, toggle }] = useBoolean();
+};
+```
+
+#### Arguments
+
+Accepts up to 1 arguments.
+
+| N | Name         | Required / Default | Description                                                                                   |
+| - | ------------ | :----------------: | --------------------------------------------------------------------------------------------- |
+| 1 | initialState |      `false`       | `boolean` &#124; `(() =>boolean`<br> Initial state or function that return the initial state. |
+
+#### Returns
+
+`[boolean, Callbacks]`
+
+`Callbacks`
+
+| Name   | Description                         |
+| ------ | ----------------------------------- |
+| on     | `() => void`<br> Update to `true`.  |
+| off    | `() => void`<br> Update to `false`. |
+| toggle | `() => void`<br> Toggle state.      |
+
 ### useDep
 
 [Source](./use_dep.ts) [Test](./use_dep_test.ts)
@@ -39,6 +74,8 @@ export default () => {
 - `T`
 
 #### Arguments
+
+Accepts up to 1 arguments.
 
 | N | Name    | Required / Default | Description                                                                                                                                                  |
 | - | ------- | :----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
