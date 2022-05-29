@@ -1,3 +1,24 @@
+# [1.0.0-beta.47](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.46...1.0.0-beta.47) (2022-05-29)
+
+
+### Features
+
+* add utility for equal function ([56e0672](https://github.com/mapcss/atomic-ui-react/commit/56e06725fa91634fb7f1ffde5f671cd05d245e33))
+* **alert_dialog:** add `onClose` prop and `Escape` key bind as default ([e1736a6](https://github.com/mapcss/atomic-ui-react/commit/e1736a6636e8843568690316a57d4e38168843a8))
+* **alert_dialog:** merge alert dialog and dialog, remove deplicated ([ffe6f70](https://github.com/mapcss/atomic-ui-react/commit/ffe6f70a307b4b56e46c83dfba0271a964f47e00))
+* **alert:** change `WithAlert` props types ([5968397](https://github.com/mapcss/atomic-ui-react/commit/596839740cac68e491634de9b9811e38a838d552))
+* **dialog:** add dialog wedget ([0567220](https://github.com/mapcss/atomic-ui-react/commit/0567220cde20e9de86bac7ee1c91de500634bd30))
+* **disclosure:** change props interface, add `useDisclosureProvider` hooks ([0de0bb1](https://github.com/mapcss/atomic-ui-react/commit/0de0bb1bf994cf03063e2f777a416fd75c2e7d8d))
+* **hooks:** add `useDep` hook that define custom equivalence function for `deps` ([297fc52](https://github.com/mapcss/atomic-ui-react/commit/297fc520703f161f26452e90745d7804abe44cc7))
+* **hooks:** add `usePrevious` hooks that manage previous rendering value ([e296576](https://github.com/mapcss/atomic-ui-react/commit/e29657615f50622749f8b2e19672aba6fcd9bea8))
+* **hooks:** add `useRangeCounter` hook that manage cycle number ([835b894](https://github.com/mapcss/atomic-ui-react/commit/835b89458bff083758a27a1889dadf2f992c6e83))
+* **hooks:** add `useUpdateEffect` hooks that effect on re-render ([5b6116c](https://github.com/mapcss/atomic-ui-react/commit/5b6116c57c81aaf099bfc0808b6a9eef25416c06))
+* **hooks:** change return types of `useIsFirstMount` hook ([a746059](https://github.com/mapcss/atomic-ui-react/commit/a74605938e90fa2ff69da05df6cacfaa07fc0532))
+* **hooks:** improve `useId` hooks to manage scoped prefix, improve performance ([d26568d](https://github.com/mapcss/atomic-ui-react/commit/d26568ddca8202e367b5ea677b24596352fdf10f))
+* **listbox:** add listbox basic hooks and components ([4c3a120](https://github.com/mapcss/atomic-ui-react/commit/4c3a12097b455a97bb6d3f7f50d0f2422e1023c4))
+* **switch:** add `use_attributes_with_context` hooks and use it ([5b01053](https://github.com/mapcss/atomic-ui-react/commit/5b010535a4d452205afc8ea6afc7f673618c34cb))
+* **switch:** change `Switch` props interface ([8ff91bc](https://github.com/mapcss/atomic-ui-react/commit/8ff91bc6c6a44b7cc987634c89db5743d58e6ab0))
+
 # [1.0.0-beta.46](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.45...1.0.0-beta.46) (2022-05-24)
 
 
