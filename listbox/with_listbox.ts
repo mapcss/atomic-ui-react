@@ -32,7 +32,7 @@ export default function WithListbox({ children }: Props): JSX.Element {
   const ref = useRef<HTMLElement | SVGElement>(null);
   const [activatedIndex, setActivatedIndex] = activatedIndexStateSet;
 
-  const { isFirstMount } = useIsFirstMount();
+  const isFirstMount = useIsFirstMount();
 
   const activatedElement = useMemo<
     SVGElement | MathMLElement | null | undefined

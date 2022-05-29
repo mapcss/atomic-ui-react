@@ -40,7 +40,7 @@ export default function useKeyId(
   { key, store }: Readonly<Params>,
   { step = 1, init = 0 }: Readonly<Partial<Options>> = {},
 ): number {
-  const { isFirstMount } = useIsFirstMount();
+  const isFirstMount = useIsFirstMount();
   const id = useRef<number>(init);
 
   if (isFirstMount) {

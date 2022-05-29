@@ -16,7 +16,7 @@ import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts"
  */
 export default function useMutated(deps: DependencyList): boolean {
   const [state, setState] = useState(false);
-  const { isFirstMount } = useIsFirstMount();
+  const isFirstMount = useIsFirstMount();
 
   useIsomorphicLayoutEffect(() => {
     if (isFirstMount || state) return;

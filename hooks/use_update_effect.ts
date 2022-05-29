@@ -35,7 +35,7 @@ export default function useUpdateEffect(
   deps?: DependencyList,
   { effector = useEffect }: Readonly<Partial<Options>> = {},
 ): void {
-  const { isFirstMount } = useIsFirstMount();
+  const isFirstMount = useIsFirstMount();
   effector(() => {
     if (isFirstMount) return;
 

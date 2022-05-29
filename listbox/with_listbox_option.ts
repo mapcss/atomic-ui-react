@@ -42,7 +42,7 @@ export default function WithListboxOption(
     throw Error();
   }
   const ref = useRef<HTMLElement | SVGElement | MathMLElement>(null);
-  const { isFirstMount } = useIsFirstMount();
+  const isFirstMount = useIsFirstMount();
   if (isFirstMount) {
     refsRef.current.push(ref);
   }

@@ -111,7 +111,7 @@ export default function useTransition<T extends Element>(
   >,
   deps: DependencyList,
 ): ReturnValue {
-  const { isFirstMount: isFirst } = useIsFirstMount();
+  const isFirst = useIsFirstMount();
   const transitionMapStr = JSON.stringify(transitionMap);
   const lazyIsShow = useLazyState(isShow);
   const hasMutate = useMutated([
