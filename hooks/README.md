@@ -147,6 +147,26 @@ If you forget to do so, useId will output the following warning:
 
 See [Server side rendering](../ssr/) for details.
 
+### useIsFirstMount
+
+Whether first mount or not.
+
+#### Example
+
+```tsx
+import { useIsFirstMount } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+
+export default () => {
+  const isFirstMount = useIsFirstMount(); // true
+  // re-render
+  isFirstMount; // false
+};
+```
+
+#### Returns
+
+`boolean`
+
 ### usePrevious
 
 [Source](./use_previous.ts) [Test](./use_previous_test.ts)
