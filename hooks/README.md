@@ -75,7 +75,7 @@ export default () => {
 
 #### Arguments
 
-Accepts up to 1 arguments.
+Accepts up to 2 arguments.
 
 | N | Name    | Required / Default | Description                                                                                                                                                  |
 | - | ------- | :----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -148,6 +148,8 @@ If you forget to do so, useId will output the following warning:
 See [Server side rendering](../ssr/) for details.
 
 ### useIsFirstMount
+
+[Source](./use_is_first_mount.ts) [Test](./use_is_first_mount_test.ts)
 
 Whether first mount or not.
 
