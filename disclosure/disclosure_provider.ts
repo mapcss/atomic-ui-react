@@ -2,27 +2,26 @@
 
 import { createElement, ReactNode } from "react";
 import { IdContext, OpenContext } from "./context.ts";
-import useDisclosureProvider, {
-  Exclusive,
+import useDisclosureStates, {
   Options,
-} from "./use_disclosure_provider.ts";
+  Params,
+} from "./use_disclosure_states.ts";
 
 export type Props =
   & {
     children: ReactNode;
   }
-  & Exclusive
-  & Partial<Pick<Options, "onChangeOpen">>;
+  & Params
+  & Partial<Options>;
 
 export default function DisclosureProvider(
-  { children, isOpen, setIsOpen, onChangeOpen, isDefaultOpen }: Props,
+  { children, isOpen, setIsOpen, onChangeOpen, isInitialOpen }: Props,
 ): JSX.Element {
-  const [states, dispatches] = useDisclosureProvider({
-    onChangeOpen,
-    isDefaultOpen,
+  const [states, dispatches] = useDisclosureStates({
+    isInitialOpen,
     isOpen: isOpen as never,
     setIsOpen: setIsOpen as never,
-  });
+  }, { onChangeOpen });
 
   return createElement(
     IdContext.Provider,

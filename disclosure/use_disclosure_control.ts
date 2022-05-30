@@ -3,10 +3,10 @@
 import { HTMLAttributes, KeyboardEvent, useMemo } from "react";
 import { SharedContexts } from "./types.ts";
 import { AllHandlerMap } from "../types.ts";
-import useAttributesWithContext, {
-  AllAttributesWithContext,
+import useAttributesWith, {
+  AllAttributesWith,
   AttributesHandler,
-} from "../hooks/use_attributes_with_context.ts";
+} from "../hooks/use_attributes_with.ts";
 import { mappingKey } from "../util.ts";
 
 export type Params = SharedContexts;
@@ -25,8 +25,6 @@ export type Attributes =
   >
   & AllHandlerMap;
 
-export type AttributesWithContext = AllAttributesWithContext<Contexts, Element>;
-
 export type Contexts = Params & Required<Options> & {
   mutateValue: boolean;
 };
@@ -36,7 +34,7 @@ export type Returns = [Attributes, Contexts];
 export default function useDisclosureControl(
   { setIsOpen, id, isOpen }: Readonly<Params>,
   { mutateType = "toggle" }: Readonly<Partial<Options>>,
-  allAttributes: AttributesWithContext,
+  allAttributes: AllAttributesWith<[Contexts]>,
 ): Returns {
   const mutateValue = useMemo<boolean>(() => {
     switch (mutateType) {
@@ -63,15 +61,15 @@ export default function useDisclosureControl(
     ],
   );
 
-  const attributes = useAttributesWithContext({
-    attributes: { ...defaultAttributes, ...allAttributes },
-    context: contexts,
+  const attributes = useAttributesWith([contexts], {
+    ...defaultAttributes,
+    ...allAttributes,
   });
 
   return [attributes, contexts];
 }
 
-const defaultOnKeyDown: AttributesHandler<Contexts, "onKeyDown"> = (
+const defaultOnKeyDown: AttributesHandler<[Contexts], "onKeyDown"> = (
   ev,
   { setIsOpen, mutateValue },
 ) => {
@@ -87,15 +85,15 @@ const defaultOnKeyDown: AttributesHandler<Contexts, "onKeyDown"> = (
   ]);
   runner(ev);
 };
-const defaultOnClick: AttributesHandler<Contexts, "onClick"> = (
+const defaultOnClick: AttributesHandler<[Contexts], "onClick"> = (
   _,
   { setIsOpen, mutateValue },
 ) => setIsOpen(mutateValue);
-const defaultRole: AttributesHandler<Contexts, "role"> = "button";
-const defaultAriaControls: AttributesHandler<Contexts, "aria-controls"> = (
+const defaultRole: AttributesHandler<[Contexts], "role"> = "button";
+const defaultAriaControls: AttributesHandler<[Contexts], "aria-controls"> = (
   { id },
 ) => id;
-const defaultAriaExpanded: AttributesHandler<Contexts, "aria-expanded"> = (
+const defaultAriaExpanded: AttributesHandler<[Contexts], "aria-expanded"> = (
   { isOpen },
 ) => isOpen;
 
