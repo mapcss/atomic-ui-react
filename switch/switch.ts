@@ -1,7 +1,13 @@
 // This module is browser compatible.
 
-import { createElement, forwardRef as _forwardRef, Ref } from "react";
+import {
+  createElement,
+  forwardRef as _forwardRef,
+  ReactNode,
+  Ref,
+} from "react";
 import { Tag, WithIntrinsicElements } from "../types.ts";
+import { PropsWithoutChildren } from "../util.ts";
 import { useAs } from "../_shared/hooks.ts";
 import WithSwitch, { Props as WithSwitchProps } from "./with_switch.ts";
 
@@ -10,7 +16,10 @@ type _Props<As extends Tag> = {
    * @default `button`
    */
   as?: As;
-} & Omit<WithSwitchProps, "children">;
+
+  /** Children. */
+  children?: ReactNode;
+} & PropsWithoutChildren<WithSwitchProps>;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
@@ -21,12 +30,21 @@ function _Switch<As extends Tag = "button">(
   return WithSwitch({
     children: (attrs) => {
       const tag = useAs(as, "button");
-      return createElement(tag, { ref, ...attrs, children });
+      return createElement(tag, { ref, ...attrs }, children);
     },
     ...rest,
   });
 }
 
+/**
+ * ```tsx
+ * import { Switch } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ *
+ * export default () => {
+ *   return <Switch />;
+ * };
+ * ```
+ */
 const Switch = _forwardRef(_Switch);
 
 export default Switch;

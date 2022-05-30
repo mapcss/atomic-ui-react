@@ -2,25 +2,40 @@ import { AllHTMLAttributes, ReactElement } from "react";
 import useSwitch, {
   AllAttributesWithContexts,
   Contexts,
-  Params,
+  Options,
 } from "./use_switch.ts";
-import { Merge } from "../util.ts";
 
-type _Props = {
-  children: (
-    attributes: AllHTMLAttributes<Element>,
-    contexts: Contexts,
-  ) => ReactElement;
-} & Params;
+type _Props =
+  & {
+    children: (
+      attributes: AllHTMLAttributes<Element>,
+      contexts: Contexts,
+    ) => ReactElement;
+  }
+  & Options;
 
-export type Props = Merge<AllAttributesWithContexts, _Props>;
+export type Props = AllAttributesWithContexts & _Props;
 
 export default function WithSwitch(
-  { children, isChecked, setIsChecked, ...rest }: Readonly<Props>,
+  {
+    children,
+    isChecked,
+    setIsChecked,
+    initialIsChecked,
+    onChangeIsChecked,
+    ...allAttributes
+  }: Readonly<
+    Props
+  >,
 ): JSX.Element {
   const [attributes, contexts] = useSwitch(
-    { isChecked, setIsChecked },
-    rest,
+    {
+      isChecked,
+      setIsChecked: setIsChecked as never,
+      initialIsChecked: initialIsChecked as never,
+      onChangeIsChecked,
+    },
+    allAttributes,
   );
 
   return children(attributes, contexts);

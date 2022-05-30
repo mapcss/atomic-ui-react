@@ -1,34 +1,68 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, KeyboardEvent } from "react";
+import {
+  AllHTMLAttributes,
+  Dispatch,
+  KeyboardEvent,
+  SetStateAction,
+} from "react";
 import useAttributesWith, {
   AllAttributesWith,
   AttributesHandler,
 } from "../hooks/use_attributes_with.ts";
-import { mappingKey } from "../util.ts";
+import { Exclusive, mappingKey } from "../util.ts";
+import useUpdateEffect from "../hooks/use_update_effect.ts";
+import useExclusiveState from "../_shared/use_exclusive_state.ts";
 
-export type Params = {
+export type GlobalScope = {
   /** Whether or not the switch is checked. */
   isChecked: boolean;
 
   /** Dispatch function of `isChecked`. */
-  setIsChecked: (isChecked: boolean) => void;
+  setIsChecked: Dispatch<SetStateAction<boolean>>;
 };
 
-export type Contexts = Params;
+export type LocalScope = {
+  /** Initial `isChecked` state.
+   * @default false
+   */
+  initialIsChecked?: boolean;
+};
+
+export type Options = {
+  /** Call on `isChecked` is mutated with contexts. */
+  onChangeIsChecked?: (contexts: Contexts) => void;
+} & Exclusive<GlobalScope, LocalScope>;
+
+export type Contexts = GlobalScope;
 
 export type AllAttributesWithContexts = Partial<AllAttributesWith<[Contexts]>>;
 
 export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useSwitch(
-  { isChecked, setIsChecked }: Readonly<Params>,
+  {
+    isChecked: _isChecked,
+    setIsChecked: _setIsChecked,
+    initialIsChecked = false,
+    onChangeIsChecked,
+  }: Readonly<Options> = {},
   allAttributesWith: AllAttributesWithContexts = {},
 ): Returns {
+  const [isChecked, setIsChecked] = useExclusiveState<boolean>({
+    initialState: initialIsChecked,
+    setState: _setIsChecked,
+    state: _isChecked,
+  });
+
   const contexts: Contexts = {
     isChecked,
     setIsChecked,
   };
+
+  useUpdateEffect(() => {
+    onChangeIsChecked?.(contexts);
+  }, [onChangeIsChecked, contexts.isChecked, contexts.setIsChecked]);
 
   const attributes = useAttributesWith(
     [contexts],
@@ -72,7 +106,7 @@ const defaultAttributes: Pick<
   "aria-checked": defaultAriaChecked,
 };
 
-type DefaultAttribute =
+export type DefaultAttribute =
   | "role"
   | "tabIndex"
   | "onClick"
