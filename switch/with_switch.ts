@@ -3,6 +3,7 @@ import useSwitch, {
   AllAttributesWithContexts,
   Contexts,
   Options,
+  Params,
 } from "./use_switch.ts";
 
 type _Props =
@@ -12,6 +13,7 @@ type _Props =
       contexts: Contexts,
     ) => ReactElement;
   }
+  & Params
   & Options;
 
 export type Props = AllAttributesWithContexts & _Props;
@@ -21,8 +23,8 @@ export default function WithSwitch(
     children,
     isChecked,
     setIsChecked,
-    initialIsChecked,
-    onChangeIsChecked,
+    isInitialChecked,
+    onChangeChecked,
     ...allAttributes
   }: Readonly<
     Props
@@ -32,9 +34,9 @@ export default function WithSwitch(
     {
       isChecked,
       setIsChecked: setIsChecked as never,
-      initialIsChecked: initialIsChecked as never,
-      onChangeIsChecked,
+      isInitialChecked: isInitialChecked as never,
     },
+    { onChangeChecked },
     allAttributes,
   );
 

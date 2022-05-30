@@ -1,11 +1,6 @@
 // This module is browser compatible.
 
-import {
-  AllHTMLAttributes,
-  Dispatch,
-  KeyboardEvent,
-  SetStateAction,
-} from "react";
+import { AllHTMLAttributes, KeyboardEvent } from "react";
 import useAttributesWith, {
   AllAttributesWith,
   AttributesHandler,
@@ -19,20 +14,22 @@ export type GlobalScope = {
   isChecked: boolean;
 
   /** Dispatch function of `isChecked`. */
-  setIsChecked: Dispatch<SetStateAction<boolean>>;
+  setIsChecked: (isChecked: boolean) => void;
 };
 
 export type LocalScope = {
   /** Initial `isChecked` state.
    * @default false
    */
-  initialIsChecked?: boolean;
+  isInitialChecked?: boolean;
 };
+
+export type Params = Exclusive<GlobalScope, LocalScope>;
 
 export type Options = {
   /** Call on `isChecked` is mutated with contexts. */
-  onChangeIsChecked?: (contexts: Contexts) => void;
-} & Exclusive<GlobalScope, LocalScope>;
+  onChangeChecked?: (contexts: Contexts) => void;
+};
 
 export type Contexts = GlobalScope;
 
@@ -42,17 +39,19 @@ export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useSwitch(
   {
-    isChecked: _isChecked,
-    setIsChecked: _setIsChecked,
-    initialIsChecked = false,
-    onChangeIsChecked,
+    isChecked: state,
+    setIsChecked: setState,
+    isInitialChecked: initialState = false,
+  }: Readonly<Params>,
+  {
+    onChangeChecked,
   }: Readonly<Options> = {},
   allAttributesWith: AllAttributesWithContexts = {},
 ): Returns {
   const [isChecked, setIsChecked] = useExclusiveState<boolean>({
-    initialState: initialIsChecked,
-    setState: _setIsChecked,
-    state: _isChecked,
+    initialState,
+    setState,
+    state,
   });
 
   const contexts: Contexts = {
@@ -61,8 +60,8 @@ export default function useSwitch(
   };
 
   useUpdateEffect(() => {
-    onChangeIsChecked?.(contexts);
-  }, [onChangeIsChecked, contexts.isChecked, contexts.setIsChecked]);
+    onChangeChecked?.(contexts);
+  }, [onChangeChecked, contexts.isChecked, contexts.setIsChecked]);
 
   const attributes = useAttributesWith(
     [contexts],

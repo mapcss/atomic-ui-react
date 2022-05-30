@@ -34,8 +34,8 @@ features:
 - `tabIndex` = 0
 - `onClick`
 - `onKeyDown`
-  - `Space`
-  - `Enter`
+  - <kbd>Space<kbd>
+  - <kbd>Enter<kbd>
 
 ## API
 
