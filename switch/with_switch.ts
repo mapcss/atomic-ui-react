@@ -16,10 +16,10 @@ type _Props = {
 export type Props = Merge<AllAttributesWithContexts, _Props>;
 
 export default function WithSwitch(
-  { children, isChecked, onValueChange, ...rest }: Readonly<Props>,
+  { children, isChecked, setIsChecked, ...rest }: Readonly<Props>,
 ): JSX.Element {
   const [attributes, contexts] = useSwitch(
-    { isChecked, onValueChange },
+    { isChecked, setIsChecked },
     rest,
   );
 

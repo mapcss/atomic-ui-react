@@ -11,7 +11,7 @@ const describeTests = describe({
 
 it(describeTests, "should render as", (t) => {
   const { container } = render(
-    <Switch isChecked onValueChange={() => {}}>
+    <Switch isChecked setIsChecked={() => {}}>
       button
     </Switch>,
   );

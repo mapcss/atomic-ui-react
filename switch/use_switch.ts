@@ -11,8 +11,8 @@ export type Params = {
   /** Whether or not the switch is checked. */
   isChecked: boolean;
 
-  /** The function to call when the switch is toggled. */
-  onValueChange: (isChecked: boolean) => void;
+  /** Dispatch function of `isChecked`. */
+  setIsChecked: (isChecked: boolean) => void;
 };
 
 export type Contexts = Params;
@@ -22,12 +22,12 @@ export type AllAttributesWithContexts = Partial<AllAttributesWith<[Contexts]>>;
 export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useSwitch(
-  { isChecked, onValueChange }: Readonly<Params>,
+  { isChecked, setIsChecked }: Readonly<Params>,
   allAttributesWith: AllAttributesWithContexts = {},
 ): Returns {
   const contexts: Contexts = {
     isChecked,
-    onValueChange,
+    setIsChecked,
   };
 
   const attributes = useAttributesWith(
@@ -40,11 +40,11 @@ export default function useSwitch(
 
 const defaultOnKeyDown: AttributesHandler<[Contexts], "onKeyDown"> = (
   ev,
-  { isChecked, onValueChange },
+  { isChecked, setIsChecked },
 ) => {
   const toggle = () => {
     ev.preventDefault();
-    onValueChange(!isChecked);
+    setIsChecked(!isChecked);
   };
   mappingKey<KeyboardEvent>([
     ["Space", toggle],
@@ -54,8 +54,8 @@ const defaultOnKeyDown: AttributesHandler<[Contexts], "onKeyDown"> = (
 
 const defaultOnClick: AttributesHandler<[Contexts], "onClick"> = (
   _,
-  { isChecked, onValueChange },
-) => onValueChange(!isChecked);
+  { isChecked, setIsChecked },
+) => setIsChecked(!isChecked);
 
 const defaultAriaChecked: AttributesHandler<[Contexts], "aria-checked"> = (
   { isChecked },
