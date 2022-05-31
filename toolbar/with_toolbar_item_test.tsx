@@ -1,18 +1,14 @@
 import WithToolbarItem from "./with_toolbar_item.ts";
 import ToolbarProvider from "./toolbar_provider.ts";
 import {
-  anyBoolean,
-  anyFunction,
-  anyNumber,
-  anyObject,
   assertSnapshot,
   describe,
   expect,
-  fn,
   it,
   setupJSDOM,
 } from "../dev_deps.ts";
 import { fireEvent, render } from "@testing-library/react";
+import SSRProvider from "../ssr/ssr_provider.ts";
 
 const describeTests = describe({
   name: "WithToolbarItem",
@@ -28,7 +24,7 @@ it(
     expect(() =>
       render(
         <WithToolbarItem>
-          <button>1</button>
+          {() => <div></div>}
         </WithToolbarItem>,
       )
     ).toThrow();
@@ -39,17 +35,16 @@ it(describeTests, "should render as", (t) => {
   const { container } = render(
     <>
       <WithToolbarItem>
-        <button>1</button>
-      </WithToolbarItem>
-      <WithToolbarItem>
-        <button>2</button>
+        {(attrs) => <div {...attrs}>1</div>}
       </WithToolbarItem>
     </>,
     {
       wrapper: ({ children }) => (
-        <ToolbarProvider>
-          {children as never}
-        </ToolbarProvider>
+        <SSRProvider>
+          <ToolbarProvider>
+            {children as never}
+          </ToolbarProvider>
+        </SSRProvider>
       ),
     },
   );
@@ -57,91 +52,37 @@ it(describeTests, "should render as", (t) => {
   assertSnapshot(t, container.innerHTML);
 });
 
-it(describeTests, "should focus on keydown and change tabIndex", (t) => {
-  const { getByTestId } = render(
+it(describeTests, "should change active on fire click", (t) => {
+  const { getByTestId, container } = render(
     <>
       <WithToolbarItem>
-        <button data-testid="test1">1</button>
+        {(attrs) => <div data-testid="item1" {...attrs}>1</div>}
       </WithToolbarItem>
       <WithToolbarItem>
-        <button data-testid="test2">2</button>
+        {(attrs) => <div data-testid="item2" {...attrs}>2</div>}
       </WithToolbarItem>
     </>,
     {
       wrapper: ({ children }) => (
-        <ToolbarProvider>
-          {children as never}
-        </ToolbarProvider>
+        <SSRProvider>
+          <ToolbarProvider>
+            {children as never}
+          </ToolbarProvider>
+        </SSRProvider>
       ),
     },
   );
 
-  const test1 = getByTestId("test1");
-  const test2 = getByTestId("test2");
-
-  expect(test1).toHaveAttribute("tabindex", "0");
-  expect(test2).toHaveAttribute("tabindex", "-1");
-
-  test1.focus();
-
-  fireEvent.keyDown(document.activeElement!, {
-    code: "ArrowRight",
-  });
-
-  expect(test1).toHaveAttribute("tabindex", "-1");
-  expect(test2).toHaveAttribute("tabindex", "0");
-  expect(test2).toHaveFocus();
-
-  fireEvent.keyDown(document.activeElement!, {
-    code: "ArrowRight",
-  });
-
-  expect(test1).toHaveAttribute("tabindex", "0");
-  expect(test2).toHaveAttribute("tabindex", "-1");
-  expect(test1).toHaveFocus();
-});
-
-it(describeTests, "should render as children", (t) => {
-  const mockFn = fn();
-  const { container } = render(
-    <>
-      <WithToolbarItem>
-        {(attributes, context) => {
-          mockFn(attributes);
-          mockFn(context);
-          return <button {...attributes}>1</button>;
-        }}
-      </WithToolbarItem>
-      <WithToolbarItem>
-        {(attributes) => {
-          return <button {...attributes}>2</button>;
-        }}
-      </WithToolbarItem>
-    </>,
-    {
-      wrapper: ({ children }) => (
-        <ToolbarProvider>
-          {children as never}
-        </ToolbarProvider>
-      ),
-    },
-  );
+  const item1 = getByTestId("item1");
+  const item2 = getByTestId("item2");
 
   assertSnapshot(t, container.innerHTML);
 
-  expect(mockFn).toHaveBeenCalledWith({
-    tabIndex: anyNumber(),
-    onKeyDown: anyFunction(),
-    onFocus: anyFunction(),
-    ref: anyObject(),
-  });
+  fireEvent.click(item2);
+  assertSnapshot(t, container.innerHTML);
+  expect(item2).toHaveFocus();
 
-  expect(mockFn).toHaveBeenCalledWith({
-    isFirst: anyBoolean(),
-    isActive: anyBoolean(),
-    focusPrev: anyFunction(),
-    focusNext: anyFunction(),
-    focusFirst: anyFunction(),
-    focusLast: anyFunction(),
-  });
+  fireEvent.click(item1);
+  assertSnapshot(t, container.innerHTML);
+  expect(item1).toHaveFocus();
 });

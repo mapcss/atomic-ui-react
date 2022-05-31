@@ -1,114 +1,99 @@
-import {
-  AllHTMLAttributes,
-  RefAttributes,
-  RefObject,
-  useCallback,
-  useMemo,
-} from "react";
-import { filterTruthy, isSameNode, KeyEntries } from "../util.ts";
-import { isLength0 } from "../deps.ts";
-import { AllHandlerMap, KeyboardHandler } from "../types.ts";
-import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
-import useFocusCallback, {
-  ReturnValue as UseFocusCallbackReturnValue,
-} from "../hooks/use_focus_callback.ts";
-import { useEventHandler } from "../_shared/hooks.ts";
-import { calcTabIndex } from "./util.ts";
-import { ReturnValue as UseActiveElementReturnValue } from "../hooks/use_active_element.ts";
+import { AllHTMLAttributes, useMemo } from "react";
+import useAttributesWith, {
+  AllAttributesWith,
+  AttributesHandler,
+} from "../hooks/use_attributes_with.ts";
+import { CommonContexts } from "./types.ts";
 
-export type Attributes =
-  & Pick<AllHTMLAttributes<Element>, "tabIndex">
-  & AllHandlerMap
-  // deno-lint-ignore no-explicit-any
-  & RefAttributes<any>;
+export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
 
-export type Contexts = UseFocusCallbackReturnValue & {
-  isFirst: boolean;
+export type Params = {
+  id: string;
 
+  index: number;
+} & CommonContexts;
+
+export type Contexts = Params & {
   isActive: boolean;
 };
 
-export type Params = {
-  refs: RefObject<HTMLElement | SVGElement | MathMLElement>[];
-
-  ref: RefObject<HTMLElement | SVGElement | MathMLElement>;
-
-  activeElementStateSet: UseActiveElementReturnValue;
-};
-
-export type Options = {
-  onKey: Iterable<KeyboardHandler>;
-
-  keyEntries: (context: Contexts) => KeyEntries;
-};
-
-export type Returns = [Attributes, Contexts];
+export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useToolbarItem(
-  { refs, activeElementStateSet, ref }: Readonly<Params>,
-  { onKey = ["onKeyDown"], keyEntries = defaultKeyEntries }: Readonly<
-    Partial<Options>
-  > = {},
+  { activeIndex, setActiveIndex, index, id, itemsRef }: Readonly<
+    Params
+  >,
+  allAttributes: Partial<AllAttributesWithContexts> = {},
 ): Returns {
-  const [activeElement, setActiveElement] = activeElementStateSet;
-  const isFirst = isLength0(refs);
-  refs.push(ref);
-
   const isActive = useMemo<boolean>(
-    () => isSameNode(ref.current, activeElement),
-    [activeElement],
+    () => index === activeIndex,
+    [index, activeIndex],
   );
 
-  const targets = useCallback(
-    () => filterTruthy(refs.map((ref) => ref.current)),
-    [],
-  );
-  const returnValue = useFocusCallback(targets);
-
-  const context = useMemo<Contexts>(() => ({
-    ...returnValue,
-    isFirst,
+  const contexts = useMemo<Contexts>(() => ({
     isActive,
+    activeIndex,
+    setActiveIndex,
+    index,
+    id,
+    itemsRef,
   }), [
-    returnValue.focusFirst,
-    returnValue.focusLast,
-    returnValue.focusNext,
-    returnValue.focusPrev,
-    isFirst,
     isActive,
+    activeIndex,
+    setActiveIndex,
+    index,
+    id,
   ]);
 
-  const entries = keyEntries(context);
-  const handler = useKeyboardEventHandler(entries);
-  const handlerMap = useEventHandler(onKey, handler);
+  const attributes = useAttributesWith([contexts], {
+    ...defaultAttributes,
+    ...allAttributes,
+  });
 
-  const tabIndex = useMemo<number>(
-    () => calcTabIndex({ isActive, isFirst, hasActivated: !!activeElement }),
-    [
-      isActive,
-      activeElement,
-      isFirst,
-    ],
-  );
-
-  const attributes = useMemo<Attributes>(
-    () => ({ ref, tabIndex, ...handlerMap, onFocus: setActiveElement }),
-    [
-      tabIndex,
-      setActiveElement,
-    ],
-  );
-
-  return [attributes, context];
+  return [attributes, contexts];
 }
 
-export const defaultKeyEntries: (
-  context: Contexts,
-) => KeyEntries = ({ focusFirst, focusLast, focusNext, focusPrev }) => {
-  return [
-    ["ArrowLeft", focusPrev],
-    ["ArrowRight", focusNext],
-    ["Home", focusFirst],
-    ["End", focusLast],
-  ];
+const defaultTabIndex: AttributesHandler<[Contexts], "tabIndex"> = (
+  { isActive },
+) => isActive ? 0 : -1;
+// const defaultOnKeyDown: AttributesHandler<[Contexts], "onKeyDown"> = (
+//   ev,
+//   { setActiveIndex, count, index },
+// ) => {
+//   const run = mappingKey<KeyboardEvent>([
+//     ["ArrowLeft", (ev) => {
+//       ev.preventDefault();
+//       const featureIndex = prev({ current: index, max: count });
+//       setActiveIndex(featureIndex);
+//     }],
+//     ["ArrowRight", (ev) => {
+//       ev.preventDefault();
+//       const featureIndex = next({ current: index, max: count });
+//       setActiveIndex(featureIndex);
+//     }],
+//     ["Home", (ev) => {
+//       ev.preventDefault();
+//       const featureIndex = first({ current: index, max: count });
+//       setActiveIndex(featureIndex);
+//     }],
+//     ["End", (ev) => {
+//       ev.preventDefault();
+//       const featureIndex = last({ current: index, max: count });
+//       setActiveIndex(featureIndex);
+//     }],
+//   ]);
+
+//   run(ev);
+// };
+
+const defaultOnClick: AttributesHandler<[Contexts], "onClick"> = (
+  _,
+  { setActiveIndex, index },
+) => {
+  setActiveIndex(index);
+};
+
+const defaultAttributes: Partial<AllAttributesWith<[Contexts]>> = {
+  tabIndex: defaultTabIndex,
+  onClick: defaultOnClick,
 };

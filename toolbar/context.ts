@@ -1,11 +1,15 @@
 // This module is browser compatible.
 
-import { createContext, RefObject } from "react";
-import { VFn } from "../deps.ts";
+import { createContext, MutableRefObject, RefObject } from "react";
+import { Returns as UseIdReturns } from "../hooks/use_id.ts";
 
-export const ActiveElementContext = createContext<
-  [Element | null, VFn] | undefined
+export const ActiveIndexStateSetContext = createContext<
+  [number, (index: number) => void] | undefined
+>(
+  undefined,
+);
+export const ItemsRefContext = createContext<
+  | MutableRefObject<RefObject<HTMLElement | SVGElement | MathMLElement>[]>
+  | undefined
 >(undefined);
-export const RefsContext = createContext<
-  RefObject<HTMLElement | SVGElement | MathMLElement>[] | undefined
->(undefined);
+export const IdContext = createContext<UseIdReturns | undefined>(undefined);

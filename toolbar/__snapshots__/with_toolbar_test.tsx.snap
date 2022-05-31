@@ -2,4 +2,8 @@ export const snapshot = {};
 
 snapshot[`WithToolbar > should render as 1`] = `'<div role="toolbar"><button>1</button></div>'`;
 
-snapshot[`WithToolbar > should render as children 1`] = `'<div role="toolbar"><button>1</button></div>'`;
+snapshot[`WithToolbar > should render as when fire keydown event as default 1`] = `'<div role="toolbar" data-testid="toolbar"><div data-testid="item1" tabindex="0">1</div><div data-testid="item2" tabindex="-1">2</div></div>'`;
+
+snapshot[`WithToolbar > should render as when fire keydown event as default 2`] = `'<div role="toolbar" data-testid="toolbar"><div data-testid="item1" tabindex="-1">1</div><div data-testid="item2" tabindex="0">2</div></div>'`;
+
+snapshot[`WithToolbar > should render as when fire keydown event as default 3`] = `'<div role="toolbar" data-testid="toolbar"><div data-testid="item1" tabindex="0">1</div><div data-testid="item2" tabindex="-1">2</div></div>'`;

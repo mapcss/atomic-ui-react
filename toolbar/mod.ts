@@ -12,8 +12,9 @@ export { default as ToolbarProvider } from "./toolbar_provider.ts";
 export type { Props as ToolbarProviderProps } from "./toolbar_provider.ts";
 export { default as useToolbarItem } from "./use_toolbar_item.ts";
 export type {
-  Attributes as ToolbarItemAttributes,
   Contexts as ToolbarItemContexts,
+  Params as UseToolbarItemParams,
+  Returns as UseToolbarItemReturns
 } from "./use_toolbar_item.ts";
 export { default as useToolbar } from "./use_toolbar.ts";
-export type { Attributes as ToolbarAttributes } from "./use_toolbar.ts";
+export type { Returns as UseToolbarReturns } from "./use_toolbar.ts";

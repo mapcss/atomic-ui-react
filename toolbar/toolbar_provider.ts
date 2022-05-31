@@ -1,23 +1,37 @@
 // This module is browser compatible.
 
 import { createElement, ReactNode } from "react";
-import { ActiveElementContext, RefsContext } from "./context.ts";
-import useActiveElement from "../hooks/use_active_element.ts";
+import {
+  ActiveIndexStateSetContext,
+  IdContext,
+  ItemsRefContext,
+} from "./context.ts";
+import useToolbarState, { Options, Params } from "./use_toolbar_state.ts";
+import useId from "../hooks/use_id.ts";
 
-export type Props = {
-  children: ReactNode;
-};
+export type Props =
+  & {
+    children: ReactNode;
+  }
+  & Params
+  & Partial<Options>;
 
-export default function ToolbarProvider({ children }: Props): JSX.Element {
-  const [activeElement, setActiveElement] = useActiveElement();
+export default function ToolbarProvider(
+  { children, initialActiveIndex, setActiveIndex, activeIndex, onChangeActive }:
+    Props,
+): JSX.Element {
+  const [states, dispatches] = useToolbarState({
+    initialActiveIndex,
+    setActiveIndex: setActiveIndex as never,
+    activeIndex: activeIndex as never,
+  }, { onChangeActive });
+  const idReturns = useId();
 
   return createElement(
-    RefsContext.Provider,
-    { value: [] },
-    createElement(
-      ActiveElementContext.Provider,
-      { value: [activeElement, setActiveElement] },
-      children,
-    ),
+    ItemsRefContext.Provider,
+    { value: states.itemsRef },
+    createElement(ActiveIndexStateSetContext.Provider, {
+      value: [states.activeIndex, dispatches.setActiveIndex],
+    }, createElement(IdContext.Provider, { value: idReturns }, children)),
   );
 }

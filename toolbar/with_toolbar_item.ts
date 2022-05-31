@@ -1,53 +1,64 @@
 // This module is browser compatible.
 
-import { cloneElement, ReactElement, useContext } from "react";
-import { mergeProps, omitRef } from "../util.ts";
-import { isFunction } from "../deps.ts";
-import useMergedRef from "../hooks/use_merged_ref.ts";
-import { ActiveElementContext, RefsContext } from "./context.ts";
 import {
-  ATOMIC_UI,
-  REF_CALLBACK_IS_NOT_SUPPORTED,
-} from "../_shared/constant.ts";
+  AllHTMLAttributes,
+  ReactElement,
+  RefAttributes,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import { joinChars } from "../util.ts";
+import {
+  ActiveIndexStateSetContext,
+  IdContext,
+  ItemsRefContext,
+} from "./context.ts";
 import useToolbarItem, {
-  Attributes,
+  AllAttributesWithContexts,
   Contexts,
-  Options,
 } from "./use_toolbar_item.ts";
-
-const ERROR_MSG = `${ATOMIC_UI} Must be wrapped by <ToolbarProvider>`;
+import useId from "../hooks/use_id.ts";
+import { ERROR_MSG } from "./constants.ts";
 
 export type Props = {
-  children:
-    | ReactElement
-    | ((attributes: Attributes, contexts: Contexts) => ReactElement);
-} & Partial<Options>;
+  children: (
+    // deno-lint-ignore no-explicit-any
+    attributes: AllHTMLAttributes<Element> & RefAttributes<any>,
+    contexts: Contexts,
+  ) => ReactElement;
+} & Partial<AllAttributesWithContexts>;
 
 export default function WithToolbarItem(
-  { children, onKey, keyEntries }: Readonly<Props>,
+  { children, ...allAttributes }: Readonly<Props>,
 ): JSX.Element | never {
-  const refs = useContext(RefsContext);
-  const activeElementContext = useContext(ActiveElementContext);
+  const idReturns = useContext(IdContext);
+  const itemsRef = useContext(ItemsRefContext);
+  const activeIndexStateSet = useContext(ActiveIndexStateSetContext);
 
-  if (!refs || !activeElementContext) {
+  if (!idReturns || !itemsRef || !activeIndexStateSet) {
     throw Error(ERROR_MSG);
   }
-  const [_, ref] = useMergedRef<HTMLElement | SVGElement>(children);
-  if (isFunction(ref)) {
-    throw Error(REF_CALLBACK_IS_NOT_SUPPORTED);
-  }
-  const [attributes, context] = useToolbarItem({
-    refs,
-    ref,
-    activeElementStateSet: activeElementContext,
-  }, {
-    onKey,
-    keyEntries,
-  });
+  const ref = useRef<HTMLElement | SVGElement>(null);
+  const prefix = useMemo<string>(
+    () => joinChars([idReturns.id, "toolbar", "item"], "-")!,
+    [idReturns.id],
+  );
+  const { id, index } = useId({ prefix });
 
-  const child = isFunction(children)
-    ? children(attributes, context)
-    : cloneElement(children, mergeProps(omitRef(children.props), attributes));
+  useEffect(() => {
+    itemsRef.current?.push(ref);
+  }, []);
 
-  return child;
+  const [activeIndex, setActiveIndex] = activeIndexStateSet;
+  const [attributes, contexts] = useToolbarItem({
+    itemsRef,
+    id,
+    index,
+    activeIndex,
+    setActiveIndex,
+  }, allAttributes);
+
+  return children({ ref, ...attributes }, contexts);
 }

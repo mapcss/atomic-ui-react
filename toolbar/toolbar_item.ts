@@ -1,15 +1,14 @@
 import {
-  ComponentProps,
   createElement,
   forwardRef as _forwardRef,
+  ReactNode,
   Ref,
-  useMemo,
 } from "react";
 import { Tag, WithIntrinsicElements } from "../types.ts";
-import WithToolbarItem from "./with_toolbar_item.ts";
-import { Contexts } from "./use_toolbar_item.ts";
+import WithToolbarItem, {
+  Props as WithToolbarItemProps,
+} from "./with_toolbar_item.ts";
 import { useAs } from "../_shared/hooks.ts";
-import { mergeProps } from "../util.ts";
 
 type _Props<As extends Tag> = {
   /**
@@ -17,32 +16,26 @@ type _Props<As extends Tag> = {
    */
   as?: As;
 
-  propsAs?: (contexts: Contexts) => ComponentProps<As>;
-};
+  children?: ReactNode;
+} & Omit<WithToolbarItemProps, "children">;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _ToolbarItem<As extends Tag = "button">(
-  { as, propsAs, ...rest }: Props<As>,
+  { as, children, ...rest }: Props<As>,
   _: Ref<HTMLElement | SVGElement>,
 ): JSX.Element {
   return WithToolbarItem({
-    children: (attributes, contexts) => {
+    children: (attributes) => {
       const tag = useAs(as, "button");
-      const _propsAs = useMemo(
-        () => {
-          return propsAs?.(contexts) ?? {};
-        },
-        [propsAs, JSON.stringify(contexts)],
-      );
-
-      const props = mergeProps(mergeProps(attributes, rest), _propsAs);
 
       return createElement(
         tag,
-        props,
+        attributes,
+        children,
       );
     },
+    ...rest,
   });
 }
 

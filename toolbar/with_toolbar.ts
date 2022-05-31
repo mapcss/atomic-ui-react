@@ -1,22 +1,42 @@
 // This module is browser compatible.
 
-import { cloneElement, ReactElement } from "react";
-import { isFunction } from "../deps.ts";
-import useToolbar, { Attributes } from "./use_toolbar.ts";
+import { ReactElement, useContext } from "react";
+import useToolbar, {
+  AllAttributesWithContexts,
+  Returns,
+} from "./use_toolbar.ts";
+import { ActiveIndexStateSetContext, ItemsRefContext } from "./context.ts";
+import { ERROR_MSG } from "./constants.ts";
 
-export type Props = {
-  children: ReactElement | ((attributes: Attributes) => ReactElement);
-};
+export type Props =
+  & {
+    children: (
+      attributes: Returns[0],
+      contexts: Returns[1],
+    ) => ReactElement;
+  }
+  & Partial<AllAttributesWithContexts>;
 
 export default function WithToolbar(
-  { children }: Readonly<Props>,
-): JSX.Element {
-  const attributes = useToolbar();
-
-  const child = isFunction(children) ? children(attributes) : cloneElement(
+  {
     children,
-    attributes,
-  );
+    ...allAttributes
+  }: Readonly<
+    Props
+  >,
+): JSX.Element {
+  const activeIndexStateSet = useContext(ActiveIndexStateSetContext);
+  const itemsRef = useContext(ItemsRefContext);
 
-  return child;
+  if (!activeIndexStateSet || !itemsRef) throw Error(ERROR_MSG);
+
+  const [activeIndex, setActiveIndex] = activeIndexStateSet;
+
+  const [attributes, contexts] = useToolbar({
+    setActiveIndex,
+    activeIndex,
+    itemsRef,
+  }, allAttributes);
+
+  return children(attributes, contexts);
 }
