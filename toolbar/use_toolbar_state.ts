@@ -44,10 +44,6 @@ export default function useToolbarState(
   );
 
   useUpdateEffect(() => {
-    itemsRef.current[activeIndex]?.current?.focus();
-  }, [activeIndex]);
-
-  useUpdateEffect(() => {
     onChangeActive?.({ activeIndex, setActiveIndex, itemsRef });
   }, [onChangeActive, activeIndex, setActiveIndex]);
 

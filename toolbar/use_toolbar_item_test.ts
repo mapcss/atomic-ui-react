@@ -29,16 +29,20 @@ Deno.test("useToolbarItem should return as default", () => {
 
 Deno.test("useToolbarItem should define attributes with contexts", () => {
   const { result } = renderHook(() => {
-    return useToolbarItem({
-      activeIndex: 0,
-      setActiveIndex: () => {},
-      id: "0",
-      index: 0,
-      itemsRef: { current: [] },
-    }, {
-      tabIndex: 2,
-      className: ({ isActive }) => isActive ? "active" : "non-active",
-    });
+    return useToolbarItem(
+      {
+        activeIndex: 0,
+        setActiveIndex: () => {},
+        id: "0",
+        index: 0,
+        itemsRef: { current: [] },
+      },
+      undefined,
+      {
+        tabIndex: 2,
+        className: ({ isActive }) => isActive ? "active" : "non-active",
+      },
+    );
   });
 
   expect(result.current[0]).toEqual({

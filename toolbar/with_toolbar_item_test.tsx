@@ -1,3 +1,4 @@
+import WithToolbar from "./with_toolbar.ts";
 import WithToolbarItem from "./with_toolbar_item.ts";
 import ToolbarProvider from "./toolbar_provider.ts";
 import {
@@ -52,37 +53,43 @@ it(describeTests, "should render as", (t) => {
   assertSnapshot(t, container.innerHTML);
 });
 
-it(describeTests, "should change active on fire click", (t) => {
-  const { getByTestId, container } = render(
-    <>
-      <WithToolbarItem>
-        {(attrs) => <div data-testid="item1" {...attrs}>1</div>}
-      </WithToolbarItem>
-      <WithToolbarItem>
-        {(attrs) => <div data-testid="item2" {...attrs}>2</div>}
-      </WithToolbarItem>
-    </>,
-    {
-      wrapper: ({ children }) => (
-        <SSRProvider>
-          <ToolbarProvider>
-            {children as never}
-          </ToolbarProvider>
-        </SSRProvider>
-      ),
-    },
-  );
+it(
+  describeTests,
+  { name: "should change active on fire click", only: true },
+  (t) => {
+    const { getByTestId, container } = render(
+      <>
+        <WithToolbarItem>
+          {(attrs) => <div data-testid="item1" {...attrs}>1</div>}
+        </WithToolbarItem>
+        <WithToolbarItem>
+          {(attrs) => <div data-testid="item2" {...attrs}>2</div>}
+        </WithToolbarItem>
+      </>,
+      {
+        wrapper: ({ children }) => (
+          <SSRProvider>
+            <ToolbarProvider>
+              <WithToolbar>
+                {() => children as never}
+              </WithToolbar>
+            </ToolbarProvider>
+          </SSRProvider>
+        ),
+      },
+    );
 
-  const item1 = getByTestId("item1");
-  const item2 = getByTestId("item2");
+    const item1 = getByTestId("item1");
+    const item2 = getByTestId("item2");
 
-  assertSnapshot(t, container.innerHTML);
+    assertSnapshot(t, container.innerHTML);
 
-  fireEvent.click(item2);
-  assertSnapshot(t, container.innerHTML);
-  expect(item2).toHaveFocus();
+    fireEvent.click(item2);
+    assertSnapshot(t, container.innerHTML);
+    expect(item2).toHaveFocus();
 
-  fireEvent.click(item1);
-  assertSnapshot(t, container.innerHTML);
-  expect(item1).toHaveFocus();
-});
+    fireEvent.click(item1);
+    assertSnapshot(t, container.innerHTML);
+    expect(item1).toHaveFocus();
+  },
+);

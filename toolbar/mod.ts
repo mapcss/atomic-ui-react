@@ -14,7 +14,7 @@ export { default as useToolbarItem } from "./use_toolbar_item.ts";
 export type {
   Contexts as ToolbarItemContexts,
   Params as UseToolbarItemParams,
-  Returns as UseToolbarItemReturns
+  Returns as UseToolbarItemReturns,
 } from "./use_toolbar_item.ts";
 export { default as useToolbar } from "./use_toolbar.ts";
 export type { Returns as UseToolbarReturns } from "./use_toolbar.ts";

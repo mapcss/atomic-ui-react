@@ -5,7 +5,11 @@ import useToolbar, {
   AllAttributesWithContexts,
   Returns,
 } from "./use_toolbar.ts";
-import { ActiveIndexStateSetContext, ItemsRefContext } from "./context.ts";
+import {
+  ActiveIndexStateSetContext,
+  FocusStrategyContext,
+  ItemsRefContext,
+} from "./context.ts";
 import { ERROR_MSG } from "./constants.ts";
 
 export type Props =
@@ -27,16 +31,21 @@ export default function WithToolbar(
 ): JSX.Element {
   const activeIndexStateSet = useContext(ActiveIndexStateSetContext);
   const itemsRef = useContext(ItemsRefContext);
+  const focusStrategy = useContext(FocusStrategyContext);
 
   if (!activeIndexStateSet || !itemsRef) throw Error(ERROR_MSG);
 
   const [activeIndex, setActiveIndex] = activeIndexStateSet;
 
-  const [attributes, contexts] = useToolbar({
-    setActiveIndex,
-    activeIndex,
-    itemsRef,
-  }, allAttributes);
+  const [attributes, contexts] = useToolbar(
+    {
+      setActiveIndex,
+      activeIndex,
+      itemsRef,
+    },
+    { focusStrategy },
+    allAttributes,
+  );
 
   return children(attributes, contexts);
 }

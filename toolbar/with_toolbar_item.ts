@@ -12,6 +12,7 @@ import {
 import { joinChars } from "../util.ts";
 import {
   ActiveIndexStateSetContext,
+  FocusStrategyContext,
   IdContext,
   ItemsRefContext,
 } from "./context.ts";
@@ -35,6 +36,7 @@ export default function WithToolbarItem(
 ): JSX.Element | never {
   const idReturns = useContext(IdContext);
   const itemsRef = useContext(ItemsRefContext);
+  const focusStrategy = useContext(FocusStrategyContext);
   const activeIndexStateSet = useContext(ActiveIndexStateSetContext);
 
   if (!idReturns || !itemsRef || !activeIndexStateSet) {
@@ -52,13 +54,17 @@ export default function WithToolbarItem(
   }, []);
 
   const [activeIndex, setActiveIndex] = activeIndexStateSet;
-  const [attributes, contexts] = useToolbarItem({
-    itemsRef,
-    id,
-    index,
-    activeIndex,
-    setActiveIndex,
-  }, allAttributes);
+  const [attributes, contexts] = useToolbarItem(
+    {
+      itemsRef,
+      id,
+      index,
+      activeIndex,
+      setActiveIndex,
+    },
+    { focusStrategy },
+    allAttributes,
+  );
 
   return children({ ref, ...attributes }, contexts);
 }
