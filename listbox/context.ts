@@ -1,25 +1,7 @@
-import {
-  createContext,
-  Dispatch,
-  MutableRefObject,
-  RefObject,
-  SetStateAction,
-} from "react";
-import { Memorized } from "./types.ts";
-
-export const RefsRefContext = createContext<
-  | MutableRefObject<RefObject<HTMLElement | SVGElement | MathMLElement>[]>
-  | undefined
->(undefined);
-export const SelectedIndexContext = createContext<
-  [number | undefined, Dispatch<SetStateAction<number | undefined>>] | undefined
->(undefined);
-export const ActivatedIndexContext = createContext<
-  [number | undefined, Dispatch<SetStateAction<number | undefined>>] | undefined
->(undefined);
-
-export const MemorizedContext = createContext<Memorized | undefined>(
-  undefined,
-);
+import { createContext } from "react";
+import { CommonContexts } from "./types.ts";
 
 export const IdContext = createContext<string | undefined>(undefined);
+export const CommonContextsContext = createContext<CommonContexts | undefined>(
+  undefined,
+);

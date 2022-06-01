@@ -1,86 +1,112 @@
-import { AllHTMLAttributes, useEffect, useMemo } from "react";
-import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
-import { useEventHandler } from "../_shared/hooks.ts";
-import { Targets } from "../hooks/use_focus_callback.ts";
-import { HasFocusElement } from "../types.ts";
-import useDoublyLinkedList, {
-  States,
-} from "../hooks/use_doubly_linked_list.ts";
+import { AllHTMLAttributes, KeyboardEvent, useMemo } from "react";
+import { CommonContexts } from "./types.ts";
+import useAttributesWith, {
+  AllAttributesWith,
+  AttributesHandler,
+} from "../hooks/use_attributes_with.ts";
+import { mappingKey } from "../util.ts";
+import { FocusStrategyProps } from "../focus/types.ts";
+import useFocusStrategy from "../focus/use_focus_strategy.ts";
+import ActiveDescendant from "../focus/active_descendant.ts";
+import { next, prev } from "../hooks/use_range_counter.ts";
+import useUpdateEffect from "../hooks/use_update_effect.ts";
 
-export type Params = {
-  activeDescendantId: string | undefined;
+export type AllAttributesWithContexts = AllAttributesWith<[CommonContexts]>;
 
-  targets: Targets;
-};
+export type Params = CommonContexts;
 
 export type Options = {
-  onActive: (contexts: States<HasFocusElement>) => void;
+  onChangeActive: (contexts: CommonContexts) => void;
 
-  activatedIndex: number;
-};
-export type Attributes = Pick<
-  AllHTMLAttributes<Element>,
-  "role" | "tabIndex" | "aria-activedescendant"
->;
+  onChangeSelect: (contexts: CommonContexts) => void;
+} & FocusStrategyProps;
 
-export type Returns = [Attributes];
+export type Returns = [AllHTMLAttributes<Element>, CommonContexts];
 
 export default function useListbox(
-  { targets, activeDescendantId }: Readonly<Params>,
-  { onActive, activatedIndex }: Readonly<Partial<Options>>,
+  {
+    activeIndex,
+    setActiveIndex,
+    selectIndex,
+    setSelectIndex,
+    childrenRef,
+  }: Readonly<Params>,
+  { onChangeActive, onChangeSelect, focusStrategy = ActiveDescendant }:
+    Readonly<
+      Partial<Options>
+    > = {},
+  allAttributes: Partial<AllAttributesWithContexts> = {},
 ): Returns {
-  const [states, { prev, next }] = useDoublyLinkedList({ targets }, {
-    initialIndex: activatedIndex,
-  });
-
-  useEffect(
-    () => {
-      if (!states.element) return;
-      onActive?.(states);
-    },
-    [states.element, states.index, onActive],
+  const contexts = useMemo<CommonContexts>(
+    () => ({
+      activeIndex,
+      setActiveIndex,
+      childrenRef,
+      selectIndex,
+      setSelectIndex,
+    }),
+    [activeIndex, setActiveIndex, selectIndex, setSelectIndex],
   );
 
-  const keyboardHandler = useKeyboardEventHandler([
-    ["ArrowUp", (ev) => {
-      ev.preventDefault();
-      prev();
-    }],
-    ["ArrowDown", (ev) => {
-      ev.preventDefault();
-      next();
-    }],
-  ]);
+  useUpdateEffect(() => {
+    onChangeActive?.(contexts);
+  }, [contexts.activeIndex]);
 
-  const keyboardHandlers = useEventHandler(["onKeyDown"], keyboardHandler);
+  useUpdateEffect(() => {
+    onChangeSelect?.(contexts);
+  }, [contexts.selectIndex]);
 
-  const attributes = useMemo<Attributes>(() => ({
-    role: "listbox",
-    tabIndex: 0,
-    "aria-activedescendant": activeDescendantId,
-    ...keyboardHandlers,
-  }), [activeDescendantId, keyboardHandlers]);
+  const activeElement = useMemo(
+    () => childrenRef.current[activeIndex]?.current,
+    [activeIndex],
+  );
 
-  return [attributes];
+  const focusAttributes = useFocusStrategy({
+    strategy: focusStrategy,
+    type: "parent",
+    payload: {
+      activeElement,
+    },
+  });
+
+  const attributes = useAttributesWith([contexts], {
+    ...focusAttributes,
+    ...defaultAttributes,
+    ...allAttributes,
+  });
+
+  return [attributes, contexts];
 }
 
-// function updateScroll(parent: Element, child: HTMLElement): void {
-//   const selectedOption = child;
-//   if (
-//     parent.scrollHeight > parent.clientHeight
-//   ) {
-//     const scrollBottom = parent.clientHeight + parent.scrollTop;
-//     const elementBottom = selectedOption.offsetTop +
-//       selectedOption.offsetHeight;
-//     console.log(2222222);
-//     if (elementBottom > scrollBottom) {
-//       parent.scrollTop = elementBottom - parent.clientHeight;
-//     } else if (selectedOption.offsetTop < parent.scrollTop) {
-//       parent.scrollTop = selectedOption.offsetTop;
-//     }
-//   }
-// }
+const defaultOnKeyDown: AttributesHandler<
+  [CommonContexts],
+  "onKeyDown"
+> = (ev, { activeIndex, childrenRef, setActiveIndex }) => {
+  const run = mappingKey<KeyboardEvent>([[
+    "ArrowUp",
+    (ev) => {
+      ev.preventDefault();
+      const count = childrenRef.current.length - 1;
+      const featureIndex = prev({
+        current: activeIndex,
+        max: count,
+      });
+      setActiveIndex(featureIndex);
+    },
+  ], ["ArrowDown", (ev) => {
+    ev.preventDefault();
+    const count = childrenRef.current.length - 1;
+    const featureIndex = next({
+      current: activeIndex,
+      max: count,
+    });
+    setActiveIndex(featureIndex);
+  }]]);
 
-// function isHTMLElement(value: object): value is HTMLElement {
-//   return value instanceof HTMLElement;
-// }
+  run(ev);
+};
+
+const defaultAttributes: Partial<AllAttributesWithContexts> = {
+  role: "listbox",
+  onKeyDown: defaultOnKeyDown,
+};
