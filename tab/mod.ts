@@ -16,13 +16,9 @@ export type {
   Returns as UseTabReturns,
 } from "./use_tab.ts";
 export { default as useTabList } from "./use_tab_list.ts";
-export type {
-  Attributes as UseTabListAttributes,
-  Options as UseTabListOptions,
-} from "./use_tab_list.ts";
+export type { Options as UseTabListOptions } from "./use_tab_list.ts";
 export { default as useTabPanel } from "./use_tab_panel.ts";
 export type {
-  Attributes as UseTabPanelAttributes,
   Contexts as UseTabPanelContexts,
   Params as UseTabPanelParams,
   Returns as UseTabPanelReturns,

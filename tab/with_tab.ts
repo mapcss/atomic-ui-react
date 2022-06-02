@@ -1,117 +1,70 @@
 // This module is browser compatible.
 
 import {
-  cloneElement,
   ReactElement,
-  useCallback,
+  RefAttributes,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
 } from "react";
-import { filterTruthy, joinChars, mergeProps, omitRef } from "../util.ts";
-import { isFunction } from "../deps.ts";
-import useMergedRef from "../hooks/use_merged_ref.ts";
-import { REF_CALLBACK_IS_NOT_SUPPORTED } from "../_shared/constant.ts";
+import { joinChars } from "../util.ts";
 import {
-  DisabledIdsContext,
+  CommonContextsContext,
   HorizontalContext,
   IdContext,
-  IndexContext,
-  TabCountContext,
-  TabRefsContext,
 } from "./context.ts";
-import { ERROR_MSG, PANEL, TAB } from "./constant.ts";
-import { AllHandlerWithoutKeyBoard, KeyboardHandler } from "../types.ts";
-import useTab, { ChangeEventHandler, Options } from "./use_tab.ts";
-import { Targets } from "../hooks/use_focus_callback.ts";
+import { ERROR_MSG } from "./constant.ts";
+import { FocusStrategyContext } from "../focus/mod.ts";
+import useTab, { Returns } from "./use_tab.ts";
+import useId from "../hooks/use_id.ts";
 
 export type Props = {
-  children: ReactElement;
-
-  onKey?: Iterable<KeyboardHandler>;
-
-  on?: Iterable<AllHandlerWithoutKeyBoard>;
-} & Partial<Pick<Options, "isDisabled" | "keyEntries">>;
+  children: (
+    // deno-lint-ignore no-explicit-any
+    attributes: Returns[0] & RefAttributes<any>,
+    contexts: Returns[1],
+  ) => ReactElement;
+};
 
 export default function WithTab(
   {
-    isDisabled,
     children,
-    onKey,
-    on,
-    keyEntries,
   }: Readonly<Props>,
 ): JSX.Element | never {
-  const id = useContext(IdContext);
-  const indexStateSet = useContext(IndexContext);
-  const tabCount = useContext(TabCountContext);
-  const refs = useContext(TabRefsContext);
+  const groupId = useContext(IdContext);
   const isHorizontal = useContext(HorizontalContext);
-  const disabledIds = useContext(DisabledIdsContext);
+  const commonContexts = useContext(CommonContextsContext);
+  const focusStrategy = useContext(FocusStrategyContext);
 
-  if (!id || !indexStateSet || !tabCount) {
+  if (!groupId || !commonContexts) {
     throw Error(ERROR_MSG);
   }
-  const [_, ref] = useMergedRef<HTMLElement>(children);
-  if (isFunction(ref)) {
-    throw Error(REF_CALLBACK_IS_NOT_SUPPORTED);
-  }
 
-  const [selectedIndex, setIndex] = indexStateSet;
-  const index = tabCount.current;
-  if (isDisabled) {
-    disabledIds.push(index);
-  }
+  const ref = useRef<Element>(null);
+  useEffect(() => {
+    commonContexts.tabsRef.current.push(ref);
+  }, []);
 
-  refs.push(ref);
-
-  const isSelected = useMemo<boolean>(() => selectedIndex === index, [
-    index,
-    selectedIndex,
+  const prefix = useMemo<string>(() => joinChars([groupId, "tab"], "-")!, [
+    groupId,
   ]);
+  const { id, index } = useId({ prefix });
 
   const tabPanelId = useMemo<string>(
-    () => joinChars([id, TAB, PANEL, index], "-")!,
-    [
-      id,
-      index,
-    ],
+    () => joinChars([groupId, "tab", "panel", index], "-")!,
+    [groupId],
   );
 
-  const tabId = useMemo<string>(() => joinChars([id, TAB, index], "-")!, [
+  const [attributes, contexts] = useTab({
+    index,
     id,
-    index,
-  ]);
-
-  const targets = useCallback<Targets>(
-    () => filterTruthy(refs.map((ref) => ref.current)),
-    [],
-  );
-
-  const onChange = useCallback<ChangeEventHandler>(
-    ({ featureIndex, target }) => {
-      target.focus();
-      setIndex(featureIndex);
-    },
-    [],
-  );
-
-  const [attributes] = useTab({
-    index,
-    targets,
-  }, {
-    isDisabled,
-    onKey,
-    on,
-    keyEntries,
-    onChange,
-    tabId,
     tabPanelId,
-    isSelected,
+    ...commonContexts,
+  }, {
     isHorizontal,
+    focusStrategy,
   });
 
-  return cloneElement(
-    children,
-    { ref, ...mergeProps(omitRef(children.props), attributes) },
-  );
+  return children({ ref, ...attributes }, contexts);
 }

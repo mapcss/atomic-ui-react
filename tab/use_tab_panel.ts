@@ -1,73 +1,84 @@
 // This module is browser compatible.
 
 import { AllHTMLAttributes, useMemo } from "react";
-import { PANEL, TAB } from "./constant.ts";
-import { joinChars } from "../util.ts";
+import { CommonContexts } from "./types.ts";
+import useAttributesWith, {
+  AllAttributesWith,
+} from "../hooks/use_attributes_with.ts";
+import { Returns as UseIdReturns } from "../hooks/use_id.ts";
 
-export type Params = {
-  id: string;
-  index: number;
-  selectedIndex: number;
-  disabledIds: number[];
+export type Params =
+  & {
+    tabId: string;
+  }
+  & UseIdReturns
+  & CommonContexts;
+
+export type Contexts = Params & {
+  isSelect: boolean;
 };
 
-export type Attributes = Pick<
-  AllHTMLAttributes<Element>,
-  "role" | "aria-labelledby" | "id" | "hidden"
->;
+export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
 
-export type Contexts = {
-  selectedIndex: number;
-  index: number;
-  isDisabled: boolean;
-  isSelected: boolean;
-  isShowable: boolean;
-};
-
-export type Returns = [Attributes, Contexts];
+export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useTabPanel(
-  { id, index, selectedIndex, disabledIds }: Readonly<Params>,
+  {
+    id,
+    index,
+    selectIndex,
+    setSelectIndex,
+    tabId,
+    activeIndex,
+    setActiveIndex,
+    tabPanelsRef,
+    tabsRef,
+  }: Readonly<
+    Params
+  >,
 ): Returns {
-  const tabId = useMemo<string | undefined>(
-    () => joinChars([id, TAB, index], "-"),
-    [id, index],
-  );
-  const tabPanelId = useMemo<string | undefined>(
-    () => joinChars([id, TAB, PANEL, index], "-"),
-    [id, index],
-  );
-
-  const isSelected = useMemo<boolean>(() => index === selectedIndex, [
-    selectedIndex,
-  ]);
-
-  const isDisabled = useMemo<boolean>(() => disabledIds.includes(index), [
-    JSON.stringify(disabledIds),
+  const isSelect = useMemo<boolean>(() => index === selectIndex, [
     index,
+    selectIndex,
   ]);
 
-  const isShowable = useMemo<boolean>(() => isSelected && !isDisabled, [
-    isSelected,
-    isDisabled,
-  ]);
+  const contexts = useMemo<Contexts>(
+    () => ({
+      id,
+      index,
+      selectIndex,
+      setSelectIndex,
+      tabId,
+      isSelect,
+      activeIndex,
+      setActiveIndex,
+      tabPanelsRef,
+      tabsRef,
+    }),
+    [
+      id,
+      index,
+      selectIndex,
+      setSelectIndex,
+      tabId,
+      isSelect,
+      activeIndex,
+      setActiveIndex,
+      tabPanelsRef,
+      tabsRef,
+    ],
+  );
 
-  const attributes = useMemo<Attributes>(() => {
-    return {
-      role: `${TAB}${PANEL}`,
-      id: tabPanelId,
-      "aria-labelledby": tabId,
-      hidden: !isShowable,
-    };
-  }, [tabId, tabPanelId, isShowable]);
-
-  const contexts = useMemo<Contexts>(() => ({
-    isSelected,
-    isShowable,
-    isDisabled,
-    selectedIndex,
-    index,
-  }), [isSelected, isShowable, isDisabled, selectedIndex, index]);
+  const attributes = useAttributesWith([contexts], {
+    ...defaultAttributes,
+  });
 
   return [attributes, contexts];
 }
+
+const defaultAttributes: Partial<AllAttributesWith<[Contexts]>> = {
+  role: "tabpanel",
+  id: ({ id }) => id,
+  "aria-labelledby": ({ tabId }) => tabId,
+  hidden: ({ isSelect }) => !isSelect,
+};

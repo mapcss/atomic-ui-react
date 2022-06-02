@@ -1,31 +1,35 @@
 import useTabList from "./use_tab_list.ts";
 import { renderHook } from "@testing-library/react-hooks";
-import { expect } from "../dev_deps.ts";
+import { anyFunction, anyObject, expect } from "../dev_deps.ts";
 
 Deno.test("useTabList should be return attributes", () => {
-  const { result, rerender } = renderHook(
-    ({ isHorizontal }) => useTabList({ isHorizontal }),
-    {
-      initialProps: {
-        isHorizontal: undefined as undefined | boolean,
-      },
-    },
+  const { result } = renderHook(
+    () =>
+      useTabList({
+        selectIndex: 0,
+        setSelectIndex: () => {},
+        activeIndex: 0,
+        setActiveIndex: () => {},
+        tabPanelsRef: { current: [] },
+        tabsRef: { current: [] },
+      }),
   );
 
-  expect(result.current).toEqual({
-    role: "tablist",
-    "aria-orientation": undefined,
-  });
-
-  rerender({ isHorizontal: true });
-  expect(result.current).toEqual({
+  expect(result.current[0]).toEqual({
     role: "tablist",
     "aria-orientation": "horizontal",
+    onKeyDown: anyFunction(),
   });
 
-  rerender({ isHorizontal: false });
-  expect(result.current).toEqual({
-    role: "tablist",
-    "aria-orientation": "vertical",
+  expect(result.current[1]).toEqual({
+    isHorizontal: true,
+    selectIndex: 0,
+    setSelectIndex: anyFunction(),
+    activeIndex: 0,
+    setActiveIndex: anyFunction(),
+    focusStrategy: anyObject(),
+    tabPanelsRef: anyObject(),
+    tabsRef: anyObject(),
+    activeThenSelect: true,
   });
 });

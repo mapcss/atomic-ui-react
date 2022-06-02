@@ -1,46 +1,59 @@
 // This module is browser compatible.
 
-import { cloneElement, ReactElement, useContext } from "react";
-import { isFunction } from "../deps.ts";
 import {
-  DisabledIdsContext,
-  IdContext,
-  IndexContext,
-  TabPanelCountContext,
-} from "./context.ts";
+  ReactElement,
+  RefAttributes,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import { CommonContextsContext, IdContext } from "./context.ts";
+import { joinChars } from "../util.ts";
 import { ERROR_MSG } from "./constant.ts";
-import useTabPanel, { Attributes, Contexts } from "./use_tab_panel.ts";
+import useTabPanel, { Returns } from "./use_tab_panel.ts";
+import useId from "../hooks/use_id.ts";
 
 export type Props = {
-  children:
-    | ReactElement
-    | ((attributes: Attributes, contexts: Contexts) => ReactElement);
+  children: (
+    // deno-lint-ignore no-explicit-any
+    attributes: Returns[0] & RefAttributes<any>,
+    contexts: Returns[1],
+  ) => ReactElement;
 };
 
 export default function WithTabPanel(
-  { children }: Props,
+  { children }: Readonly<Props>,
 ): JSX.Element {
-  const id = useContext(IdContext);
-  const tabPanelCount = useContext(TabPanelCountContext);
-  const indexStateSet = useContext(IndexContext);
-  const disabledIds = useContext(DisabledIdsContext);
+  const groupId = useContext(IdContext);
+  const commonContexts = useContext(CommonContextsContext);
 
-  if (!id || !indexStateSet || !tabPanelCount) {
+  if (!groupId || !commonContexts) {
     throw Error(ERROR_MSG);
   }
-  const [selectedIndex] = indexStateSet;
-  const index = tabPanelCount.next;
+
+  const ref = useRef<Element>(null);
+  useEffect(() => {
+    commonContexts.tabPanelsRef.current.push(ref);
+  }, []);
+
+  const prefix = useMemo<string>(
+    () => joinChars([groupId, "tab", "panel"], "-")!,
+    [groupId],
+  );
+  const { id, index } = useId({ prefix });
+
+  const tabId = useMemo<string>(
+    () => joinChars([groupId, "tab", index], "-")!,
+    [groupId],
+  );
 
   const [attributes, contexts] = useTabPanel({
     id,
     index,
-    disabledIds,
-    selectedIndex,
+    tabId,
+    ...commonContexts,
   });
 
-  if (isFunction(children)) {
-    return children(attributes, contexts);
-  }
-
-  return cloneElement(children, attributes);
+  return children({ ref, ...attributes }, contexts);
 }
