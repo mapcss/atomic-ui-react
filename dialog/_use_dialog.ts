@@ -1,36 +1,52 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, useCallback, useMemo } from "react";
-import { VFn } from "../deps.ts";
-import useFocusCallback, {
-  ReturnValue as UseFocusCallbackReturnValue,
-  Targets,
-} from "../hooks/use_focus_callback.ts";
-import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
-import useEventListener from "../hooks/use_event_listener.ts";
-import useFocus, { Target } from "../hooks/use_focus.ts";
-import { KeyEntries, trueOr } from "../util.ts";
+import { AllHTMLAttributes, useCallback, useEffect, useMemo } from "react";
+import {
+  getFirstFocusable,
+  getNextFocusable,
+  getPreviousFocusable,
+} from "../util.ts";
+import { IsShowProps } from "./types.ts";
+import {
+  AllAttributesWith,
+  useAttributesWith,
+  useEventListener,
+  useKeyboardEventHandler,
+  useUpdateEffect,
+} from "../hooks/mod.ts";
 
 export type Params = {
-  isShow: boolean;
+  root: () => Element | undefined | null;
 
-  targets: Targets;
-};
+  titleId: string | undefined;
+
+  describeId: string | undefined;
+} & IsShowProps;
+
+export type Contexts = Params;
+
+export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
 
 export type Options = {
   /** Called when the dialog is dismissed */
-  onClose: VFn;
-
-  keyEntries: (contexts: Contexts) => KeyEntries;
+  onChangeShow: (contexts: Contexts) => void;
 
   /** A function for return element that should receive focus first.
    * This function is executed on the client side.
    */
-  initialFocus: Target;
+  initialFocus: () => HTMLElement | SVGElement | null | undefined;
 
-  titleId: string;
+  /** Whether the dialog title is included or not.
+   * If `true`, `aria-labelledby` will be added to attributes.
+   * @default false
+   */
+  hasTitle?: boolean;
 
-  describeId: string;
+  /** Whether the dialog describe is included or not.
+   * If `true`, `aria-describedby` will be added to attributes.
+   * @default false
+   */
+  hasDescribe?: boolean;
 };
 
 export type Attributes = Pick<
@@ -38,87 +54,107 @@ export type Attributes = Pick<
   "role" | "aria-modal" | "aria-labelledby" | "aria-describedby" | "hidden"
 >;
 
-export type Contexts = UseFocusCallbackReturnValue & {
-  /** Call `onClose` callback */
-  close?: VFn;
-};
 export type Returns = [Attributes, Contexts];
 
-function defaultKeyEntries(
-  { focusNext, focusPrev, close }: Contexts,
-): KeyEntries {
-  return [
-    [{ code: "Tab", shiftKey: true }, (ev) => {
-      ev.preventDefault();
-      focusPrev();
-    }],
-    ["Tab", (ev) => {
-      ev.preventDefault();
-      focusNext();
-    }],
-    ["Escape", (ev) => {
-      ev.preventDefault();
-      close?.();
-    }],
-  ];
-}
-
 export function defineUseDialog(role: "dialog" | "alertdialog") {
-  return ({ isShow, targets }: Readonly<Params>, {
-    onClose,
-    keyEntries = defaultKeyEntries,
-    initialFocus: _initialFocus,
-    titleId,
-    describeId,
-  }: Readonly<
-    Partial<Options>
-  > = {}): Returns => {
-    const defaultInitialFocus = useCallback<Target>(() => {
-      const els = targets();
-      return Array.from(els)[0];
-    }, [targets]);
-    const initialFocus = _initialFocus ?? defaultInitialFocus;
+  const useDialog = (
+    { isShow, setIsShow, root, titleId: _titleId, describeId: _describeId }:
+      Params,
+    {
+      onChangeShow,
+      initialFocus: _initialFocus,
+      hasDescribe = false,
+      hasTitle = false,
+    }: Readonly<Partial<Options>> = {},
+  ): Returns => {
+    const target = useCallback<() => Document>(() => document, []);
 
-    const { focusFirst, focusLast, focusNext, focusPrev } = useFocusCallback(
-      targets,
+    const initialFocus = useMemo(() => {
+      if (_initialFocus) return _initialFocus;
+
+      return () => {
+        const _root = root();
+        const el = getFirstFocusable(_root);
+        return el;
+      };
+    }, [_initialFocus]);
+
+    useEffect(() => {
+      const el = initialFocus();
+      if (!isShow) return;
+      el?.focus();
+    }, [isShow]);
+
+    useUpdateEffect(() => {
+      onChangeShow?.(contexts);
+    }, [isShow]);
+
+    const keyboardHandler = useKeyboardEventHandler([
+      [{ code: "Tab", shiftKey: true }, (ev) => {
+        const _root = root();
+        if (_root) {
+          ev.preventDefault();
+          const el = getPreviousFocusable(_root);
+          el?.focus();
+        }
+      }],
+      ["Tab", (ev) => {
+        const _root = root();
+        if (_root) {
+          ev.preventDefault();
+          const el = getNextFocusable(_root);
+          el?.focus();
+        }
+      }],
+      [
+        "Escape",
+        (ev) => {
+          ev.preventDefault();
+          setIsShow(false);
+        },
+      ],
+    ]);
+
+    const titleId = useMemo<string | undefined>(
+      () => hasTitle ? _titleId : undefined,
+      [_titleId, hasTitle],
     );
-    const contexts = useMemo<Contexts>(() => ({
-      focusFirst,
-      focusLast,
-      focusNext,
-      focusPrev,
-      close: onClose,
-    }), [focusFirst, focusLast, focusNext, focusPrev, onClose]);
+    const describeId = useMemo<string | undefined>(
+      () => hasDescribe ? _describeId : undefined,
+      [_describeId, hasDescribe],
+    );
 
-    useFocus(initialFocus, { use: isShow }, [initialFocus, isShow]);
+    const contexts = useMemo<Contexts>(
+      () => ({ titleId, describeId, isShow, setIsShow, root }),
+      [
+        titleId,
+        describeId,
+        isShow,
+        setIsShow,
+        root,
+      ],
+    );
 
-    const attributes = useMemo<Attributes>(() => ({
+    const attributes = useAttributesWith([contexts], {
+      ...defaultAttributes,
       role,
-      "aria-modal": "true",
-      "aria-labelledby": titleId,
-      "aria-describedby": describeId,
-      hidden: trueOr(!isShow),
-    }), [role, titleId, describeId, isShow]);
+    });
 
-    const entries = useMemo<KeyEntries>(() => keyEntries(contexts), [
-      keyEntries,
-    ]);
-    const keyboardHandler = useKeyboardEventHandler(entries);
-
-    const target = useCallback(() => document, []);
-
-    useEventListener({
-      target,
-      event: "keydown",
-      callback: keyboardHandler,
-    }, {
-      use: isShow,
-    }, [
-      target,
-      isShow,
-      keyboardHandler,
-    ]);
+    useEventListener(
+      { target, event: "keydown", callback: keyboardHandler },
+      { use: isShow },
+      [target, isShow, keyboardHandler],
+    );
 
     return [attributes, contexts];
   };
+
+  return useDialog;
 }
+
+const defaultAttributes: Partial<AllAttributesWithContexts> = {
+  "aria-modal": "true",
+  hidden: ({ isShow }) => !isShow,
+  "aria-labelledby": ({ titleId }) => titleId!,
+  "aria-describedby": ({ describeId }) => describeId!,
+};

@@ -1,4 +1,5 @@
 import {
+  anyBoolean,
   anyFunction,
   anyObject,
   anyString,
@@ -11,7 +12,6 @@ import {
 } from "../dev_deps.ts";
 import { ReactElement } from "react";
 import SSRProvider from "../ssr/ssr_provider.ts";
-import DialogProvider from "./dialog_provider.ts";
 import WithDialog from "./with_dialog.ts";
 import { fireEvent, render } from "@testing-library/react";
 
@@ -24,7 +24,7 @@ const describeTests = describe({
 
 it(describeTests, "should render as child", (t) => {
   const { container } = render(
-    <WithDialog isShow>
+    <WithDialog initialIsShow>
       {(attributes) => {
         return <div {...attributes}></div>;
       }}
@@ -32,9 +32,7 @@ it(describeTests, "should render as child", (t) => {
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <DialogProvider>
-            {children as ReactElement}
-          </DialogProvider>
+          {children as ReactElement}
         </SSRProvider>
       ),
     },
@@ -48,15 +46,13 @@ it(
   "should have aria-labelledby attribute when hasTitle is true",
   (t) => {
     const { container } = render(
-      <WithDialog isShow hasTitle>
+      <WithDialog hasTitle initialIsShow>
         {(attrs) => <div {...attrs}></div>}
       </WithDialog>,
       {
         wrapper: ({ children }) => (
           <SSRProvider>
-            <DialogProvider>
-              {children as ReactElement}
-            </DialogProvider>
+            {children as ReactElement}
           </SSRProvider>
         ),
       },
@@ -71,7 +67,7 @@ it(
   "should have aria-describedby attribute when hasDescribe is true",
   (t) => {
     const { container } = render(
-      <WithDialog isShow hasDescribe>
+      <WithDialog hasDescribe initialIsShow>
         {(attrs) => (
           <div {...attrs}>
           </div>
@@ -80,9 +76,7 @@ it(
       {
         wrapper: ({ children }) => (
           <SSRProvider>
-            <DialogProvider>
-              {children as ReactElement}
-            </DialogProvider>
+            {children as ReactElement}
           </SSRProvider>
         ),
       },
@@ -95,7 +89,7 @@ it(
 it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   render(
-    <WithDialog isShow>
+    <WithDialog>
       {(attributes, context) => {
         mockFn(attributes);
         mockFn(context);
@@ -105,9 +99,7 @@ it(describeTests, "should render children as props", (t) => {
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <DialogProvider>
-            {children as ReactElement}
-          </DialogProvider>
+          {children as ReactElement}
         </SSRProvider>
       ),
     },
@@ -119,14 +111,14 @@ it(describeTests, "should render children as props", (t) => {
     "aria-modal": anyString(),
     role: anyString(),
     ref: anyObject(),
-    hidden: undefined,
+    hidden: anyBoolean(),
   });
   expect(mockFn).toHaveBeenCalledWith({
-    focusPrev: anyFunction(),
-    focusNext: anyFunction(),
-    focusFirst: anyFunction(),
-    focusLast: anyFunction(),
-    close: undefined,
+    titleId: undefined,
+    describeId: undefined,
+    isShow: anyBoolean(),
+    setIsShow: anyFunction(),
+    root: anyFunction(),
   });
 });
 
@@ -135,7 +127,7 @@ it(
   "should focus focusable element on fire keyDown event with tab key",
   () => {
     const { getByTestId } = render(
-      <WithDialog isShow>
+      <WithDialog initialIsShow>
         {(attrs) => (
           <div {...attrs}>
             <button data-testid="test1">1</button>
@@ -146,9 +138,7 @@ it(
       {
         wrapper: ({ children }) => (
           <SSRProvider>
-            <DialogProvider>
-              {children as ReactElement}
-            </DialogProvider>
+            {children as ReactElement}
           </SSRProvider>
         ),
       },
@@ -182,15 +172,13 @@ it(
   () => {
     const mockFn = fn();
     render(
-      <WithDialog isShow onClose={mockFn}>
+      <WithDialog initialIsShow onChangeShow={mockFn}>
         {(attrs) => <div {...attrs}></div>}
       </WithDialog>,
       {
         wrapper: ({ children }) => (
           <SSRProvider>
-            <DialogProvider>
-              {children as ReactElement}
-            </DialogProvider>
+            {children as ReactElement}
           </SSRProvider>
         ),
       },

@@ -7,9 +7,7 @@ import {
   it,
   setupJSDOM,
 } from "../dev_deps.ts";
-import SSRProvider from "../ssr/ssr_provider.ts";
 import WithDialogDescribe from "./with_dialog_describe.ts";
-import DialogProvider from "./dialog_provider.ts";
 import { render } from "@testing-library/react";
 
 const describeTests = describe({
@@ -21,18 +19,9 @@ const describeTests = describe({
 
 it(describeTests, "should render as", (t) => {
   const { container } = render(
-    <WithDialogDescribe>
+    <WithDialogDescribe id="dialog-describe">
       {(attributes) => <div {...attributes}></div>}
     </WithDialogDescribe>,
-    {
-      wrapper: ({ children }) => (
-        <SSRProvider>
-          <DialogProvider>
-            {children as never}
-          </DialogProvider>
-        </SSRProvider>
-      ),
-    },
   );
 
   assertSnapshot(t, container.innerHTML);
@@ -41,21 +30,12 @@ it(describeTests, "should render as", (t) => {
 it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   render(
-    <WithDialogDescribe>
+    <WithDialogDescribe id="dialog-describe">
       {(attributes) => {
         mockFn(attributes);
         return <div {...attributes}></div>;
       }}
     </WithDialogDescribe>,
-    {
-      wrapper: ({ children }) => (
-        <SSRProvider>
-          <DialogProvider>
-            {children as never}
-          </DialogProvider>
-        </SSRProvider>
-      ),
-    },
   );
 
   expect(mockFn).toHaveBeenCalledWith({

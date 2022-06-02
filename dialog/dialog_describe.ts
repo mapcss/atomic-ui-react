@@ -1,25 +1,40 @@
-import { createElement, forwardRef as _forwardRef, Ref } from "react";
-import { AsProps, Tag, WithIntrinsicElements } from "../types.ts";
-import { useAs } from "../_shared/hooks.ts";
-import WithDialogDescribe from "./with_dialog_describe.ts";
-import { mergeProps } from "../util.ts";
+import {
+  createElement,
+  forwardRef as _forwardRef,
+  ReactNode,
+  Ref,
+  useContext,
+} from "react";
+import { AsProps, Tag } from "../types.ts";
+import WithDialogDescribe, {
+  Props as WithDialogDescribeProps,
+} from "./with_dialog_describe.ts";
+import { IdsContext } from "./context.ts";
+import { ERROR_MSG } from "./constant.ts";
 
-export type Props<As extends Tag> = WithIntrinsicElements<AsProps<As>, As>;
+export type Props<As extends Tag> =
+  & AsProps<As>
+  & Omit<WithDialogDescribeProps, "id" | "children">
+  & {
+    children?: ReactNode;
+  };
 
 function _DialogDescribe<As extends Tag = "p">(
   {
-    as,
-    ..._props
+    as = "p" as As,
+    children,
   }: Props<As>,
-  _: Ref<Element>,
-): JSX.Element {
-  return WithDialogDescribe({
-    children: (attrs) => {
-      const tag = useAs(as, "p");
+  ref: Ref<Element>,
+): JSX.Element | never {
+  const ids = useContext(IdsContext);
+  if (!ids) throw Error(ERROR_MSG);
 
-      const props = mergeProps(attrs, _props);
-      return createElement(tag, props);
+  const { describeId: id } = ids;
+  return WithDialogDescribe({
+    children: (attributes) => {
+      return createElement(as, { ref, ...attributes }, children);
     },
+    id,
   });
 }
 

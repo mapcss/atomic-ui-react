@@ -4,20 +4,15 @@ import {
   ReactElement,
   RefAttributes,
   useCallback,
-  useContext,
   useMemo,
+  useRef,
 } from "react";
-import { filterFocusable } from "../_shared/util.ts";
-import useMergedRef from "../hooks/use_merged_ref.ts";
-import useDialog, {
-  Attributes,
-  Contexts,
-  Options,
-  Params,
-} from "./use_dialog.ts";
-import { Targets } from "../hooks/use_focus_callback.ts";
-import { IdsContext } from "./context.ts";
-import { ERROR_MSG } from "./constant.ts";
+import useDialog, { Attributes, Contexts, Options } from "./use_dialog.ts";
+import { Exclusive } from "../util.ts";
+import { IsShowProps } from "./types.ts";
+import useExclusiveState from "../_shared/use_exclusive_state.ts";
+import useId from "../hooks/use_id.ts";
+import { joinChars } from "../util.ts";
 
 export type Props =
   & {
@@ -26,67 +21,62 @@ export type Props =
       attributes: Attributes & RefAttributes<any>,
       contexts: Contexts,
     ) => ReactElement;
-
-    /** Whether the dialog title is included or not.
-     * If `true`, `aria-labelledby` will be added to attributes.
-     * @default false
-     */
-    hasTitle?: boolean;
-
-    /** Whether the dialog describe is included or not.
-     * If `true`, `aria-describedby` will be added to attributes.
-     * @default false
-     */
-    hasDescribe?: boolean;
   }
-  & Pick<Params, "isShow">
-  & Partial<Omit<Options, "titleId" | "describeId">>;
+  & Exclusive<IsShowProps, {
+    /**
+     * @default false
+     */
+    initialIsShow?: boolean;
+  }>
+  & Partial<Options>;
 
 export default function defineWithDialog(useHook: typeof useDialog) {
-  return ({
+  const withDialog = ({
     children,
     isShow,
-    keyEntries,
+    hasTitle,
+    hasDescribe,
+    setIsShow,
+    initialIsShow = false,
+    onChangeShow,
     initialFocus,
-    onClose,
-    hasTitle = false,
-    hasDescribe = false,
-  }: Readonly<
-    Props
-  >): JSX.Element | never => {
-    const ids = useContext(IdsContext);
-
-    if (!ids) throw Error(ERROR_MSG);
-
-    const { titleId: _titleId, describeId: _describeId } = ids;
-
-    const targets = useCallback<Targets>(
-      () => filterFocusable(getRef.current),
-      [],
+  }: Readonly<Props>): JSX.Element => {
+    const { id } = useId();
+    const titleId = useMemo<string>(
+      () => joinChars([id, "dialog", "title"], "-")!,
+      [id],
+    );
+    const describeId = useMemo<string>(
+      () => joinChars([id, "dialog", "describe"], "-")!,
+      [id],
     );
 
-    const titleId = useMemo<string | undefined>(
-      () => hasTitle ? _titleId : undefined,
-      [_titleId, hasTitle],
-    );
-
-    const describeId = useMemo<string | undefined>(
-      () => hasDescribe ? _describeId : undefined,
-      [_describeId, hasDescribe],
-    );
-
-    const [attributes, contexts] = useHook({ isShow, targets }, {
-      onClose,
-      keyEntries,
-      initialFocus,
-      titleId,
-      describeId,
+    const isShowStates = useExclusiveState({
+      initialState: initialIsShow,
+      state: isShow,
+      setState: setIsShow,
     });
 
-    const [getRef, ref] = useMergedRef<HTMLElement | SVGElement>(children);
+    const ref = useRef<Element>(null);
+
+    const root = useCallback<() => Element | null>(() => ref.current, []);
+
+    const [attributes, contexts] = useHook({
+      isShow: isShowStates[0],
+      setIsShow: isShowStates[1],
+      root,
+      titleId,
+      describeId,
+    }, {
+      onChangeShow,
+      initialFocus,
+      hasTitle,
+      hasDescribe,
+    });
 
     const child = children({ ref, ...attributes }, contexts);
 
     return child;
   };
+  return withDialog;
 }

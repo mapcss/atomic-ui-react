@@ -1,22 +1,17 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, ReactElement, useContext } from "react";
-import { IdsContext } from "./context.ts";
-import { ERROR_MSG } from "./constant.ts";
+import { AllHTMLAttributes, ReactElement } from "react";
 
 export type Attributes = Pick<AllHTMLAttributes<Element>, "id">;
 
 export type Props = {
   children: (attributes: Attributes) => ReactElement;
+
+  id: string | undefined;
 };
 
 export default function WithDialogTitle(
-  { children }: Readonly<Props>,
-): JSX.Element | never {
-  const ids = useContext(IdsContext);
-
-  if (!ids) throw Error(ERROR_MSG);
-  const { titleId } = ids;
-
-  return children({ id: titleId });
+  { children, id }: Readonly<Props>,
+): JSX.Element {
+  return children({ id });
 }

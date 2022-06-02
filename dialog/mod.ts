@@ -1,7 +1,5 @@
 // This module is browser compatible.
 
-export { default as DialogProvider } from "./dialog_provider.ts";
-export type { Props as DialogProviderProps } from "./dialog_provider.ts";
 export { default as WithDialogTitle } from "./with_dialog_title.ts";
 export type { Props as WithDialogTitleProps } from "./with_dialog_title.ts";
 export { default as WithDialog } from "./with_dialog.ts";

@@ -1,9 +1,9 @@
 export const snapshot = {};
 
-snapshot[`Dialog > should render as default 1`] = `'<div role="dialog" aria-modal="true" hidden=""></div>'`;
+snapshot[`Dialog > should render as default 1`] = `'<div aria-modal="true" hidden="" role="dialog"></div>'`;
 
-snapshot[`Dialog > should render as default 2`] = `'<div role="dialog" aria-modal="true"></div>'`;
+snapshot[`Dialog > should render as default 2`] = `'<div aria-modal="true" role="dialog"></div>'`;
 
-snapshot[`Dialog > should render as custom tag 1`] = `'<dialog role="dialog" aria-modal="true"></dialog>'`;
+snapshot[`Dialog > should render as custom tag 1`] = `'<dialog aria-modal="true" role="dialog"></dialog>'`;
 
-snapshot[`Dialog > should render as custom tag 2`] = `'<span role="dialog" aria-modal="true"></span>'`;
+snapshot[`Dialog > should render as custom tag 2`] = `'<span aria-modal="true" role="dialog"></span>'`;
