@@ -61,6 +61,11 @@ it(
   describeTests,
   "should render as when fire keydown event as default",
   (t) => {
+    Object.defineProperty(window, "IntersectionObserver", {
+      value: {},
+      configurable: true,
+    });
+
     const { container, getByTestId } = render(
       <WithToolbar>
         {(attributes) => {
