@@ -4,11 +4,10 @@ import useAttributesWith, {
   AllAttributesWith,
   AttributesHandler,
 } from "../hooks/use_attributes_with.ts";
-import { mappingKey } from "../util.ts";
+import { mappingKey, next, prev } from "../util.ts";
 import { FocusStrategyProps } from "../focus/types.ts";
 import useFocusStrategy from "../focus/use_focus_strategy.ts";
 import ActiveDescendant from "../focus/active_descendant.ts";
-import { next, prev } from "../hooks/use_range_counter.ts";
 import useUpdateEffect from "../hooks/use_update_effect.ts";
 
 export type AllAttributesWithContexts = AllAttributesWith<[CommonContexts]>;
@@ -87,19 +86,13 @@ const defaultOnKeyDown: AttributesHandler<
     (ev) => {
       ev.preventDefault();
       const count = childrenRef.current.length - 1;
-      const featureIndex = prev({
-        current: activeIndex,
-        max: count,
-      });
+      const featureIndex = prev(activeIndex, count);
       setActiveIndex(featureIndex);
     },
   ], ["ArrowDown", (ev) => {
     ev.preventDefault();
     const count = childrenRef.current.length - 1;
-    const featureIndex = next({
-      current: activeIndex,
-      max: count,
-    });
+    const featureIndex = next(activeIndex, count);
     setActiveIndex(featureIndex);
   }]]);
 

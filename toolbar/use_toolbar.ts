@@ -3,8 +3,7 @@ import useAttributesWith, {
   AllAttributesWith,
   AttributesHandler,
 } from "../hooks/use_attributes_with.ts";
-import { first, last, next, prev } from "../hooks/use_range_counter.ts";
-import { mappingKey } from "../util.ts";
+import { first, last, mappingKey, next, prev } from "../util.ts";
 import { CommonContexts } from "./types.ts";
 import useFocusStrategy from "../focus/use_focus_strategy.ts";
 import RovingTabIndex from "../focus/roving_tabindex.ts";
@@ -66,28 +65,28 @@ const defaultOnKeyDown: AttributesHandler<[CommonContexts], "onKeyDown"> = (
       const count = itemsRef.current.length - 1;
 
       ev.preventDefault();
-      const featureIndex = prev({ current: activeIndex, max: count });
+      const featureIndex = prev(activeIndex, count);
       setActiveIndex(featureIndex);
     }],
     ["ArrowRight", (ev) => {
       const count = itemsRef.current.length - 1;
 
       ev.preventDefault();
-      const featureIndex = next({ current: activeIndex, max: count });
+      const featureIndex = next(activeIndex, count);
       setActiveIndex(featureIndex);
     }],
     ["Home", (ev) => {
       const count = itemsRef.current.length - 1;
 
       ev.preventDefault();
-      const featureIndex = first({ current: activeIndex, max: count });
+      const featureIndex = first(activeIndex, count);
       setActiveIndex(featureIndex);
     }],
     ["End", (ev) => {
       const count = itemsRef.current.length - 1;
 
       ev.preventDefault();
-      const featureIndex = last({ current: activeIndex, max: count });
+      const featureIndex = last(activeIndex, count);
       setActiveIndex(featureIndex);
     }],
   ]);
