@@ -1,73 +1,26 @@
 // This module is browser compatible.
 
-import {
-  cloneElement,
-  ReactElement,
-  useCallback,
-  useContext,
-  useMemo,
-} from "react";
-import { isFunction } from "../deps.ts";
-import { current, filterTruthy } from "../util.ts";
-import {
-  IdContext,
-  IndexContext,
-  PanelCountContext,
-  RefsContext,
-} from "./context.ts";
-import useAccordionPanel, {
-  Attributes,
-  Contexts,
-  Params,
-} from "./use_accordion_panel.ts";
-import { Targets } from "../hooks/use_focus_callback.ts";
-import { ERROR_MSG } from "./constant.ts";
+import { ReactElement } from "react";
+
+import useAccordionPanel, { Params, Returns } from "./use_accordion_panel.ts";
 
 export type Props = {
-  children:
-    | ReactElement
-    | ((attributes: Attributes, contexts: Contexts & Params) => ReactElement);
-};
+  children: (
+    attributes: Returns[0],
+    contexts: Returns[1],
+  ) => ReactElement;
+} & Params;
 
-export default function WithAccordionPanel({ children }: Props): JSX.Element {
-  const id = useContext(IdContext);
-  const tempId = useContext(
-    PanelCountContext,
-  );
-  const selectedIndexStateSet = useContext(IndexContext);
-  const refs = useContext(RefsContext);
-
-  if (!id || !tempId || !selectedIndexStateSet) throw Error(ERROR_MSG);
-
-  const index = tempId.next;
-  const [selectedIndex] = selectedIndexStateSet;
-  const isOpen = useMemo<boolean>(() => index === selectedIndex, [
-    index,
-    selectedIndex,
-  ]);
-
-  const targets = useCallback<Targets>(
-    () => filterTruthy(refs.map(current)),
-    [],
-  );
-
-  const params: Params = {
-    id,
-    index,
-    targets,
-    isOpen,
-  };
-
+export default function WithAccordionPanel(
+  { children, id, index, openIndex, setOpenIndex, headerId }: Props,
+): JSX.Element {
   const [attributes, contexts] = useAccordionPanel({
     id,
     index,
-    targets,
-    isOpen,
+    openIndex,
+    setOpenIndex,
+    headerId,
   });
 
-  const child = isFunction(children)
-    ? children(attributes, { ...contexts, ...params })
-    : cloneElement(children, attributes);
-
-  return child;
+  return children(attributes, contexts);
 }

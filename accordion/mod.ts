@@ -15,13 +15,11 @@ export { default as useAccordionHeader } from "./use_accordion_header.ts";
 export type {
   Attributes as UseAccordionHeaderAttributes,
   Contexts as UseAccordionHeaderContexts,
-  Options as UseAccordionHeaderOptions,
   Params as UseAccordionHeaderParams,
   Returns as UseAccordionHeaderReturns,
 } from "./use_accordion_header.ts";
 export { default as useAccordionPanel } from "./use_accordion_panel.ts";
 export type {
-  Attributes as UseAccordionPanelAttributes,
   Contexts as UseAccordionPanelContexts,
   Params as UseAccordionPanelParams,
   Returns as UseAccordionPanelReturns,

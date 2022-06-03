@@ -1,41 +1,64 @@
 import {
-  AllHTMLAttributes,
   createElement,
   forwardRef as _forwardRef,
+  ReactNode,
   Ref,
+  useContext,
   useMemo,
 } from "react";
 import WithAccordionPanel from "./with_accordion_panel.ts";
-import { useAs } from "../_shared/hooks.ts";
-import { mergeProps } from "../util.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
-import { Contexts } from "./use_accordion_panel.ts";
+import { CommonContextsContext, IdContext } from "./context.ts";
+import { joinChars } from "../util.ts";
+import { useId } from "../hooks/mod.ts";
 
 type _Props<As extends Tag> = {
+  /**
+   * @default `div`
+   */
   as?: As;
 
-  renderAttributes?: (contexts: Contexts) => AllHTMLAttributes<Element>;
+  children?: ReactNode;
 };
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _AccordionPanel<As extends Tag>(
-  { as, renderAttributes, ...props }: Readonly<Props<As>>,
+  { as = "div" as As, children }: Readonly<Props<As>>,
   ref: Ref<Element>,
 ): JSX.Element {
-  return WithAccordionPanel({
-    children: (attrs, contexts) => {
-      const tag = useAs(as, "div");
-      const attributes = useMemo<AllHTMLAttributes<Element>>(
-        () => renderAttributes?.(contexts) ?? {},
-        [renderAttributes, JSON.stringify(contexts)],
-      );
+  const groupId = useContext(IdContext);
+  const commonContexts = useContext(CommonContextsContext);
 
-      return createElement(tag, {
+  if (!groupId || !commonContexts) throw Error();
+
+  const prefix = useMemo<string>(
+    () => joinChars([groupId, "accordion", "panel"], "-")!,
+    [groupId],
+  );
+
+  const { id, index } = useId({
+    prefix,
+  });
+
+  const headerId = useMemo<string>(
+    () => joinChars([groupId, "accordion", "header", index], "-")!,
+    [groupId, index],
+  );
+  const { openIndex, setOpenIndex } = commonContexts;
+
+  return WithAccordionPanel({
+    children: (attrs) => {
+      return createElement(as, {
         ref,
-        ...mergeProps(attrs, mergeProps(props, attributes)),
-      });
+        ...attrs,
+      }, children);
     },
+    id,
+    index,
+    headerId,
+    openIndex,
+    setOpenIndex,
   });
 }
 

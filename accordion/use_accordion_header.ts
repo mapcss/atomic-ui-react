@@ -1,127 +1,83 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, useMemo } from "react";
-import { joinChars, KeyEntries } from "../util.ts";
-import { VFn } from "../deps.ts";
-import useFocusCallback, {
-  ReturnValue as UseFocusCallbackReturnValue,
-  Targets,
-} from "../hooks/use_focus_callback.ts";
-import { AllHandlerWithoutKeyBoard, KeyboardHandler } from "../types.ts";
-import useKeyboardEventHandler from "../hooks/use_keyboard_event_handler.ts";
-import { useEventHandler, usePreventDefault } from "../_shared/hooks.ts";
+import { AllHTMLAttributes, KeyboardEvent, useMemo } from "react";
+import { OpenIndexProps } from "./types.ts";
+import {
+  AllAttributesWith,
+  useAttributesWith,
+  UseIdReturns,
+} from "../hooks/mod.ts";
+import { mappingKey } from "../util.ts";
 
-export type Params = {
-  isOpen: boolean;
-  id: string;
-  index: number;
-  targets: Targets;
-  open: VFn;
-};
+export type Params =
+  & {
+    panelId: string | undefined;
+  }
+  & OpenIndexProps
+  & UseIdReturns;
 
-export type Options = {
-  on: Iterable<AllHandlerWithoutKeyBoard>;
+export type Contexts = { isOpen: boolean } & Params;
 
-  onKey: Iterable<KeyboardHandler>;
-
-  keyEntries: (contexts: Contexts) => KeyEntries;
-};
+export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
 
 export type Attributes = Pick<
   AllHTMLAttributes<Element>,
   "aria-expanded" | "aria-controls" | "id" | "tabIndex"
 >;
 
-export type Contexts =
-  & {
-    headerId: string;
-
-    panelId: string;
-  }
-  & UseFocusCallbackReturnValue
-  & Params;
-
 export type Returns = [Attributes, Contexts];
 
 export default function useAccordionHeader(
-  { isOpen, id, index, targets, open }: Readonly<Params>,
-  { on = ["onClick"], onKey = ["onKeyDown"], keyEntries = defaultKeyEntries }:
-    Readonly<
-      Partial<Options>
-    > = {},
+  { openIndex, setOpenIndex, id, index, panelId }: Readonly<Params>,
 ): Returns {
-  const headerId = useMemo<string>(
-    () => joinChars([id, "accordion", "header", index], "-")!,
-    [id, index],
-  );
-  const panelId = useMemo<string>(
-    () => joinChars([id, "accordion", "panel", index], "-")!,
-    [id, index],
-  );
-
-  const { focusFirst, focusLast, focusNext, focusPrev } = useFocusCallback(
-    targets,
-  );
-
+  const isOpen = useMemo<boolean>(() => index === openIndex, [
+    index,
+    openIndex,
+  ]);
   const contexts = useMemo<Contexts>(
     () => ({
-      focusFirst,
-      focusLast,
-      focusNext,
-      focusPrev,
-      headerId,
-      panelId,
-      isOpen,
+      openIndex,
+      setOpenIndex,
       id,
       index,
-      targets,
-      open,
+      panelId,
+      isOpen,
     }),
     [
-      focusFirst,
-      focusLast,
-      focusNext,
-      focusPrev,
-      headerId,
-      panelId,
-      isOpen,
+      openIndex,
+      setOpenIndex,
       id,
       index,
-      targets,
-      open,
+      panelId,
+      isOpen,
     ],
   );
 
-  const entries = useMemo<KeyEntries>(() => keyEntries(contexts), [
-    keyEntries,
-    JSON.stringify(contexts),
-  ]);
-  const beforeAll = usePreventDefault();
-  const keyboardHandler = useKeyboardEventHandler(entries, { beforeAll });
-  const handlers = useEventHandler(on, open);
-  const keyboardHandlers = useEventHandler(onKey, keyboardHandler);
-
-  const attributes = useMemo<Attributes>(() => ({
-    "aria-expanded": isOpen,
-    "aria-controls": panelId,
-    id: headerId,
-    tabIndex: 0,
-    ...handlers,
-    ...keyboardHandlers,
-  }), [isOpen, panelId, headerId, handlers, keyboardHandlers]);
+  const attributes = useAttributesWith([contexts], {
+    ...defaultAttributes,
+  });
 
   return [attributes, contexts];
 }
 
-function defaultKeyEntries(
-  { focusFirst, focusLast, focusNext, focusPrev, open }: Contexts,
-): KeyEntries {
-  return [
-    ["ArrowUp", focusPrev],
-    ["ArrowDown", focusNext],
-    ["Enter", open],
-    ["Space", open],
-    ["Home", focusFirst],
-    ["End", focusLast],
-  ];
-}
+const defaultAttributes: Partial<AllAttributesWithContexts> = {
+  "aria-expanded": ({ isOpen }) => isOpen,
+  "aria-controls": ({ panelId }) => panelId!,
+  id: ({ id }) => id,
+  tabIndex: 0,
+  onClick: (_, { setOpenIndex, index }) => {
+    setOpenIndex(index);
+  },
+  onKeyDown: (ev, { setOpenIndex, index }) => {
+    const open = (): void => {
+      ev.preventDefault();
+      setOpenIndex(index);
+    };
+    const runner = mappingKey<KeyboardEvent>([
+      ["Space", open],
+      ["Enter", open],
+    ]);
+
+    runner(ev);
+  },
+};
