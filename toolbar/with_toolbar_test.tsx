@@ -9,6 +9,7 @@ import {
   expect,
   fn,
   it,
+  setupIntersectionObserver,
   setupJSDOM,
 } from "../dev_deps.ts";
 import { fireEvent, render } from "@testing-library/react";
@@ -19,11 +20,13 @@ const describeTests = describe({
   name: "WithToolbar",
   async beforeEach() {
     await setupJSDOM();
+    setupIntersectionObserver();
   },
 });
 
 it(describeTests, "should render as", (t) => {
   const mockFn = fn();
+
   const { container } = render(
     <WithToolbar>
       {(attributes, contexts) => {
@@ -61,11 +64,6 @@ it(
   describeTests,
   "should render as when fire keydown event as default",
   (t) => {
-    Object.defineProperty(window, "IntersectionObserver", {
-      value: {},
-      configurable: true,
-    });
-
     const { container, getByTestId } = render(
       <WithToolbar>
         {(attributes) => {

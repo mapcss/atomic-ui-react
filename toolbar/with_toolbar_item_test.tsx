@@ -6,6 +6,7 @@ import {
   describe,
   expect,
   it,
+  setupIntersectionObserver,
   setupJSDOM,
 } from "../dev_deps.ts";
 import { fireEvent, render } from "@testing-library/react";
@@ -15,6 +16,7 @@ const describeTests = describe({
   name: "WithToolbarItem",
   async beforeEach() {
     await setupJSDOM();
+    setupIntersectionObserver();
   },
 });
 
