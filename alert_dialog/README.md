@@ -19,7 +19,7 @@ import {
 import { useCallback, useState } from "react";
 export default () => {
   const [isShow, setIsShow] = useState(false);
-  const close = useCallback(() => setIsShow(false));
+  const close = useCallback(() => setIsShow(false), []);
   return (
     <AlertDialog
       isShow={isShow}
