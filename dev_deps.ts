@@ -31,6 +31,7 @@ export async function setupJSDOM(): Promise<void> {
   globalThis.document = doc.window.document;
   globalThis.HTMLIFrameElement = doc.window.HTMLIFrameElement;
   globalThis.HTMLElement = doc.window.HTMLElement;
+  globalThis.SVGElement = doc.window.SVGElement;
 
   globalThis.Node = doc.window.Node;
 }

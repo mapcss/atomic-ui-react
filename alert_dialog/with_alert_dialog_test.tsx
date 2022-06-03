@@ -1,4 +1,5 @@
 import {
+  anyBoolean,
   anyFunction,
   anyObject,
   anyString,
@@ -11,7 +12,6 @@ import {
 } from "../dev_deps.ts";
 import { ReactElement } from "react";
 import SSRProvider from "../ssr/ssr_provider.ts";
-import DialogProvider from "../dialog/dialog_provider.ts";
 import WithAlertDialog from "./with_alert_dialog.ts";
 import { render } from "@testing-library/react";
 
@@ -24,15 +24,13 @@ const describeTests = describe({
 
 it(describeTests, "should render as", (t) => {
   const { container } = render(
-    <WithAlertDialog isShow>
+    <WithAlertDialog initialIsShow>
       {(attributes) => <div {...attributes} />}
     </WithAlertDialog>,
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <DialogProvider>
-            {children as ReactElement}
-          </DialogProvider>
+          {children as ReactElement}
         </SSRProvider>
       ),
     },
@@ -44,7 +42,7 @@ it(describeTests, "should render as", (t) => {
 it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   render(
-    <WithAlertDialog isShow>
+    <WithAlertDialog initialIsShow>
       {(attributes, context) => {
         mockFn(attributes);
         mockFn(context);
@@ -54,9 +52,7 @@ it(describeTests, "should render children as props", (t) => {
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <DialogProvider>
-            {children as ReactElement}
-          </DialogProvider>
+          {children as ReactElement}
         </SSRProvider>
       ),
     },
@@ -68,13 +64,13 @@ it(describeTests, "should render children as props", (t) => {
     "aria-modal": anyString(),
     role: anyString(),
     ref: anyObject(),
-    hidden: undefined,
+    hidden: anyBoolean(),
   });
   expect(mockFn).toHaveBeenCalledWith({
-    focusPrev: anyFunction(),
-    focusNext: anyFunction(),
-    focusFirst: anyFunction(),
-    focusLast: anyFunction(),
-    close: undefined,
+    titleId: undefined,
+    describeId: undefined,
+    isShow: anyBoolean(),
+    setIsShow: anyFunction(),
+    root: anyFunction(),
   });
 });
