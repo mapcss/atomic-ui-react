@@ -2,10 +2,14 @@ import {
   cleanCharacter,
   cleanTokens,
   equal,
+  first,
   isBrowser,
   joinChars,
+  last,
   mergeProps,
+  next,
   omitRef,
+  prev,
   tokenize,
 } from "./util.ts";
 import {
@@ -285,4 +289,72 @@ Deno.test("equal should treat cycle reference safety", () => {
   objB.prop = objB;
 
   expect(equal(objA, objB)).toBe(true);
+});
+
+Deno.test("prev", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 2, 2],
+    [1, 0, 0],
+    [1, 1, 0],
+    [1, 2, 0],
+    [2, 0, 0],
+    [2, 1, 1],
+    [2, 2, 1],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(prev(current, max)).toBe(result)
+  );
+});
+
+Deno.test("next", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 2, 1],
+    [1, 0, 0],
+    [1, 1, 0],
+    [1, 2, 2],
+    [2, 0, 0],
+    [2, 1, 0],
+    [2, 2, 0],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(next(current, max)).toBe(result)
+  );
+});
+
+Deno.test("first", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 2, 0],
+    [1, 0, 0],
+    [1, 1, 0],
+    [1, 2, 0],
+    [2, 0, 0],
+    [2, 1, 0],
+    [2, 2, 0],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(first(current, max)).toBe(result)
+  );
+});
+
+Deno.test("last", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 2, 2],
+    [1, 0, 0],
+    [1, 1, 1],
+    [1, 2, 2],
+    [2, 0, 0],
+    [2, 1, 1],
+    [2, 2, 2],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(last(current, max)).toBe(result)
+  );
 });
