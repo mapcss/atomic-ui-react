@@ -1,3 +1,21 @@
+# [1.0.0-beta.48](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.47...1.0.0-beta.48) (2022-06-03)
+
+
+### Features
+
+* **alert:** change `useAlert` interface to accept all attributes with contexts ([1d1ce5e](https://github.com/mapcss/atomic-ui-react/commit/1d1ce5e927cf009762b8849fd041a4373f67844f))
+* **dialog:** change dialog interface, remove `DialogProvider` ([33f9237](https://github.com/mapcss/atomic-ui-react/commit/33f9237bd1a3fc7b2bb8ab642404bef43d6836e7))
+* **focus:** add scroll into view if needed and use it ([10d9676](https://github.com/mapcss/atomic-ui-react/commit/10d96761983b5eaab15b7ee8a91b4f5b7df8d750))
+* **focus:** add to manage focus strategy ([e5b0916](https://github.com/mapcss/atomic-ui-react/commit/e5b09169a27309760bb886cb0d4cef3d964b37a7))
+* **hooks:** rename `useAttributesWithContext` to `useAttributesWith`, change args interface ([ff4cc54](https://github.com/mapcss/atomic-ui-react/commit/ff4cc54cfdc1a1bbae3d1de57c92b43c84c2a290))
+* **listbox:** change listbox interface, remove `ListboxProvider` ([6d0e85f](https://github.com/mapcss/atomic-ui-react/commit/6d0e85f9877b28ee01913bba607daa0fbd6095e4))
+* **switch:** change `useSwitch` interface ([b62fad0](https://github.com/mapcss/atomic-ui-react/commit/b62fad03d617366ad224931f589d22d6f4269fa6))
+* **switch:** change `useSwitch` interface, add `onChangeIsChecked` types ([cefccd6](https://github.com/mapcss/atomic-ui-react/commit/cefccd69caee46d33cf1f51b34d8de11a4847447))
+* **switch:** rename `onValueChange` to `setIsChecked` ([009805a](https://github.com/mapcss/atomic-ui-react/commit/009805a4cd2aff6eeb03796e25c381b381d884d0))
+* **tab:** change hooks and with component interface ([c2734cf](https://github.com/mapcss/atomic-ui-react/commit/c2734cfdbe47c785eb0031b3f134e90df90724d4))
+* **toolbar:** change to attach onKeyDown to actual toolbar, change attributes props interface ([ebc0e47](https://github.com/mapcss/atomic-ui-react/commit/ebc0e4765ec26a1e1945ed9c46fe9d496882182e))
+* **toolbar:** use focus storategy to switch roving tab index or active descendant ([83f8f18](https://github.com/mapcss/atomic-ui-react/commit/83f8f1880c4d3182ce88de3fae087d63994ea485))
+
 # [1.0.0-beta.47](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.46...1.0.0-beta.47) (2022-05-29)
 
 
