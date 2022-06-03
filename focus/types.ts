@@ -21,3 +21,10 @@ export type FocusStrategy = {
 export type FocusStrategyProps = {
   focusStrategy: FocusStrategy;
 };
+
+export type ActiveThenSelectProps = {
+  /** Whether to select after active.
+   * @default true
+   */
+  activeThenSelect: boolean;
+};

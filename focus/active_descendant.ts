@@ -1,6 +1,7 @@
 import { FocusStrategy } from "./types.ts";
+import scrollIntoViewIfNeeded from "./scroll_into_view_if_needed.ts";
 
-const RovingTabIndex: FocusStrategy = {
+const ActiveDescendant: FocusStrategy = {
   child: {
     attrs: ({ id }) => {
       return { id, tabIndex: -1 };
@@ -14,7 +15,12 @@ const RovingTabIndex: FocusStrategy = {
         tabIndex: 0,
       };
     },
+    effect: ({ activeElement }) => {
+      if (activeElement) {
+        scrollIntoViewIfNeeded(activeElement);
+      }
+    },
   },
 };
 
-export default RovingTabIndex;
+export default ActiveDescendant;

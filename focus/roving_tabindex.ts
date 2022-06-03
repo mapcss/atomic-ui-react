@@ -1,4 +1,6 @@
 import { FocusStrategy } from "./types.ts";
+import { hasFocusElement } from "../util.ts";
+import scrollIntoViewIfNeeded from "./scroll_into_view_if_needed.ts";
 
 const RovingTabIndex: FocusStrategy = {
   child: {
@@ -11,8 +13,9 @@ const RovingTabIndex: FocusStrategy = {
 
   parent: {
     effect: ({ activeElement }) => {
-      if (activeElement instanceof HTMLElement) {
-        activeElement.focus();
+      if (activeElement && hasFocusElement(activeElement)) {
+        activeElement.focus({ preventScroll: true });
+        scrollIntoViewIfNeeded(activeElement);
       }
     },
   },
