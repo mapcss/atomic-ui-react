@@ -41,12 +41,12 @@ function _DialogTitle<As extends Tag = "h3">(
 
 /** Dialog title component with id associated with dialog.
  * ```tsx
- * import { DialogProvider, DialogTitle } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+ * import { Dialog, DialogTitle } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
  * export default () => {
  *   return (
- *     <DialogProvider>
+ *     <Dialog hasTitle>
  *       <DialogTitle>Title</DialogTitle>
- *     </DialogProvider>
+ *     </Dialog>
  *   );
  * };
  * ```

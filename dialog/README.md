@@ -11,22 +11,19 @@ dialogs contain their tab sequence.
 import {
   Dialog,
   DialogDescribe,
-  DialogProvider,
   DialogTitle,
-  useBoolean,
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useState } from "react";
 export default () => {
-  const [isShow, { off: close }] = useBoolean(true);
+  const [isShow, setIsShow] = useState(false);
   return (
-    <DialogProvider>
-      <Dialog isShow={isShow} hasTitle hasDescribe onClose={close}>
-        <DialogTitle>Title</DialogTitle>
-        <DialogDescribe>Describe it</DialogDescribe>
+    <Dialog isShow={isShow} setIsShow={setIsShow} hasTitle hasDescribe>
+      <DialogTitle>Title</DialogTitle>
+      <DialogDescribe>Describe it</DialogDescribe>
 
-        <button onClick={close}>Cancel</button>
-        <button onClick={close}>OK</button>
-      </Dialog>
-    </DialogProvider>
+      <button onClick={close}>Cancel</button>
+      <button onClick={close}>OK</button>
+    </Dialog>
   );
 };
 ```
@@ -39,6 +36,7 @@ result:
   aria-modal="true"
   aria-labelledby="atomic-ui-0-dialog-title"
   aria-describedby="atomic-ui-0-dialog-describe"
+  hidden
 >
   <h3 id="atomic-ui-0-dialog-title">Title</h3>
   <p id="atomic-ui-0-dialog-describe">Describe it</p>

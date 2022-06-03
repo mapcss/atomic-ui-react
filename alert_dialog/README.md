@@ -13,22 +13,26 @@ special treatment, such as playing a system alert sound.
 import {
   AlertDialog,
   DialogDescribe,
-  DialogProvider,
   DialogTitle,
   useBoolean,
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useCallback, useState } from "react";
 export default () => {
-  const [isShow, { off: close }] = useBoolean(true);
+  const [isShow, setIsShow] = useState(false);
+  const close = useCallback(() => setIsShow(false));
   return (
-    <DialogProvider>
-      <AlertDialog isShow={isShow} hasTitle hasDescribe onClose={close}>
-        <DialogTitle>Title</DialogTitle>
-        <DialogDescribe>Describe it</DialogDescribe>
+    <AlertDialog
+      isShow={isShow}
+      setIsShow={setIsShow}
+      hasTitle
+      hasDescribe
+    >
+      <DialogTitle>Title</DialogTitle>
+      <DialogDescribe>Describe it</DialogDescribe>
 
-        <button onClick={close}>Cancel</button>
-        <button onClick={close}>OK</button>
-      </AlertDialog>
-    </DialogProvider>
+      <button onClick={close}>Cancel</button>
+      <button onClick={close}>OK</button>
+    </AlertDialog>
   );
 };
 ```

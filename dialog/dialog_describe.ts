@@ -40,12 +40,12 @@ function _DialogDescribe<As extends Tag = "p">(
 
 /** Dialog title component with id associated with dialog.
  * ```tsx
- * import { DialogProvider, DialogDescribe } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
+ * import { Dialog, DialogDescribe } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
  * export default () => {
  *   return (
- *     <DialogProvider>
+ *     <Dialog hasDescribe>
  *       <DialogDescribe>Describe dialog</DialogDescribe>
- *     </DialogProvider>
+ *     </Dialog>
  *   );
  * };
  * ```
