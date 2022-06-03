@@ -36,8 +36,10 @@ type PropsWith<
   T extends Record<any, any>,
   Args extends readonly unknown[],
   Predict = Fn,
+  Or = void,
 > = {
-  [k in keyof T]: T[k] extends Predict ? CompositeArgs<T[k], Args>
+  [k in keyof T]: T[k] extends Predict
+    ? CompositeArgs<T[k], Args, ReturnType<T[k]> | Or>
     : T[k];
 };
 
@@ -52,11 +54,12 @@ type LazyablePropsWith<
 
 export type AllAttributesWith<
   Args extends readonly unknown[],
-  Attributes extends Readonly<AllHTMLAttributes<Element>> = Readonly<
-    Required<
-      AllHTMLAttributes<Element>
-    >
-  >,
+  Attributes extends Readonly<Omit<AllHTMLAttributes<Element>, "children">> =
+    Readonly<
+      Required<
+        Omit<AllHTMLAttributes<Element>, "children">
+      >
+    >,
 > = PropsWith<
   LazyablePropsWith<Attributes, Args, ReactEventHandler | Fn>,
   Args,
@@ -86,7 +89,8 @@ function compositeArgs<T extends (...args: any) => unknown>(
 type CompositeArgs<
   T extends Fn,
   Args extends readonly unknown[],
-> = (...args: [...Parameters<T>, ...Args]) => ReturnType<T>;
+  Return = ReturnType<T>,
+> = (...args: [...Parameters<T>, ...Args]) => Return;
 
 function propsWith<T extends Record<PropertyKey, unknown>>(
   value: Readonly<T>,
