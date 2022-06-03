@@ -8,17 +8,15 @@ import useAttributesWith, {
 } from "../hooks/use_attributes_with.ts";
 
 export type Params = SharedContexts;
-export type AttributesWithContexts = AllAttributesWith<
+export type AllAttributesWithContexts = AllAttributesWith<
   [SharedContexts]
 >;
 
-export type Attributes = Pick<AllHTMLAttributes<Element>, "id" | "hidden">;
-
-export type Returns = [Attributes, SharedContexts];
+export type Returns = [AllHTMLAttributes<Element>, SharedContexts];
 
 export default function useDisclosureContent(
   contexts: Readonly<Params>,
-  allAttributes: AttributesWithContexts,
+  allAttributes: Partial<AllAttributesWithContexts> = {},
 ): Returns {
   const attributes = useAttributesWith([contexts], {
     ...defaultAttributes,

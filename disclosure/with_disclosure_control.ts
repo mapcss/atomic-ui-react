@@ -4,21 +4,20 @@ import { useContext } from "react";
 import { IdContext, OpenContext } from "./context.ts";
 import { ERROR_MSG } from "./constant.ts";
 import useDisclosureControl, {
-  Attributes,
-  AttributesWithContext,
-  Contexts,
+  AllAttributesWithContexts,
   Options,
+  Returns,
 } from "./use_disclosure_control.ts";
 
 export type Props =
   & {
     children: (
-      attributes: Attributes,
-      contexts: Contexts,
+      attributes: Returns[0],
+      contexts: Returns[1],
     ) => JSX.Element;
   }
   & Partial<Options>
-  & Omit<AttributesWithContext, "children">;
+  & Partial<AllAttributesWithContexts>;
 
 export default function WithDisclosureControl(
   { mutateType, children, ...allAttributes }: Readonly<Props>,

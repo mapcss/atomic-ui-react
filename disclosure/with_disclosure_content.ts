@@ -3,18 +3,17 @@
 import { ReactElement, useContext } from "react";
 import { IdContext, OpenContext } from "./context.ts";
 import { ERROR_MSG } from "./constant.ts";
-import { SharedContexts } from "./types.ts";
 import useDisclosureContent, {
-  Attributes,
-  AttributesWithContexts,
+  AllAttributesWithContexts,
+  Returns,
 } from "./use_disclosure_content.ts";
 
 export type Props = {
   children: (
-    attributes: Attributes,
-    contexts: SharedContexts,
+    attributes: Returns[0],
+    contexts: Returns[1],
   ) => ReactElement;
-} & Omit<AttributesWithContexts, "children">;
+} & Partial<AllAttributesWithContexts>;
 
 export default function WithDisclosureContent(
   {

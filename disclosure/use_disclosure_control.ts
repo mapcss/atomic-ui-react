@@ -1,8 +1,7 @@
 // This module is browser compatible.
 
-import { HTMLAttributes, KeyboardEvent, useMemo } from "react";
+import { AllHTMLAttributes, KeyboardEvent, useMemo } from "react";
 import { SharedContexts } from "./types.ts";
-import { AllHandlerMap } from "../types.ts";
 import useAttributesWith, {
   AllAttributesWith,
   AttributesHandler,
@@ -18,23 +17,18 @@ export type Options = {
   mutateType?: "toggle" | "on" | "off";
 };
 
-export type Attributes =
-  & Pick<
-    HTMLAttributes<Element>,
-    "aria-controls" | "aria-expanded" | "role"
-  >
-  & AllHandlerMap;
+export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
 
 export type Contexts = Params & Required<Options> & {
   mutateValue: boolean;
 };
 
-export type Returns = [Attributes, Contexts];
+export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useDisclosureControl(
   { setIsOpen, id, isOpen }: Readonly<Params>,
   { mutateType = "toggle" }: Readonly<Partial<Options>>,
-  allAttributes: AllAttributesWith<[Contexts]>,
+  allAttributes: Partial<AllAttributesWithContexts> = {},
 ): Returns {
   const mutateValue = useMemo<boolean>(() => {
     switch (mutateType) {

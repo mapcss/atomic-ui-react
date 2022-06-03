@@ -59,7 +59,7 @@ it(describeTests, "should render when the internal `isOpen` is true", (t) => {
       wrapper: ({ children }) => {
         return (
           <SSRProvider>
-            <Disclosure isDefaultOpen>{children as never}</Disclosure>
+            <Disclosure isInitialOpen>{children as never}</Disclosure>
           </SSRProvider>
         );
       },

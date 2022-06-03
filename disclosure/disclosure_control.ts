@@ -1,6 +1,11 @@
 // This module is browser compatible.
 
-import { createElement, forwardRef as _forwardRef, Ref } from "react";
+import {
+  createElement,
+  forwardRef as _forwardRef,
+  ReactNode,
+  Ref,
+} from "react";
 import { useAs } from "../_shared/hooks.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
 import WithDisclosureControl, {
@@ -12,6 +17,8 @@ type _Props<As extends Tag> = {
    * @default `button`
    */
   as?: As;
+
+  children?: ReactNode;
 } & Omit<WithDisclosureControlProps, "children">;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
@@ -24,7 +31,7 @@ function _DisclosureControl<As extends Tag = "button">(
     children: (attrs) => {
       const tag = useAs(as, "button");
 
-      return createElement(tag, { ref, ...attrs, children });
+      return createElement(tag, { ref, ...attrs }, children);
     },
     mutateType,
     ...props,
