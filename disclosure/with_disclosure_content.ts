@@ -6,7 +6,7 @@ import { ERROR_MSG } from "./constant.ts";
 import { SharedContexts } from "./types.ts";
 import useDisclosureContent, {
   Attributes,
-  AttributesWithContext,
+  AttributesWithContexts,
 } from "./use_disclosure_content.ts";
 
 export type Props = {
@@ -14,7 +14,7 @@ export type Props = {
     attributes: Attributes,
     contexts: SharedContexts,
   ) => ReactElement;
-} & Omit<AttributesWithContext, "children">;
+} & Omit<AttributesWithContexts, "children">;
 
 export default function WithDisclosureContent(
   {
