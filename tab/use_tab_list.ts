@@ -9,8 +9,15 @@ import { ActiveThenSelectProps, FocusStrategyProps } from "../focus/mod.ts";
 import RovingTabIndex from "../focus/roving_tabindex.ts";
 import useFocusStrategy from "../focus/use_focus_strategy.ts";
 import { CommonContexts } from "./types.ts";
-import { defineSync, KeyEntries, mappingKey } from "../util.ts";
-import { first, last, next, prev } from "../hooks/use_range_counter.ts";
+import {
+  defineSync,
+  first,
+  KeyEntries,
+  last,
+  mappingKey,
+  next,
+  prev,
+} from "../util.ts";
 
 export type Options =
   & {
@@ -114,24 +121,24 @@ const defaultAttributes: Partial<AllAttributesWith<[Contexts]>> = {
     const statics: KeyEntries<KeyboardEvent> = [
       ["Home", (ev) => {
         ev.preventDefault();
-        const index = first({ current: activeIndex, max: size });
+        const index = first(activeIndex, size);
         mutate(index);
       }],
       ["PageUp", (ev) => {
         ev.preventDefault();
-        const index = first({ current: activeIndex, max: size });
+        const index = first(activeIndex, size);
 
         mutate(index);
       }],
       ["End", (ev) => {
         ev.preventDefault();
-        const index = last({ current: activeIndex, max: size });
+        const index = last(activeIndex, size);
 
         mutate(index);
       }],
       ["PageDown", (ev) => {
         ev.preventDefault();
-        const index = last({ current: activeIndex, max: size });
+        const index = last(activeIndex, size);
 
         mutate(index);
       }],
@@ -147,23 +154,23 @@ const defaultAttributes: Partial<AllAttributesWith<[Contexts]>> = {
     const dynamics: KeyEntries<KeyboardEvent> = isHorizontal
       ? [["ArrowLeft", (ev) => {
         ev.preventDefault();
-        const index = prev({ current: activeIndex, max: size });
+        const index = prev(activeIndex, size);
 
         mutate(index);
       }], ["ArrowRight", (ev) => {
         ev.preventDefault();
-        const index = next({ current: activeIndex, max: size });
+        const index = next(activeIndex, size);
 
         mutate(index);
       }]]
       : [["ArrowUp", (ev) => {
         ev.preventDefault();
-        const index = prev({ current: activeIndex, max: size });
+        const index = prev(activeIndex, size);
 
         mutate(index);
       }], ["ArrowDown", (ev) => {
         ev.preventDefault();
-        const index = next({ current: activeIndex, max: size });
+        const index = next(activeIndex, size);
 
         mutate(index);
       }]];

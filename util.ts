@@ -18,6 +18,7 @@ import {
 import {
   distinct,
   filterKeys,
+  Fn,
   isFunction,
   isLength0,
   isNil,
@@ -499,3 +500,128 @@ export type Intersection<T extends Record<any, any>, U> = {
 };
 
 export type Merge<T, U> = Omit<Omit<T, keyof U> & U, never>;
+
+export type Exclusive<T, U> =
+  | (Omit<T, keyof U> & { [k in keyof U]?: never })
+  | (Omit<U, keyof T> & { [k in keyof T]?: never });
+
+export type PropsWithoutChildren<P> = P extends any
+  ? ("children" extends keyof P ? Pick<P, Exclude<keyof P, "children">> : P)
+  : P;
+
+export function hasFocusElement(
+  // deno-lint-ignore ban-types
+  object: object,
+): object is HTMLElement | SVGElement {
+  return [HTMLElement, SVGElement].some((instance) =>
+    object instanceof instance
+  );
+}
+
+export function defineSync<T extends Fn<any[]>>(...functions: readonly T[]) {
+  return (...args: Parameters<T>): void => {
+    for (const fn of functions) {
+      fn.apply(null, args);
+    }
+  };
+}
+
+const selector =
+  'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+
+function hasNotInvalidAttribute(el: Element): boolean {
+  return !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden");
+}
+
+export function next(current: number | undefined, max: number): number {
+  if (!isNumber(current) || max <= 0) return 0;
+  const next = current + 1;
+  if (max < next) return 0;
+
+  return next;
+}
+
+export function prev(current: number | undefined, max: number): number {
+  if (!isNumber(current) || max <= 0) return 0;
+  const prev = current - 1;
+  if (prev < 0) return max;
+
+  return prev;
+}
+
+export function first(_: number | undefined, __: number): number {
+  return 0;
+}
+
+export function last(_: number | undefined, max: number): number {
+  return max;
+}
+
+export function filterFocusable(
+  root: ParentNode | null | undefined,
+): (HTMLElement | SVGElement)[] {
+  if (!root) return [];
+  const els = [...root.querySelectorAll(selector)];
+
+  return els.filter(hasNotInvalidAttribute).filter(hasFocusElement);
+}
+
+export function getNextFocusable(
+  root: ParentNode,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = next(current, els.length - 1);
+
+  return els[featureIndex];
+}
+
+export function getFirstFocusable(
+  root: ParentNode | null | undefined,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = first(current, els.length - 1);
+
+  return els[featureIndex];
+}
+
+export function getPreviousFocusable(
+  root: ParentNode,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = prev(current, els.length - 1);
+
+  return els[featureIndex];
+}
+
+export function getLastFocusable(
+  root: ParentNode | null | undefined,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = last(current, els.length - 1);
+
+  return els[featureIndex];
+}
