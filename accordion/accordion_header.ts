@@ -8,7 +8,7 @@ import {
 } from "react";
 import WithAccordionHeader from "./with_accordion_header.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
-import { Options } from "./use_accordion_header.ts";
+import { AttributesWithContexts, Params } from "./use_accordion_header.ts";
 import { CommonContextsContext, IdContext } from "./context.ts";
 import { useId } from "../hooks/mod.ts";
 import { joinChars } from "../util.ts";
@@ -20,14 +20,12 @@ type _Props<As extends Tag> = {
   as?: As;
 
   children?: ReactNode;
-} & Partial<Options>;
+} & Partial<AttributesWithContexts>;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _AccordionHeader<As extends Tag = "button">(
-  { as = "button" as As, children }: Readonly<
-    Props<As>
-  >,
+  { as = "button" as As, children, ...allAttributes }: Readonly<Props<As>>,
   ref: Ref<Element>,
 ): JSX.Element | never {
   const groupId = useContext(IdContext);
@@ -40,15 +38,19 @@ function _AccordionHeader<As extends Tag = "button">(
     [groupId],
   );
 
-  const { id, index } = useId({
-    prefix,
-  });
+  const { id, index } = useId({ prefix });
 
   const panelId = useMemo<string>(
     () => joinChars([groupId, "accordion", "panel", index], "-")!,
     [groupId, index],
   );
-  const { openIndex, setOpenIndex } = commonContexts;
+
+  const contexts = useMemo<Params>(() => ({
+    ...commonContexts,
+    index,
+    id,
+    panelId,
+  }), [commonContexts, index, id, panelId]);
 
   return WithAccordionHeader({
     children: (attrs) => {
@@ -57,11 +59,8 @@ function _AccordionHeader<As extends Tag = "button">(
         ...attrs,
       }, children);
     },
-    id,
-    index,
-    openIndex,
-    setOpenIndex,
-    panelId,
+    contexts,
+    ...allAttributes,
   });
 }
 

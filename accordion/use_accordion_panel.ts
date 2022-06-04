@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, useMemo } from "react";
+import { AllHTMLAttributes } from "react";
 import {
   AllAttributesWith,
   useAttributesWith,
@@ -8,7 +8,7 @@ import {
 } from "../hooks/mod.ts";
 import { OpenIndexProps } from "./types.ts";
 
-export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
+export type AttributesWithContexts = AllAttributesWith<[ContextsWithDynamic]>;
 
 export type Params =
   & {
@@ -17,42 +17,23 @@ export type Params =
   & OpenIndexProps
   & UseIdReturns;
 
-export type Contexts = Params & {
+export type ContextsWithDynamic = Params & {
   isOpen: boolean;
 };
 
-export type Returns = [AllHTMLAttributes<Element>, Contexts];
 export default function useAccordionPanel(
-  { id, index, openIndex, setOpenIndex, headerId }: Readonly<Params>,
-): Returns {
-  const isOpen = useMemo<boolean>(() => index === openIndex, [
-    index,
-    openIndex,
-  ]);
-  const contexts = useMemo<Contexts>(() => ({
-    id,
-    index,
-    openIndex,
-    setOpenIndex,
-    headerId,
-    isOpen,
-  }), [
-    id,
-    index,
-    openIndex,
-    setOpenIndex,
-    headerId,
-    isOpen,
-  ]);
-
+  contexts: Readonly<ContextsWithDynamic>,
+  allAttributes: Partial<AttributesWithContexts> = {},
+): AllHTMLAttributes<Element> {
   const attributes = useAttributesWith([contexts], {
     ...defaultAttributes,
+    ...allAttributes,
   });
 
-  return [attributes, contexts];
+  return attributes;
 }
 
-const defaultAttributes: Partial<AllAttributesWithContexts> = {
+const defaultAttributes: Partial<AttributesWithContexts> = {
   "aria-labelledby": ({ headerId }) => headerId!,
   id: ({ id }) => id,
   hidden: ({ isOpen }) => !isOpen,

@@ -1,26 +1,39 @@
 // This module is browser compatible.
 
-import { ReactElement } from "react";
+import { AllHTMLAttributes, ReactElement, useMemo } from "react";
 
-import useAccordionPanel, { Params, Returns } from "./use_accordion_panel.ts";
+import useAccordionPanel, {
+  AttributesWithContexts,
+  ContextsWithDynamic,
+  Params,
+} from "./use_accordion_panel.ts";
 
 export type Props = {
   children: (
-    attributes: Returns[0],
-    contexts: Returns[1],
+    attributes: AllHTMLAttributes<Element>,
+    contexts: ContextsWithDynamic,
   ) => ReactElement;
-} & Params;
+  contexts: Params;
+} & Partial<AttributesWithContexts>;
 
 export default function WithAccordionPanel(
-  { children, id, index, openIndex, setOpenIndex, headerId }: Props,
+  { children, contexts: { index, openIndex, ...rest }, ...allAttributes }:
+    Props,
 ): JSX.Element {
-  const [attributes, contexts] = useAccordionPanel({
-    id,
+  const isOpen = useMemo<boolean>(() => index === openIndex, [
     index,
     openIndex,
-    setOpenIndex,
-    headerId,
-  });
+  ]);
 
-  return children(attributes, contexts);
+  const contextsWithDynamic = useMemo<ContextsWithDynamic>(
+    () => ({ isOpen, index, openIndex, ...rest }),
+    [isOpen, index, openIndex, rest],
+  );
+
+  const attributes = useAccordionPanel(
+    contextsWithDynamic,
+    allAttributes,
+  );
+
+  return children(attributes, contextsWithDynamic);
 }

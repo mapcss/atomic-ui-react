@@ -11,7 +11,7 @@ import {
   setupJSDOM,
 } from "../dev_deps.ts";
 import WithAccordionHeader from "./with_accordion_header.ts";
-import { fireEvent, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 
 const describeTests = describe({
   name: "WithAccordionHeader",
@@ -25,11 +25,13 @@ it(describeTests, "should render as", (t) => {
   const { container, getByTestId } = render(
     <>
       <WithAccordionHeader
-        panelId="accordion-panel"
-        index={0}
-        openIndex={0}
-        setOpenIndex={() => {}}
-        id="accordion"
+        contexts={{
+          panelId: "accordion-panel",
+          index: 0,
+          openIndex: 0,
+          setOpenIndex: () => {},
+          id: "accordion",
+        }}
       >
         {(attrs, contexts) => {
           mockFn(attrs);

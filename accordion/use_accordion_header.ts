@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, KeyboardEvent, useMemo } from "react";
+import { AllHTMLAttributes, KeyboardEvent } from "react";
 import { OpenIndexProps } from "./types.ts";
 import {
   AllAttributesWith,
@@ -16,51 +16,28 @@ export type Params =
   & OpenIndexProps
   & UseIdReturns;
 
-export type Contexts = { isOpen: boolean } & Params;
+export type ContextsWithDynamic = {
+  /** Whether open or not. */
+  isOpen: boolean;
+} & Params;
 
-export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
-
-export type Attributes = Pick<
-  AllHTMLAttributes<Element>,
-  "aria-expanded" | "aria-controls" | "id" | "tabIndex"
+export type AttributesWithContexts = AllAttributesWith<
+  [ContextsWithDynamic]
 >;
 
-export type Returns = [Attributes, Contexts];
-
 export default function useAccordionHeader(
-  { openIndex, setOpenIndex, id, index, panelId }: Readonly<Params>,
-): Returns {
-  const isOpen = useMemo<boolean>(() => index === openIndex, [
-    index,
-    openIndex,
-  ]);
-  const contexts = useMemo<Contexts>(
-    () => ({
-      openIndex,
-      setOpenIndex,
-      id,
-      index,
-      panelId,
-      isOpen,
-    }),
-    [
-      openIndex,
-      setOpenIndex,
-      id,
-      index,
-      panelId,
-      isOpen,
-    ],
-  );
-
+  contexts: Readonly<ContextsWithDynamic>,
+  allAttributes: Partial<AttributesWithContexts> = {},
+): AllHTMLAttributes<Element> {
   const attributes = useAttributesWith([contexts], {
     ...defaultAttributes,
+    ...allAttributes,
   });
 
-  return [attributes, contexts];
+  return attributes;
 }
 
-const defaultAttributes: Partial<AllAttributesWithContexts> = {
+const defaultAttributes: Partial<AttributesWithContexts> = {
   "aria-expanded": ({ isOpen }) => isOpen,
   "aria-controls": ({ panelId }) => panelId!,
   id: ({ id }) => id,

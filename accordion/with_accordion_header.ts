@@ -1,33 +1,40 @@
 // This module is browser compatible.
 
-import { ReactElement, RefAttributes } from "react";
-import useAccordionHeader, { Params, Returns } from "./use_accordion_header.ts";
+import { AllHTMLAttributes, ReactElement, RefAttributes, useMemo } from "react";
+import useAccordionHeader, {
+  AttributesWithContexts,
+  ContextsWithDynamic,
+  Params,
+} from "./use_accordion_header.ts";
 
 export type Props = {
   children: (
     // deno-lint-ignore no-explicit-any
-    attributes: Returns[0] & RefAttributes<any>,
-    contexts: Returns[1],
+    attributes: AllHTMLAttributes<Element> & RefAttributes<any>,
+    contexts: ContextsWithDynamic,
   ) => ReactElement;
-} & Params;
+
+  contexts: Params;
+} & Partial<AttributesWithContexts>;
 
 export default function WithAccordionHeader(
   {
     children,
-    id,
-    index,
-    openIndex,
-    setOpenIndex,
-    panelId,
+    contexts: { openIndex, index, panelId, setOpenIndex, id },
+    ...allAttributes
   }: Readonly<Props>,
 ): JSX.Element {
-  const [attributes, contexts] = useAccordionHeader({
-    id,
+  const isOpen = useMemo<boolean>(() => index === openIndex, [
     index,
     openIndex,
-    setOpenIndex,
-    panelId,
-  });
+  ]);
 
-  return children({ ...attributes }, contexts);
+  const contextsWithDynamic = useMemo<ContextsWithDynamic>(
+    () => ({ isOpen, openIndex, index, panelId, setOpenIndex, id }),
+    [isOpen, openIndex, index, panelId, setOpenIndex, id],
+  );
+
+  const attributes = useAccordionHeader(contextsWithDynamic, allAttributes);
+
+  return children(attributes, contextsWithDynamic);
 }

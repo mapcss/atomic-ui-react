@@ -25,11 +25,13 @@ it(describeTests, "should render as", (t) => {
   const { container } = render(
     <>
       <WithAccordionPanel
-        headerId="header"
-        index={0}
-        openIndex={0}
-        setOpenIndex={() => {}}
-        id="panel"
+        contexts={{
+          headerId: "header",
+          index: 0,
+          openIndex: 0,
+          setOpenIndex: () => {},
+          id: "panel",
+        }}
       >
         {(attrs, contexts) => {
           mockFn(attrs);

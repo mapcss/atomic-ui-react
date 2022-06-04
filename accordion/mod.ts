@@ -13,14 +13,9 @@ export type { Props as AccordionPanelProps } from "./accordion_panel.ts";
 
 export { default as useAccordionHeader } from "./use_accordion_header.ts";
 export type {
-  Attributes as UseAccordionHeaderAttributes,
-  Contexts as UseAccordionHeaderContexts,
   Params as UseAccordionHeaderParams,
-  Returns as UseAccordionHeaderReturns,
 } from "./use_accordion_header.ts";
 export { default as useAccordionPanel } from "./use_accordion_panel.ts";
 export type {
-  Contexts as UseAccordionPanelContexts,
   Params as UseAccordionPanelParams,
-  Returns as UseAccordionPanelReturns,
 } from "./use_accordion_panel.ts";
