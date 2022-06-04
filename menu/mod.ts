@@ -1,7 +1,7 @@
 export { default as MenuProvider } from "./menu_provider.ts";
 export { default as Menu } from "./menu.ts";
 export { default as MenuItem } from "./menu_item.ts";
-export { default as MenuButton } from "./menu_button.ts";
+export { default as MenuTrigger } from "./menu_trigger.ts";
 
 export { default as WithMenu } from "./with_menu.ts";
 export type { Props as WithMenuProps } from "./with_menu.ts";

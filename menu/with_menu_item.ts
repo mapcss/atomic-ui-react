@@ -17,6 +17,7 @@ import { RovingTabIndex } from "../focus/mod.ts";
 export type Props =
   & {
     children: (
+      // deno-lint-ignore no-explicit-any
       attributes: HTMLAttributes<Element> & RefAttributes<any>,
       contexts: Contexts,
     ) => ReactElement;
