@@ -18,6 +18,7 @@ export { mapEntries } from "https://deno.land/std@0.136.0/collections/map_entrie
 export { filterKeys } from "https://deno.land/std@0.136.0/collections/filter_keys.ts";
 export { filterValues } from "https://deno.land/std@0.136.0/collections/filter_values.ts";
 export { associateWith } from "https://deno.land/std@0.138.0/collections/mod.ts";
+export { sortBy } from "https://deno.land/std@0.142.0/collections/mod.ts";
 export type VFn = () => void;
 export type Fn<Args extends readonly unknown[] = [], Return = any> = (
   ...args: Args

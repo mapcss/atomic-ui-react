@@ -26,6 +26,7 @@ import {
   isObject,
   isString,
   isUndefined,
+  sortBy,
 } from "./deps.ts";
 import { KeyboardEventHandler } from "./types.ts";
 
@@ -624,4 +625,26 @@ export function getLastFocusable(
   const featureIndex = last(current, els.length - 1);
 
   return els[featureIndex];
+}
+
+export function safeFocus(
+  node: Node | null | undefined,
+  options?: FocusOptions,
+): void {
+  if (node instanceof HTMLElement || node instanceof SVGElement) {
+    node.focus(options);
+  }
+}
+
+export function sortTabOrder(
+  focusableElements: Readonly<Iterable<Element>>,
+): Element[] {
+  const result = sortBy(Array.from(focusableElements), (el) => {
+    const tabIndex = el.getAttribute("tabindex");
+
+    if (!tabIndex) return 0;
+
+    return Number(tabIndex);
+  });
+  return result.reverse();
 }
