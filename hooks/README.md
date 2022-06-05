@@ -189,18 +189,20 @@ export default () => {
 #### Generics
 
 - `T`
+- `U = undefined`
 
 #### Arguments
 
-Accepts up to 1 arguments.
+Accepts up to 2 arguments.
 
-| N | Name  | Required / Default | Description            |
-| - | ----- | :----------------: | ---------------------- |
-| 1 | value | :white_check_mark: | `T`<br> Current value. |
+| N | Name         | Required / Default | Description                       |
+| - | ------------ | :----------------: | --------------------------------- |
+| 1 | state        | :white_check_mark: | `T`<br> Current state.            |
+| 2 | initialValue |    `undefined`     | `U`<br>Initial value as previous. |
 
 #### Return
 
-`T | undefined`
+`T | U | undefined`
 
 ### useUpdateEffect
 

@@ -20,3 +20,12 @@ Deno.test("usePrevious should return previous rendering value", () => {
   rerender({ value: undefined });
   expect(result.current).toBeTruthy();
 });
+
+Deno.test("usePrevious should change initial previous value", () => {
+  const { rerender, result } = renderHook(() => usePrevious(false, 100));
+
+  expect(result.current).toBe(100);
+
+  rerender();
+  expect(result.current).toBeFalsy();
+});
