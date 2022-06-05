@@ -1,45 +1,44 @@
 // This module is browser compatible.
-// deno-lint-ignore-file no-explicit-any
 
-import { LegacyRef, ReactElement, RefCallback, RefObject, useRef } from "react";
-import { isFunction, isNil, isObject, isString } from "../deps.ts";
-import { getRef } from "../util.ts";
-import { ATOMIC_UI } from "../_shared/constant.ts";
+import { MutableRefObject, Ref, RefCallback, RefObject, useRef } from "react";
+import { isFunction } from "../deps.ts";
 
-const ERROR_MSG = `${ATOMIC_UI} String ref is not supported.`;
+export type Returns<E> = [getRef: RefObject<E>, setRef: Ref<E>];
 
-export type ReturnValue<E> = [
-  RefObject<E>,
-  RefObject<E> | RefCallback<E>,
-];
-
-export default function useMergedRef<E = HTMLElement | SVGElement>(
-  ref:
-    | LegacyRef<E>
-    | ReactElement
-    | ((...args: any[]) => ReactElement),
-): ReturnValue<E> {
+/** Merges refs and makes them referenceable.
+ * Returns a set of getter and setter of ref.
+ * By binding a `setRef` to a component, you can reference a `RefObject` from a `getRef`.
+ * @param ref Any ref other than string.
+ * ```tsx
+ * import { useMergedRef } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ * import { forwardRef, useEffect } from "react";
+ *
+ * forwardRef<Element>((props, ref) => {
+ *   const [getRef, setRef] = useMergedRef(ref);
+ *   useEffect(() => {
+ *     // getRef.current
+ *   }, []);
+ *   return <div ref={setRef}>Accessible to ref</div>;
+ * });
+ * ```
+ */
+export default function useMergedRef<E = Element>(
+  ref: Ref<E>,
+): Returns<E> {
   const _ref = useRef<E>(null);
 
-  const childRef = isObject(ref) && "type" in ref ? getRef<E>(ref) : ref;
-
-  if (isFunction(ref) || isNil(childRef)) {
+  if (!ref) {
     return [_ref, _ref];
   }
 
-  if (isString(childRef)) {
-    throw Error(ERROR_MSG);
-  }
-
-  if (isFunction(childRef)) {
-    const fn = (instance: any) => {
-      if (isFunction(childRef)) {
-        childRef(instance);
-        (_ref as any).current = instance;
-      }
+  if (isFunction(ref)) {
+    const fn: RefCallback<E> = (instance) => {
+      ref.call(null, instance);
+      (_ref as MutableRefObject<E | null>).current = instance;
     };
+
     return [_ref, fn];
   }
 
-  return [childRef, childRef];
+  return [ref, ref];
 }

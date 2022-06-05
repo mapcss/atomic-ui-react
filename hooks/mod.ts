@@ -50,3 +50,4 @@ export type {
   AttributesHandler,
 } from "./use_attributes_with.ts";
 export { default as useMergedRef } from "./use_merged_ref.ts";
+export type { Returns as UseMergedRefReturns } from "./use_merged_ref.ts";

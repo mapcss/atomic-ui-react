@@ -169,6 +169,45 @@ export default () => {
 
 `boolean`
 
+### useMergedRef
+
+[Source](./use_merged_ref.ts) [Test](./use_merged_ref_test.ts)
+
+Merges refs and makes them referenceable. Returns a set of getter and setter of
+ref. By binding a `setRef` to a component, you can reference a `RefObject` from
+a `getRef`.
+
+#### Example
+
+```tsx
+import { useMergedRef } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { forwardRef, useEffect } from "react";
+
+forwardRef<Element>((props, ref) => {
+  const [getRef, setRef] = useMergedRef(ref);
+  useEffect(() => {
+    // getRef.current
+  }, []);
+  return <div ref={setRef}>Access to ref</div>;
+});
+```
+
+#### Generics
+
+- `E = Element`
+
+#### Params
+
+Accepts up to 1 arguments.
+
+| N | Name | Required / Default | Description                            |
+| - | ---- | :----------------: | -------------------------------------- |
+| 1 | ref  | :white_check_mark: | `Ref<E>`<br>Any ref other than string. |
+
+#### Returns
+
+`[getRef: RefObject<E>, setRef: Ref<E>]`
+
 ### usePrevious
 
 [Source](./use_previous.ts) [Test](./use_previous_test.ts)
