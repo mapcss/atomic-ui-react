@@ -15,158 +15,203 @@ Monitor component lifecycles and control transitions.
 ## Example
 
 ```tsx
-import { WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { Transition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useState } from "react";
+
 export default () => {
+  const [isShow, setIsShow] = useState(false);
   return (
-    <WithTransition
+    <Transition
+      isShow={isShow}
       enter="transition duration-300"
       enterFrom="opacity-0"
-      leave="transition duration-300"
-      leaveTo="opacity-0"
-      isShow
+      leave="transition"
+      leaved="opacity-0"
     >
-      <div />
-    </WithTransition>
+      root
+    </Transition>
   );
 };
 ```
 
 ## API
 
+### Transition
+
+The transition component lets you add `enter`/`leave` transitions.
+
+#### Generics
+
+- `As extends keyof JSX.IntrinsicElements`
+
+#### Props
+
+| Name             | Required / Default | Description                                                                                                                                                          |
+| ---------------- | :----------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| isShow           | :white_check_mark: | `boolean`<br>Whether the component should be shown or hidden.                                                                                                        |
+| as               |       `div`        | `As`<br>The default tag.                                                                                                                                             |
+| immediate        |      `false`       | `boolean`<br>Whether do transitions immediately(on first mount) or not.<br>- `true` - do transition on first mount.<br>- `false` - do not transition on first mount. |
+| unmount          |       `true`       | `boolean`<br>Whether unmount(remove DOM) at transition phase is leaved or not.                                                                                       |
+| enterFrom        |         -          | `string`<br>Classes before the enter phase starts.                                                                                                                   |
+| enter            |         -          | `string`<br>Classes during the entire enter phase.                                                                                                                   |
+| enterTo          |         -          | `string`<br>Classes immediately after the enter phase starts.                                                                                                        |
+| entered          |         -          | `string`<br>Classes the enter phase is ended.                                                                                                                        |
+| leaveFrom        |         -          | `string`<br>Classes during the entire leave phase.                                                                                                                   |
+| leave            |         -          | `string`<br>Classes during the entire leave phase.                                                                                                                   |
+| leaveTo          |         -          | `string`<br>Classes before the leave phase starts.                                                                                                                   |
+| leaved           |         -          | `string`<br>Classes the leave phase is ended.                                                                                                                        |
+| ref              |         -          | `Ref<Element>`                                                                                                                                                       |
+| ...allAttributes |         -          | `AllHTMLAttributes<Element>`<br>All HTML attributes.                                                                                                                 |
+
+#### Return
+
+`JSX.Element`
+
 ### WithTransition
 
 Component to automatically adapt transitions to the root child.
 
-#### Props
-
-```ts
-import { ReactElement, RefObject } from "react";
-/** Named transition lifecycle
- * - `init`: Initializing
- * - `start`: Starting
- * - `wait`: Waiting for end
- * - `end`: Ended
- */
-type TransitionLifecycle = "init" | "start" | "wait" | "end";
-type TransitionMap = {
-  /** Classes during the entire enter phase. */
-  enter: string;
-
-  /** Classes immediately after the enter phase starts. */
-  enterFrom: string;
-
-  /** Classes immediately after the enter phase starts. */
-  enterTo: string;
-
-  /** Classes the enter phase is ended. */
-  entered: string;
-
-  /** Classes during the entire leave phase. */
-  leave: string;
-
-  /** Classes before the leave phase starts. */
-  leaveTo: string;
-
-  /** Classes to immediately after the leave phase starts. */
-  leaveFrom: string;
-
-  leaved: string;
-  /** Classes the leave phase is ended. */
-};
-type Transition = keyof TransitionMap;
-type UseTransitionReturnValue = {
-  /** The className from adapted currently transition. */
-  className: string | undefined;
-
-  /** The className tokens adapted currently transition. */
-  classNames: string[];
-
-  /** Whether transition is completed and `isShow` state is `false` or not. */
-  isShowable: boolean;
-
-  /** Whether transition lifecycle is completed or not. */
-  isCompleted: boolean;
-
-  /** Non-duplicated token and space transition props
-   * It guarantee that there is no empty string or spaces only
-   * characters.
-   */
-  cleanTransitionMap: Partial<TransitionMap>;
-
-  /** List of currently adapted transition. */
-  currentTransitions: Transition[];
-
-  /** Current transition lifecycle */
-  lifecycle: TransitionLifecycle;
-};
-type TransitionRenderContext<E extends Element = Element> = {
-  /** Root child adapting transitions. */
-  children: ReactElement;
-
-  /** The root child `RefObject` */
-  ref: RefObject<E>;
-
-  /** Whether transition is completed and `isShow` state is `false` or not. */
-  isShowable: boolean;
-};
-type TransitionRenderParam<E extends Element = Element> = {
-  /** Root child adapting transitions. */
-  children: ReactElement;
-
-  /** The root child `RefObject` */
-  ref: RefObject<E>;
-};
-type TransitionRender<E extends Element = Element> = (
-  param: TransitionRenderParam<E>,
-  context: UseTransitionReturnValue,
-) => ReactElement;
-type TransitionProviderProps<E extends Element = Element> = {
-  /** Root child adapting transitions. */
-  children: ReactElement;
-
-  /** Whether the target should be shown or hidden. */
-  isShow: boolean;
-
-  /** Call on change transition states. */
-  onChange?: (state: UseTransitionReturnValue) => void;
-
-  /** Controls the rendering element. Called just before rendering it returns the element to actually render.
-   */
-  render?: TransitionRender<E>;
-
-  /** Whether do transitions immediately(on first mount) or not.
-   * - `true` - do transition on first mount.
-   * - `false` - do not transition on first mount.
-   * @default false
-   */
-  immediate?: boolean;
-} & Partial<TransitionMap>;
-```
-
 #### Example
 
 ```tsx
-import { useRef, useState } from "react";
 import { WithTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
-
 export default () => {
-  const [isShow] = useState(false);
   return (
     <WithTransition
+      enter="transition duration-300"
       enterFrom="opacity-0"
-      enter="transition"
-      leaveTo="opacity-0"
-      leave="transition"
-      leaved="opacity-0"
-      isShow={isShow}
+      leaved="text-red-500"
+      isShow
     >
-      {({ className, ref }) => {
-        return <div ref={ref} className={className}>transition</div>;
-      }}
+      {(attrs, { isShowable }) => isShowable ? <div {...attrs}></div> : <></>}
     </WithTransition>
   );
 };
 ```
+
+#### Props
+
+| Name      | Required / Default | Description                                                                                                                                                          |
+| --------- | :----------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| isShow    | :white_check_mark: | `boolean`<br>Whether the component should be shown or hidden.                                                                                                        |
+| children  | :white_check_mark: | `(attributes: Attributes, contexts: Contexts) => ReactElement`<br>Render children with props.                                                                        |
+| immediate |      `false`       | `boolean`<br>Whether do transitions immediately(on first mount) or not.<br>- `true` - do transition on first mount.<br>- `false` - do not transition on first mount. |
+| enterFrom |         -          | `string`<br>Classes before the enter phase starts.                                                                                                                   |
+| enter     |         -          | `string`<br>Classes during the entire enter phase.                                                                                                                   |
+| enterTo   |         -          | `string`<br>Classes immediately after the enter phase starts.                                                                                                        |
+| entered   |         -          | `string`<br>Classes the enter phase is ended.                                                                                                                        |
+| leaveFrom |         -          | `string`<br>Classes during the entire leave phase.                                                                                                                   |
+| leave     |         -          | `string`<br>Classes during the entire leave phase.                                                                                                                   |
+| leaveTo   |         -          | `string`<br>Classes before the leave phase starts.                                                                                                                   |
+| leaved    |         -          | `string`<br>Classes the leave phase is ended.                                                                                                                        |
+| ref       |         -          | `Ref<Element>`                                                                                                                                                       |
+
+#### Render props
+
+<table>
+  <thead>
+    <tr>
+      <th>N</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>attributes</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>className</td>
+      <td><code>string | undefined</code></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>ref</td>
+      <td><code>Ref&lt;Element&gt;</code></td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>contexts</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>classNames</td>
+      <td>
+        <code>string[]</code><br />The className tokens adapted currently
+        transition.
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>cleanTransitions</td>
+      <td>
+        <code>Partial&lt;Transitions&gt;</code><br />Non-duplicated token and
+        space transition props.<br />It guarantee that there is no empty string
+        or spaces only characters.
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>isCompleted</td>
+      <td>
+        <code>boolean</code><br />Whether transition lifecycle is completed or
+        not.
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>currentTransitions</td>
+      <td>
+        <code>TransitionName[]</code><br />List of currently adapted transition.
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>status</td>
+      <td><code>TransitionStatus</code><br />Current transition lifecycle.</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>isShowable</td>
+      <td>
+        <code>boolean</code><br />Whether transition is completed and
+        <code>isShow</code> state is <code>false</code> or not.
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>isActivated</td>
+      <td>
+        <code>boolean</code><br />Whether transitions are activated or not.
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>lifecycle</td>
+      <td>
+        <code>TransitionLifecycle</code><br />Named transition lifecycle<br />
+        <ul>
+          <li><code>init</code>: Initializing</li>
+          <li><code>start</code>: Start</li>
+          <li><code>wait</code>: Waiting for end</li>
+          <li><code>end</code>: Ended</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>mode</td>
+      <td>
+        <code>"enter" | "leave"</code><br />
+        Current transition mode.<br />
+        If it is not activated, return <code>undefined</code>.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ### useTransition
 

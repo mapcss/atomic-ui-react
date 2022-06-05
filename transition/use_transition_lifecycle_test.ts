@@ -71,7 +71,7 @@ it(
     const { time } = this;
     const { result, rerender } = renderHook(
       ({ duration, use }) =>
-        useTransitionLifecycle({ duration, use }, [duration, use]),
+        useTransitionLifecycle({ duration }, [duration, use], { use }),
       { initialProps: { duration: 300, use: false } },
     );
 

@@ -1,11 +1,11 @@
 import { createContext } from "react";
-import { ReturnValue } from "./use_transition.ts";
+import { Returns } from "./use_transition.ts";
 
 const noop = () => {};
 
 export type StateSet = [
-  ReturnValue | undefined,
-  ((value: ReturnValue) => void),
+  Returns | undefined,
+  ((value: Returns) => void),
 ];
 
 export const Context = createContext<StateSet>([undefined, noop]);
@@ -13,5 +13,5 @@ export const RootContext = createContext<
   {
     isShow: boolean;
     isRoot: boolean;
-  } & ReturnValue | undefined
+  } & Returns | undefined
 >(undefined);

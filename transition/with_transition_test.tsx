@@ -1,6 +1,5 @@
 import { renderToString } from "react-dom/server";
 import { render } from "@testing-library/react";
-import { forwardRef } from "react";
 import WithTransition from "./with_transition.ts";
 import {
   assertSnapshot,
@@ -13,24 +12,19 @@ import {
   setupJSDOM,
   setupRaf,
 } from "../dev_deps.ts";
-
-const Child = forwardRef<HTMLDivElement, { className?: string }>(
-  (props, ref) => {
-    return <div {...props} ref={ref}>test</div>;
-  },
-);
+import { mergeProps } from "../util.ts";
 
 Deno.test("render as SSR", () => {
   const table: ParamReturn<typeof renderToString>[] = [
     [
       <WithTransition enter="transition" enterFrom="opacity-0" isShow>
-        <div>test</div>
+        {(attrs) => <div {...attrs}>test</div>}
       </WithTransition>,
       `<div>test</div>`,
     ],
     [
       <WithTransition enter="transition" enterFrom="opacity-0" isShow>
-        <div className="test">test</div>
+        {(attrs) => <div {...attrs} className="test">test</div>}
       </WithTransition>,
       `<div class="test">test</div>`,
     ],
@@ -41,7 +35,7 @@ Deno.test("render as SSR", () => {
         isShow
         immediate
       >
-        <div>test</div>
+        {(attrs) => <div {...attrs}>test</div>}
       </WithTransition>,
       `<div class="opacity-0">test</div>`,
     ],
@@ -52,51 +46,39 @@ Deno.test("render as SSR", () => {
         isShow
         immediate
       >
-        <div className="test">test</div>
+        {(attrs) => (
+          <div {...mergeProps({ className: "test" }, attrs)}>test</div>
+        )}
       </WithTransition>,
       `<div class="test opacity-0">test</div>`,
     ],
     [
       <WithTransition leaveFrom="opacity-0" isShow={false}>
-        <div>test</div>
+        {(_, { isShowable }) => isShowable ? <div>test</div> : <></>}
       </WithTransition>,
       ``,
     ],
     [
       <WithTransition isShow={false} immediate>
-        <div className="test">test</div>
+        {(attrs) => (
+          <div {...mergeProps({ className: "test" }, attrs)}>test</div>
+        )}
       </WithTransition>,
       `<div class="test">test</div>`,
     ],
     [
       <WithTransition leaveFrom="opacity-0" isShow={false} immediate>
-        <div>test</div>
+        {(attrs) => <div {...attrs}>test</div>}
       </WithTransition>,
       `<div class="opacity-0">test</div>`,
     ],
     [
       <WithTransition leaveFrom="opacity-0" isShow={false} immediate>
-        <div className="test">test</div>
+        {(attrs) => (
+          <div {...mergeProps({ className: "test" }, attrs)}>test</div>
+        )}
       </WithTransition>,
       `<div class="test opacity-0">test</div>`,
-    ],
-    [
-      <WithTransition isShow>
-        <Child />
-      </WithTransition>,
-      `<div>test</div>`,
-    ],
-    [
-      <WithTransition isShow>
-        <Child className="test" />
-      </WithTransition>,
-      `<div class="test">test</div>`,
-    ],
-    [
-      <WithTransition enterFrom="opacity-0" isShow immediate>
-        <Child />
-      </WithTransition>,
-      `<div class="opacity-0">test</div>`,
     ],
     [
       <WithTransition enterFrom="opacity-0" isShow>
@@ -150,7 +132,13 @@ it(
   async function (t) {
     const { getByTestId } = render(
       <WithTransition isShow enterFrom="opacity-0">
-        <div data-testid="test" className="test">test</div>
+        {(attrs) => (
+          <div
+            {...mergeProps({ "data-testid": "test", className: "test" }, attrs)}
+          >
+            test
+          </div>
+        )}
       </WithTransition>,
     );
 
@@ -183,7 +171,9 @@ it(
         immediate
         {...transitionProps}
       >
-        <div className="test">test</div>
+        {(attrs) => (
+          <div {...mergeProps({ className: "test" }, attrs)}>test</div>
+        )}
       </WithTransition>,
     );
 
@@ -202,7 +192,9 @@ it(
         immediate
         {...transitionProps}
       >
-        <div className="test">test</div>
+        {(attrs) => (
+          <div {...mergeProps({ className: "test" }, attrs)}>test</div>
+        )}
       </WithTransition>,
     );
     await assertSnapshot(t, container.innerHTML);
@@ -231,80 +223,18 @@ it(
       leaveTo: "opacity-30",
       leaved: "opacity-0",
     };
-    const { container, rerender } = render(
+    const { container } = render(
       <WithTransition
         isShow={false}
         immediate
         {...transitionProps}
       >
-        <div className="test">test</div>
+        {(attrs) => (
+          <div {...mergeProps({ className: "test" }, attrs)}>test</div>
+        )}
       </WithTransition>,
     );
 
-    await assertSnapshot(t, container.innerHTML);
-    time.next();
-    await assertSnapshot(t, container.innerHTML);
-    time.next();
-    await assertSnapshot(t, container.innerHTML);
-    time.next();
-    await assertSnapshot(t, container.innerHTML);
-    time.runAll();
-    await assertSnapshot(t, container.innerHTML);
-
-    reset();
-  },
-);
-
-it(
-  describeTests,
-  "should add transition props to forwardable child component",
-  async function (t) {
-    const { time, el } = this;
-    el.style.transitionDuration = "3s";
-    const reset = mockGetComputedStyle(() => el.style);
-    const transitionProps = {
-      enterFrom: "opacity-0",
-      enter: "  transition ",
-      enterTo: "opacity-100  ",
-      entered: " text-red-500 text-red-500",
-      leaveFrom: " opacity-80 ",
-      leave: " transition duration",
-      leaveTo: "opacity-30",
-      leaved: "hidden",
-    };
-
-    const Child = forwardRef<HTMLDivElement>((_, ref) => {
-      return <div className=" test " ref={ref}>children</div>;
-    });
-    const { container, rerender } = render(
-      <WithTransition
-        isShow
-        immediate
-        {...transitionProps}
-      >
-        <Child />
-      </WithTransition>,
-    );
-
-    await assertSnapshot(t, container.innerHTML);
-    time.next();
-    await assertSnapshot(t, container.innerHTML);
-    time.next();
-    await assertSnapshot(t, container.innerHTML);
-    time.next();
-    await assertSnapshot(t, container.innerHTML);
-    time.runAll();
-    await assertSnapshot(t, container.innerHTML);
-
-    rerender(
-      <WithTransition
-        isShow={false}
-        immediate
-        {...transitionProps}
-      >
-        <Child />
-      </WithTransition>,
-    );
     await assertSnapshot(t, container.innerHTML);
     time.next();
     await assertSnapshot(t, container.innerHTML);
