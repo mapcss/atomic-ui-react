@@ -22,7 +22,6 @@ export type {
   Param as UseLifecycleParam,
 } from "./use_lifecycle.ts";
 export type { Useable } from "./types.ts";
-export { default as useMutated } from "./use_mutated.ts";
 export { default as useOutside } from "./use_outside.ts";
 export type {
   Option as UseOutsideOption,
@@ -50,3 +49,4 @@ export type {
   AllAttributesWith,
   AttributesHandler,
 } from "./use_attributes_with.ts";
+export { default as useMergedRef } from "./use_merged_ref.ts";
