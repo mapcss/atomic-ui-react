@@ -4,7 +4,7 @@ import { DependencyList, EffectCallback, useEffect } from "react";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
 import { Useable } from "./types.ts";
 
-export type Param = {
+export type Params = {
   /** Call on `useLayoutEffect` hooks. */
   onBeforeMount: EffectCallback;
 
@@ -42,9 +42,7 @@ export type Param = {
  */
 export default function useLifecycle(
   { onBeforeMount, onMounted, onAfterMounted, onBeforeUnMount, use = true }:
-    Readonly<
-      Partial<Param>
-    >,
+    Readonly<Partial<Params>>,
   deps?: DependencyList,
 ): void {
   useIsomorphicLayoutEffect(() => {
