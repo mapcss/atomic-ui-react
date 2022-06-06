@@ -53,21 +53,20 @@ function useParent(
 
 function useChild(
   { attrs, effect }: Child,
-  { isActive, activeElement, id }: ChildPayload,
+  { isActive, id }: ChildPayload,
 ) {
   const attributes = useMemo(
-    () => attrs?.({ isActive, activeElement, id }) ?? {},
+    () => attrs?.({ isActive, id }) ?? {},
     [
       attrs,
       isActive,
-      activeElement,
       id,
     ],
   );
 
   useUpdateEffect(() => {
-    effect?.({ isActive, activeElement, id });
-  }, [effect, isActive, activeElement, id]);
+    effect?.({ isActive, id });
+  }, [effect, isActive, id]);
 
   return attributes;
 }

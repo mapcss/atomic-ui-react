@@ -4,10 +4,8 @@ type Node<Args extends readonly unknown[]> = Partial<{
   attrs: (...args: Args) => void;
 }>;
 
-type CommonPayload = { activeElement?: Element | null };
-
-export type ParentPayload = CommonPayload;
-export type ChildPayload = CommonPayload & { isActive: boolean; id: string };
+export type ParentPayload = { activeElement: Element | null | undefined };
+export type ChildPayload = { isActive: boolean; id: string };
 
 export type Parent = Node<[ParentPayload]>;
 export type Child = Node<[ChildPayload]>;
