@@ -1,3 +1,20 @@
+# [1.0.0-beta.49](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.48...1.0.0-beta.49) (2022-06-06)
+
+
+### Features
+
+* **accordion:** change accordion interface,remove context from with components ([bb55082](https://github.com/mapcss/atomic-ui-react/commit/bb55082d3a791fd0af396bcb00543f0eba9e7170))
+* **accordion:** change context interface, props has `contexts` field ([326c659](https://github.com/mapcss/atomic-ui-react/commit/326c659bcec49b4a6b865df73237af7c61124f76))
+* **hooks:** add `useBind` hook that bind argument to function ([6878b7a](https://github.com/mapcss/atomic-ui-react/commit/6878b7a2deb9da248f7924d04a09fc4c5b0325de))
+* **hooks:** add `useCallable` hooks that manage conditional callable function ([aa49208](https://github.com/mapcss/atomic-ui-react/commit/aa49208a7a1c8cefa9a5ae7931e1fc8cdea61b76))
+* **hooks:** add `useLifecycle` that provide callback hooks for lifecycle ([4761532](https://github.com/mapcss/atomic-ui-react/commit/47615327cfc50cfce1bbe11c677c24e994629d09))
+* **hooks:** add `useMergedRef` that handle ref callback safety ([7555a3c](https://github.com/mapcss/atomic-ui-react/commit/7555a3cc6099644397a8246e1447384d05733d79))
+* **hooks:** add `useOutside` hooks ([c9795a7](https://github.com/mapcss/atomic-ui-react/commit/c9795a75e266cb07b54afe9095fea9079a75f8f0))
+* **hooks:** add 2nd arg of initialValue for `usePrevious` ([0bf795d](https://github.com/mapcss/atomic-ui-react/commit/0bf795d2f5074d156b8acf1380699288811a8361))
+* **hooks:** change hooks interface, remove `use` field ([4ae3836](https://github.com/mapcss/atomic-ui-react/commit/4ae3836e8c33309f1c6f62c8dd15126901552311))
+* **menu:** add basic menu components and hooks ([995b170](https://github.com/mapcss/atomic-ui-react/commit/995b170a36d0bf59f2acc897707fe51161c2c56f))
+* **transition:** change `WithTransition` props, add `Transition` component ([acec0de](https://github.com/mapcss/atomic-ui-react/commit/acec0de381973a5d1a771fc06f128a026fe4a89d))
+
 # [1.0.0-beta.48](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.47...1.0.0-beta.48) (2022-06-03)
 
 
