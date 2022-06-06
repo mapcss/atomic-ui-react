@@ -111,9 +111,8 @@ export default function useTransitionContexts<T extends Element>(
   ]);
 
   const [isActivated, transitionLifecycle] = useTransitionLifeCycle(
-    { duration: durationCallback },
+    { duration: durationCallback, use },
     [use, isEnter],
-    { use },
   );
 
   const isCompleted = useMemo<boolean>(() => transitionLifecycle === END, [

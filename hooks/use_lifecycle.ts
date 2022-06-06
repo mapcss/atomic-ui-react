@@ -2,7 +2,6 @@
 
 import { DependencyList, EffectCallback, useEffect } from "react";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
-import { Useable } from "./types.ts";
 
 export type Params = {
   /** Call on `useLayoutEffect` hooks. */
@@ -16,7 +15,7 @@ export type Params = {
 
   /** Call on before unmount. */
   onBeforeUnMount: () => void;
-} & Useable;
+};
 
 /** Callbacks for component lifecycle.
  * Some callbacks can return a callback function to be executed before unmount.
@@ -41,17 +40,16 @@ export type Params = {
  * ```
  */
 export default function useLifecycle(
-  { onBeforeMount, onMounted, onAfterMounted, onBeforeUnMount, use = true }:
-    Readonly<Partial<Params>>,
+  { onBeforeMount, onMounted, onAfterMounted, onBeforeUnMount }: Readonly<
+    Partial<Params>
+  >,
   deps?: DependencyList,
 ): void {
   useIsomorphicLayoutEffect(() => {
-    if (!use) return;
     return onBeforeMount?.();
   }, deps);
 
   useEffect(() => {
-    if (!use) return;
     const onMountedCallback = onMounted?.();
     let onAfterMountCallback: ReturnType<EffectCallback>;
 
