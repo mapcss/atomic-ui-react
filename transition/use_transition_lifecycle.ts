@@ -6,7 +6,7 @@ import { Useable } from "../hooks/types.ts";
 import { END, INIT, START, WAIT } from "./constant.ts";
 import { VFn } from "../deps.ts";
 import { TransitionName } from "./types.ts";
-import { useCallable, useLifecycle } from "../hooks/mod.ts";
+import { useBind, useCallable, useLifecycle } from "../hooks/mod.ts";
 
 export type TransitionsLifecycle = {
   [INIT]: TransitionName[];
@@ -64,7 +64,6 @@ export default function useTransitionLifecycle(
 ): Returns {
   const [state, setState] = useState<TransitionPhase>(0);
 
-  const set1 = useCallback<VFn>(() => setState(0), [setState]);
   const callback = useCallback<() => VFn>(() => {
     setState(1);
 
@@ -84,18 +83,13 @@ export default function useTransitionLifecycle(
     };
 
     return callback;
-  }, [setState]);
+  }, [setState, duration]);
 
+  const set1 = useBind(setState, 0);
   const onBeforeMount = useCallable(set1, use);
   const onAfterMounted = useCallable(callback, use);
 
-  useLifecycle(
-    {
-      onBeforeMount,
-      onAfterMounted,
-    },
-    deps,
-  );
+  useLifecycle({ onBeforeMount, onAfterMounted }, deps);
 
   const returns = useMemo<Returns>(() => {
     if (!use) return [false];
