@@ -5,6 +5,51 @@ project.
 
 ## API
 
+### useBind
+
+Bind arguments to the function. The actual binding is done when the function is
+called.
+
+#### Example
+
+```tsx
+import { useState } from "react";
+import { useBind } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+
+function add(a: number, b: number): number {
+  return a + b;
+}
+export default () => {
+  const [state, setState] = useState(0);
+  const inc = useBind(setState, (state) => state + 1);
+  // inc()
+  const add1 = useBind(add, 1);
+  // add1(2) // 3
+};
+```
+
+#### Generics
+
+- `F extends ( ...args: readonly any[]) => any`
+- `Args extends Sequence<Parameters<F>>`
+
+```tsx
+type Sequence<T extends readonly any[]> = T extends [infer F, ...infer R]
+  ? [F, ...Sequence<R>] | [F]
+  : [];
+```
+
+#### Params
+
+| N | Name    | Required / Default | Description                        |
+| - | ------- | :----------------: | ---------------------------------- |
+| 1 | fn      | :white_check_mark: | `F`<br>Function to bind arguments. |
+| 2 | ...args |         -          | `Args`<br>bind arguments.          |
+
+#### Return
+
+`( ...rest: Slice<Parameters<F>, Args["length"], Parameters<F>["length"]> ) => ReturnType<F>`
+
 ### useCallable
 
 [Source](./use_callable.ts) [Test](./use_callable_test.ts)
