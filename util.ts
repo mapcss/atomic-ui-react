@@ -46,6 +46,10 @@ export function lazyEval<T, U extends (...args: any[]) => T = () => T>(
   return isFunction(lazyable) ? lazyable() : lazyable;
 }
 
+export function resolveLazy<T>(value: T): T extends Fn ? ReturnType<T> : T {
+  return isFunction(value) ? value.apply(null) : value;
+}
+
 export function isRefObject<T>(value: unknown): value is RefObject<T> {
   return isObject(value) && "current" in value;
 }
@@ -647,4 +651,18 @@ export function sortTabOrder(
     return Number(tabIndex);
   });
   return result.reverse();
+}
+
+/** Safe `JSON.stringify`
+ * It never throws an error and never returns `undefined`. Instead, it returns an empty string.
+ */
+export function JSONStringify(
+  ...args: Parameters<typeof JSON.stringify>
+): string {
+  try {
+    const result = JSON.stringify(args);
+    return isString(result) ? result : "";
+  } catch {
+    return "";
+  }
 }
