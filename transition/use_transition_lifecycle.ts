@@ -87,8 +87,8 @@ export default function useTransitionLifecycle(
           }
         };
       },
+      use,
     },
-    { use },
     deps,
   );
 
