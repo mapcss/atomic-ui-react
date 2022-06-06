@@ -7,6 +7,8 @@ project.
 
 ### useBind
 
+[Source](./use_bind.ts) [Test](./use_bind_test.ts)
+
 Bind arguments to the function. The actual binding is done when the function is
 called.
 
