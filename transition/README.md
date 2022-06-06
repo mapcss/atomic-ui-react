@@ -217,22 +217,6 @@ export default () => {
 
 Monitors the mount lifecycle and returns the appropriate transition status.
 
-#### Types
-
-```ts
-import { RefObject } from "react";
-import {
-  TransitionMap,
-  UseTransitionParam,
-  UseTransitionReturnValue,
-} from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
-
-declare function useTransition<T extends Element>(
-  { duration, isShow }: Readonly<UseTransitionParam<T>>,
-  transitionMap: Readonly<Partial<TransitionMap>>,
-): UseTransitionReturnValue;
-```
-
 #### Example
 
 ```tsx
@@ -240,12 +224,12 @@ import { useRef, useState } from "react";
 import { useTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 
 export default () => {
-  const [isShow] = useState(true);
+  const [isEnter] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
-  const { className } = useTransition({ isShow, duration: ref }, {
+  const [{ className }] = useTransition({ isEnter, duration: ref }, {
     enter: "transition duration-300",
     enterFrom: "opacity-0",
-  }, [isShow]);
+  });
   return <div ref={ref} className={className}></div>;
 };
 ```

@@ -70,23 +70,6 @@ export type Contexts =
     mode: undefined;
   });
 
-/** Monitors the mount lifecycle and returns the appropriate transition status.
- * ```tsx
- * import { useRef, useState } from "react"
- * import { useTransition } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
- *
- * export default () => {
- *   const [isShow] = useState(true)
- *   const ref = useRef<HTMLDivElement>(null)
- *   const { className } = useTransition({ isShow, duration: ref }, {
- *     enter: "transition duration-300",
- *     enterFrom: "opacity-0",
- *   }, [isShow]);
- *
- *   return <div ref={ref} className={className}></div>
- *   };
- * ```
- */
 export default function useTransitionContexts<T extends Element>(
   { duration, isEnter, immediate = false }: Readonly<Params<T>>,
 ): Contexts {

@@ -33,7 +33,7 @@ it(describeTests, "should render as", (t) => {
           id: "accordion",
         }}
       >
-        {(attrs, contexts) => {
+        {({ type, ...attrs }, contexts) => {
           mockFn(attrs);
           mockFn(contexts);
 

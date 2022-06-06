@@ -13,7 +13,7 @@ export type Returns<E> = [getRef: RefObject<E>, setRef: Ref<E>];
  * import { useMergedRef } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
  * import { forwardRef, useEffect } from "react";
  *
- * forwardRef<Element>((props, ref) => {
+ * forwardRef<HTMLDivElement>((props, ref) => {
  *   const [getRef, setRef] = useMergedRef(ref);
  *   useEffect(() => {
  *     // getRef.current
