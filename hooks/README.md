@@ -5,6 +5,39 @@ project.
 
 ## API
 
+### useCallable
+
+[Source](./use_callable.ts) [Test](./use_callable_test.ts)
+
+Create a conditional callable function.
+
+#### Example
+
+```tsx
+import { useCallable } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+
+export default () => {
+  const callback = useCallable(() => {
+    console.log("This will not call");
+  }, false);
+};
+```
+
+#### Generics
+
+- `F extends (...args: readonly any[]) => any`
+
+#### Params
+
+| N | Name     | Required / Default | Description                                                                                                                                                            |
+| - | -------- | :----------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | callback | :white_check_mark: | `F`<br>The callback function.                                                                                                                                          |
+| 2 | callable |       `true`       | `boolean`<br>condition. <ul><li> `true` callback is called and returns its return value.</li><li> `false` callback will not be called and will return early.</li></ul> |
+
+#### Return
+
+`(...args: Parameters<F>) => ReturnType<F> | undefined`
+
 ### useBoolean
 
 [Source](./use_boolean.ts) [Test](./use_boolean_test.ts)
