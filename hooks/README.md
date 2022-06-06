@@ -208,6 +208,63 @@ Accepts up to 1 arguments.
 
 `[getRef: RefObject<E>, setRef: Ref<E>]`
 
+### useOutside
+
+[Source](./use_outside.ts) [Test](./use_outside_test.ts)
+
+Make callback that call outside of target.
+
+#### Example
+
+```tsx
+import { useOutside } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { MouseEvent, useRef } from "react";
+
+export default () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const callback = useOutside<MouseEvent>({
+    target: () => ref.current,
+    callback: (ev) => {
+      console.log("call on outside", ev);
+    },
+  });
+
+  return (
+    <div onClick={callback}>
+      outer
+      <div ref={ref}>inner</div>
+    </div>
+  );
+};
+```
+
+#### Generics
+
+- `Ev extends { currentTarget: EventTarget | null }`
+
+#### Params
+
+| N | Name          |  Required / Default  | Description                                                                                                                                             |
+| - | ------------- | :------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | params        |  :white_check_mark:  | useOutside params                                                                                                                                       |
+|   | target        |  :white_check_mark:  | `EventTarget` &#124; `null` &#124; `undefined` &#124; `() => EventTarget` &#124; `null` &#124; `undefined`<br> Criteria target to determine if outside. |
+|   | callback      |  :white_check_mark:  | `(ev: Ev) => void`<br>Call on `target` is outside of the current target.                                                                                |
+| 2 | options       |          -           | useOutside options                                                                                                                                      |
+|   | innerCallback |          -           | `(ev: Ev) => void`<br>Callback called if current target is not outside, contains current target.                                                        |
+|   | compare       | `defaultCompare`[^7] | `(current: Node, target: Node) => boolean`<br>Comparison function for outside or not.                                                                   |
+
+[^7]: defaultCompare
+
+```tsx
+function defaultCompare(current: Node, node: Node): boolean {
+  return node.contains(current);
+}
+```
+
+#### Returns
+
+`(ev: Ev) => void`
+
 ### usePrevious
 
 [Source](./use_previous.ts) [Test](./use_previous_test.ts)

@@ -24,8 +24,8 @@ export type {
 export type { Useable } from "./types.ts";
 export { default as useOutside } from "./use_outside.ts";
 export type {
-  Option as UseOutsideOption,
-  Param as UseOutsideParam,
+  Options as UseOutsideOptions,
+  Params as UseOutsideParams,
 } from "./use_outside.ts";
 export { default as useEventListener } from "./use_event_listener.ts";
 export type {

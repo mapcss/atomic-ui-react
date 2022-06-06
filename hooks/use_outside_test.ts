@@ -12,30 +12,43 @@ const describeTests = describe({
 
 it(describeTests, "should fire event when outside element is fired", () => {
   const mockFn = fn();
-  const target = document.createElement("div");
+  const outer = document.createElement("div");
+  outer.innerText = "outer";
   const inner = document.createElement("div");
-  const wrapper = document.createElement("div");
-  target.appendChild(inner);
-  wrapper.appendChild(target);
-  document.body.appendChild(wrapper);
+  inner.innerText = "inner";
+  const trigger = document.createElement("div");
+  trigger.innerText = "trigger";
+  trigger.appendChild(inner);
+  outer.appendChild(trigger);
+  document.body.appendChild(outer);
 
-  const { unmount } = renderHook(() =>
+  const { result, rerender } = renderHook(({ target }) =>
     useOutside({
-      callback: mockFn,
-      event: "click",
+      callback: (ev) => {
+        mockFn(ev);
+      },
       target,
-    })
-  );
+    }), {
+    initialProps: {
+      target: inner,
+    },
+  });
 
-  fireEvent.click(document, { bubbles: true, cancelable: false });
-  expect(mockFn).toHaveBeenCalledTimes(1);
-  fireEvent.click(wrapper, { bubbles: true, cancelable: false });
-  expect(mockFn).toHaveBeenCalledTimes(2);
-  fireEvent.click(target, { bubbles: true, cancelable: false });
-  expect(mockFn).toHaveBeenCalledTimes(2);
-  fireEvent.click(inner, { bubbles: true, cancelable: false });
-  expect(mockFn).toHaveBeenCalledTimes(2);
-  unmount();
-  fireEvent.click(document, { bubbles: true, cancelable: false });
-  expect(mockFn).toHaveBeenCalledTimes(2);
+  trigger.onclick = result.current;
+  expect(mockFn).not.toHaveBeenCalled();
+
+  fireEvent.click(trigger);
+  expect(mockFn).not.toHaveBeenCalled();
+
+  rerender({ target: trigger });
+  trigger.onclick = result.current;
+
+  fireEvent.click(trigger);
+  expect(mockFn).not.toHaveBeenCalled();
+
+  rerender({ target: outer });
+  trigger.onclick = result.current;
+
+  fireEvent.click(trigger);
+  expect(mockFn).toHaveBeenCalled();
 });
