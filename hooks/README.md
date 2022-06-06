@@ -169,6 +169,50 @@ export default () => {
 
 `boolean`
 
+### useLifecycle
+
+Callbacks for component lifecycle. Some callbacks can return a callback function
+to be executed before unmount.
+
+#### Example
+
+```tsx
+import { useLifecycle } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+
+useLifecycle(
+  {
+    onBeforeMount: () => {
+      // call on same as `useLayoutEffect`
+    },
+    onMounted: () => {
+      // call on same as `useEffect`
+    },
+    onAfterMounted: () => {
+      // call on next frame of mount
+    },
+    onBeforeUnMount: () => {
+      // call on before unmount
+    },
+  },
+  [],
+);
+```
+
+#### Params
+
+| N | Name            | Required / Default | Description                                                            |
+| - | --------------- | :----------------: | ---------------------------------------------------------------------- |
+| 1 | params          | :white_check_mark: | useLifecycle parameters                                                |
+|   | onBeforeMount   |         -          | `EffectCallback`<br>Call on `useLayoutEffect` hooks.                   |
+|   | onMounted       |         -          | `EffectCallback`<br>Call on `useEffect` hooks.                         |
+|   | onAfterMounted  |         -          | `EffectCallback`<br> Call on next frame of mount.                      |
+|   | onBeforeUnMount |         -          | `() => void`<br>Call on before unmount.                                |
+| 2 | deps            |         -          | `DependencyList`<br> All callbacks are called whenever `deps` changes. |
+
+#### Return
+
+`void`
+
 ### useMergedRef
 
 [Source](./use_merged_ref.ts) [Test](./use_merged_ref_test.ts)
