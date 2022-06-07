@@ -10,6 +10,7 @@ import { IsShowProps } from "./types.ts";
 import {
   AllAttributesWith,
   useAttributesWith,
+  useCallable,
   useEventListener,
   useKeyboardEventHandler,
   useUpdateEffect,
@@ -140,10 +141,11 @@ export function defineUseDialog(role: "dialog" | "alertdialog") {
       role,
     });
 
+    const callback = useCallable(keyboardHandler, isShow);
+
     useEventListener(
-      { target, event: "keydown", callback: keyboardHandler },
-      { use: isShow },
-      [target, isShow, keyboardHandler],
+      { target, event: "keydown", callback },
+      [target, callback],
     );
 
     return [attributes, contexts];
