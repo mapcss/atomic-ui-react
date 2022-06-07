@@ -1,3 +1,10 @@
+# [1.0.0-beta.50](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.49...1.0.0-beta.50) (2022-06-07)
+
+
+### Bug Fixes
+
+* **tooltip:** export `Tooltip` component ([897059c](https://github.com/mapcss/atomic-ui-react/commit/897059c57573ea277371df85f0f3cb2b3d64e72c))
+
 # [1.0.0-beta.49](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.48...1.0.0-beta.49) (2022-06-06)
 
 
