@@ -88,7 +88,7 @@ it(describeTests, "should add event listener to lazy element", () => {
   const { unmount } = renderHook(() =>
     useEventListener({
       target: () => el,
-      event: ["mouseenter", "mouseleave"],
+      event: "mouseenter",
       callback: mockFn,
     })
   );
@@ -96,11 +96,9 @@ it(describeTests, "should add event listener to lazy element", () => {
   expect(mockFn).not.toHaveBeenCalled();
 
   fireEvent.mouseEnter(el);
-  fireEvent.mouseLeave(el);
-  expect(mockFn).toHaveBeenCalledTimes(2);
+  expect(mockFn).toHaveBeenCalledTimes(1);
 
   unmount();
   fireEvent.mouseEnter(el);
-  fireEvent.mouseLeave(el);
-  expect(mockFn).toHaveBeenCalledTimes(2);
+  expect(mockFn).toHaveBeenCalledTimes(1);
 });

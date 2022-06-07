@@ -25,10 +25,7 @@ export type {
   Params as UseOutsideParams,
 } from "./use_outside.ts";
 export { default as useEventListener } from "./use_event_listener.ts";
-export type {
-  Option as UseEventListenerOption,
-  Param as UseEventListenerParam,
-} from "./use_event_listener.ts";
+export type { Params as UseEventListenerParams } from "./use_event_listener.ts";
 export { default as useKeyboardEventHandler } from "./use_keyboard_event_handler.ts";
 export { default as useKeyId } from "./use_key_id.ts";
 export type {
