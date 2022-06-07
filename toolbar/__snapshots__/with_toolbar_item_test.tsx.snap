@@ -1,5 +1,9 @@
 export const snapshot = {};
 
-snapshot[`WithToolbarItem > should render as 1`] = `'<button tabindex="0">1</button><button tabindex="-1">2</button>'`;
+snapshot[`WithToolbarItem > should render as 1`] = `'<div tabindex="0">1</div>'`;
 
-snapshot[`WithToolbarItem > should render as children 1`] = `'<button tabindex="0">1</button><button tabindex="-1">2</button>'`;
+snapshot[`WithToolbarItem > should change active on fire click 1`] = `'<div data-testid="item1" tabindex="0">1</div><div data-testid="item2" tabindex="-1">2</div>'`;
+
+snapshot[`WithToolbarItem > should change active on fire click 2`] = `'<div data-testid="item1" tabindex="-1">1</div><div data-testid="item2" tabindex="0">2</div>'`;
+
+snapshot[`WithToolbarItem > should change active on fire click 3`] = `'<div data-testid="item1" tabindex="0">1</div><div data-testid="item2" tabindex="-1">2</div>'`;

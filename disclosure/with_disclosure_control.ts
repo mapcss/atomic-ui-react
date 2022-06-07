@@ -1,68 +1,42 @@
 // This module is browser compatible.
 
-import { cloneElement, ReactElement, useContext, useMemo } from "react";
-import { isFunction, ValueOf } from "../deps.ts";
-import { BooleanContext, IdContext } from "../_shared/context.ts";
-import { mergeProps } from "../util.ts";
+import { useContext } from "react";
+import { IdContext, OpenContext } from "./context.ts";
 import { ERROR_MSG } from "./constant.ts";
-import { DispatchMap } from "./types.ts";
 import useDisclosureControl, {
-  Attributes,
-  Contexts,
+  AllAttributesWithContexts,
   Options,
+  Returns,
 } from "./use_disclosure_control.ts";
 
-type Type = "toggle" | "open" | "close";
-
-export type Props = {
-  /**
-   * @defaultValue `toggle`
-   */
-  type?: Type;
-
-  children:
-    | ReactElement
-    | ((
-      attributes: Attributes,
-      contexts: Contexts,
-    ) => JSX.Element);
-} & Partial<Options>;
+export type Props =
+  & {
+    children: (
+      attributes: Returns[0],
+      contexts: Returns[1],
+    ) => JSX.Element;
+  }
+  & Partial<Options>
+  & Partial<AllAttributesWithContexts>;
 
 export default function WithDisclosureControl(
-  { on, onKey, type = "toggle", keyEntries, children }: Readonly<Props>,
+  { mutateType, children, ...allAttributes }: Readonly<Props>,
 ): JSX.Element | never {
   const id = useContext(IdContext);
-  const stateSet = useContext(BooleanContext);
+  const stateSet = useContext(OpenContext);
 
-  if (!stateSet) throw Error(ERROR_MSG);
+  if (!id || !stateSet) throw Error(ERROR_MSG);
 
-  const [isOpen, { on: open, off: close, toggle }] = stateSet;
-  const dispatch = useMemo<ValueOf<DispatchMap>>(() => {
-    const dispatches: DispatchMap = { open, close, toggle };
-    return dispatches[type];
-  }, [
-    type,
-    open,
-    close,
-    toggle,
-  ]);
+  const [isOpen, setIsOpen] = stateSet;
+  const [attributes, contexts] = useDisclosureControl(
+    {
+      isOpen,
+      id,
+      setIsOpen,
+    },
+    { mutateType },
+    allAttributes,
+  );
 
-  const [attributes, contexts] = useDisclosureControl({
-    isOpen,
-    id,
-    dispatch,
-  }, {
-    on,
-    onKey,
-    keyEntries,
-  });
-
-  const child = isFunction(children)
-    ? children(attributes, contexts)
-    : cloneElement(
-      children,
-      mergeProps(children.props, attributes),
-    );
-
-  return child;
+  return children(attributes, contexts);
 }

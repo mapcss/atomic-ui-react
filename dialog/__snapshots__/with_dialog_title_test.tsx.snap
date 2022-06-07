@@ -1,0 +1,3 @@
+export const snapshot = {};
+
+snapshot[`WithDialogTitle > should render as 1`] = `'<h2 id="dialog-title"></h2>'`;

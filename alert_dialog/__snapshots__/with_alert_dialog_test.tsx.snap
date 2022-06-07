@@ -1,7 +1,3 @@
 export const snapshot = {};
 
-snapshot[`WithAlertDialog > should render as 1`] = `'<div role="alertdialog" aria-modal="true"></div>'`;
-
-snapshot[`WithAlertDialog > should have aria-labelledby attribute when WithDialogTitle is exists 1`] = `'<div role="alertdialog" aria-modal="true" aria-labelledby="atomic-ui-0-alert-dialog-title"><h2 id="atomic-ui-0-alert-dialog-title">test</h2></div>'`;
-
-snapshot[`WithAlertDialog > should have aria-describedby attribute when WithDialogDescribe is exists 1`] = `'<div role="alertdialog" aria-modal="true" aria-describedby="atomic-ui-0-alert-dialog-describe"><p id="atomic-ui-0-alert-dialog-describe">test</p></div>'`;
+snapshot[`WithAlertDialog > should render as 1`] = `'<div aria-modal="true" role="alertdialog"></div>'`;

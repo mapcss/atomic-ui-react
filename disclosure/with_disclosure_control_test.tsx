@@ -4,6 +4,7 @@ import SSRProvider from "../ssr/ssr_provider.ts";
 import {
   anyBoolean,
   anyFunction,
+  anyOf,
   anyString,
   assertSnapshot,
   describe,
@@ -25,7 +26,7 @@ it(describeTests, "should throw error when it not wrap Context", () => {
   expect(() =>
     render(
       <WithDisclosureControl>
-        <p>test</p>
+        {(attrs) => <p {...attrs}>test</p>}
       </WithDisclosureControl>,
     )
   ).toThrow();
@@ -37,7 +38,7 @@ it(
   (t) => {
     const { container, getByTestId } = render(
       <WithDisclosureControl>
-        <p data-testid="test">test</p>
+        {(attrs) => <p {...attrs} data-testid="test">test</p>}
       </WithDisclosureControl>,
       {
         wrapper: ({ children }) => {
@@ -58,38 +59,6 @@ it(
     assertSnapshot(t, container.innerHTML);
 
     fireEvent.click(el);
-    assertSnapshot(t, container.innerHTML);
-  },
-);
-
-it(
-  describeTests,
-  "should change trigger event",
-  (t) => {
-    const { container, getByTestId } = render(
-      <WithDisclosureControl on={["onMouseEnter", "onMouseLeave"]}>
-        <div data-testid="test">test</div>
-      </WithDisclosureControl>,
-      {
-        wrapper: ({ children }) => {
-          return (
-            <SSRProvider>
-              <Disclosure>{children as never}</Disclosure>
-            </SSRProvider>
-          );
-        },
-      },
-    );
-
-    const el = getByTestId("test");
-
-    fireEvent.click(el);
-    assertSnapshot(t, container.innerHTML);
-
-    fireEvent.mouseEnter(el);
-    assertSnapshot(t, container.innerHTML);
-
-    fireEvent.mouseLeave(el);
     assertSnapshot(t, container.innerHTML);
   },
 );
@@ -128,7 +97,9 @@ it(
     expect(mockFn).toHaveBeenCalledWith({
       id: anyString(),
       isOpen: anyBoolean(),
-      dispatch: anyFunction(),
+      mutateType: anyOf(["toggle", "off", "on"]),
+      mutateValue: anyBoolean(),
+      setIsOpen: anyFunction(),
     });
   },
 );
@@ -139,7 +110,11 @@ it(
   () => {
     const mockFn = fn();
     render(
-      <WithDisclosureControl on={["onAbort", "onChange"]}>
+      <WithDisclosureControl
+        onAbort={() => {}}
+        onChange={() => {}}
+        onClick={undefined}
+      >
         {(props) => {
           mockFn(props);
           return <></>;
@@ -161,6 +136,7 @@ it(
       "aria-expanded": anyBoolean(),
       role: "button",
       onAbort: anyFunction(),
+      onClick: undefined,
       onChange: anyFunction(),
       onKeyDown: anyFunction(),
     });

@@ -1,4 +1,5 @@
 import {
+  anyBoolean,
   anyFunction,
   anyObject,
   anyString,
@@ -11,11 +12,8 @@ import {
 } from "../dev_deps.ts";
 import { ReactElement } from "react";
 import SSRProvider from "../ssr/ssr_provider.ts";
-import AlertDialogProvider from "./alert_dialog_provider.ts";
 import WithAlertDialog from "./with_alert_dialog.ts";
-import WithDialogTitle from "./with_dialog_title.ts";
-import WithDialogDescribe from "./with_dialog_describe.ts";
-import { fireEvent, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 
 const describeTests = describe({
   name: "WithAlertDialog",
@@ -26,16 +24,13 @@ const describeTests = describe({
 
 it(describeTests, "should render as", (t) => {
   const { container } = render(
-    <WithAlertDialog isShow>
-      <div>
-      </div>
+    <WithAlertDialog initialIsShow>
+      {(attributes) => <div {...attributes} />}
     </WithAlertDialog>,
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <AlertDialogProvider>
-            {children as ReactElement}
-          </AlertDialogProvider>
+          {children as ReactElement}
         </SSRProvider>
       ),
     },
@@ -44,64 +39,10 @@ it(describeTests, "should render as", (t) => {
   assertSnapshot(t, container.innerHTML);
 });
 
-it(
-  describeTests,
-  "should have aria-labelledby attribute when WithDialogTitle is exists",
-  (t) => {
-    const { container } = render(
-      <WithAlertDialog isShow>
-        <div>
-          <WithDialogTitle>
-            <h2>test</h2>
-          </WithDialogTitle>
-        </div>
-      </WithAlertDialog>,
-      {
-        wrapper: ({ children }) => (
-          <SSRProvider>
-            <AlertDialogProvider>
-              {children as ReactElement}
-            </AlertDialogProvider>
-          </SSRProvider>
-        ),
-      },
-    );
-
-    assertSnapshot(t, container.innerHTML);
-  },
-);
-
-it(
-  describeTests,
-  "should have aria-describedby attribute when WithDialogDescribe is exists",
-  (t) => {
-    const { container } = render(
-      <WithAlertDialog isShow>
-        <div>
-          <WithDialogDescribe>
-            <p>test</p>
-          </WithDialogDescribe>
-        </div>
-      </WithAlertDialog>,
-      {
-        wrapper: ({ children }) => (
-          <SSRProvider>
-            <AlertDialogProvider>
-              {children as ReactElement}
-            </AlertDialogProvider>
-          </SSRProvider>
-        ),
-      },
-    );
-
-    assertSnapshot(t, container.innerHTML);
-  },
-);
-
 it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   render(
-    <WithAlertDialog isShow>
+    <WithAlertDialog initialIsShow>
       {(attributes, context) => {
         mockFn(attributes);
         mockFn(context);
@@ -111,9 +52,7 @@ it(describeTests, "should render children as props", (t) => {
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <AlertDialogProvider>
-            {children as ReactElement}
-          </AlertDialogProvider>
+          {children as ReactElement}
         </SSRProvider>
       ),
     },
@@ -125,56 +64,13 @@ it(describeTests, "should render children as props", (t) => {
     "aria-modal": anyString(),
     role: anyString(),
     ref: anyObject(),
-    hidden: undefined,
+    hidden: anyBoolean(),
   });
   expect(mockFn).toHaveBeenCalledWith({
-    focusPrev: anyFunction(),
-    focusNext: anyFunction(),
-    focusFirst: anyFunction(),
-    focusLast: anyFunction(),
+    titleId: undefined,
+    describeId: undefined,
+    isShow: anyBoolean(),
+    setIsShow: anyFunction(),
+    root: anyFunction(),
   });
 });
-
-it(
-  describeTests,
-  "should focus focusable element on fire keyDown event with tab key",
-  () => {
-    const { getByTestId } = render(
-      <WithAlertDialog isShow>
-        <div>
-          <button data-testid="test1">1</button>
-          <button data-testid="test2">2</button>
-        </div>
-      </WithAlertDialog>,
-      {
-        wrapper: ({ children }) => (
-          <SSRProvider>
-            <AlertDialogProvider>
-              {children as ReactElement}
-            </AlertDialogProvider>
-          </SSRProvider>
-        ),
-      },
-    );
-
-    const el1 = getByTestId("test1");
-    const el2 = getByTestId("test2");
-    expect(el1).toHaveFocus();
-    fireEvent.keyDown(document, {
-      code: "Tab",
-    });
-
-    expect(el2).toHaveFocus();
-
-    fireEvent.keyDown(document, {
-      code: "Tab",
-    });
-    expect(el1).toHaveFocus();
-
-    fireEvent.keyDown(document, {
-      code: "Tab",
-      shiftKey: true,
-    });
-    expect(el2).toHaveFocus();
-  },
-);

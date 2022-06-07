@@ -10,10 +10,7 @@ import {
   it,
   setupJSDOM,
 } from "../dev_deps.ts";
-import { ReactNode } from "react";
-import SSRProvider from "../ssr/ssr_provider.ts";
 import WithAccordionPanel from "./with_accordion_panel.ts";
-import AccordionProvider from "./accordion_provider.ts";
 import { render } from "@testing-library/react";
 
 const describeTests = describe({
@@ -24,65 +21,41 @@ const describeTests = describe({
 });
 
 it(describeTests, "should render as", (t) => {
-  const { container } = render(
-    <>
-      <WithAccordionPanel>
-        <div>test1</div>
-      </WithAccordionPanel>
-      <WithAccordionPanel>
-        <div>test2</div>
-      </WithAccordionPanel>
-    </>,
-    {
-      wrapper: ({ children }) => (
-        <SSRProvider>
-          <AccordionProvider>{children as ReactNode}</AccordionProvider>
-        </SSRProvider>
-      ),
-    },
-  );
-
-  assertSnapshot(t, container.innerHTML);
-});
-
-it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   const { container } = render(
     <>
-      <WithAccordionPanel>
+      <WithAccordionPanel
+        contexts={{
+          headerId: "header",
+          index: 0,
+          openIndex: 0,
+          setOpenIndex: () => {},
+          id: "panel",
+        }}
+      >
         {(attrs, contexts) => {
           mockFn(attrs);
           mockFn(contexts);
-          return <div {...attrs}>test</div>;
+          return <div {...attrs}>test1</div>;
         }}
       </WithAccordionPanel>
     </>,
-    {
-      wrapper: ({ children }) => (
-        <SSRProvider>
-          <AccordionProvider>{children as ReactNode}</AccordionProvider>
-        </SSRProvider>
-      ),
-    },
   );
+
   assertSnapshot(t, container.innerHTML);
 
   expect(mockFn).toHaveBeenCalledWith({
-    "hidden": undefined,
-    "aria-labelledby": anyString(),
-    id: anyString(),
+    "hidden": false,
+    "aria-labelledby": "header",
+    id: "panel",
   });
 
   expect(mockFn).toHaveBeenCalledWith({
     isOpen: anyBoolean(),
     index: anyNumber(),
-    focusFirst: anyFunction(),
-    focusLast: anyFunction(),
-    focusNext: anyFunction(),
-    focusPrev: anyFunction(),
+    openIndex: anyNumber(),
+    setOpenIndex: anyFunction(),
     id: anyString(),
     headerId: anyString(),
-    panelId: anyString(),
-    targets: anyFunction(),
   });
 });

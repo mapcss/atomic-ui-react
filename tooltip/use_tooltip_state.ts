@@ -1,7 +1,7 @@
 import { DependencyList, useEffect } from "react";
 import { ElementLike, resolveElementLike, resolveEventType } from "../util.ts";
 import { Useable } from "../hooks/types.ts";
-import useBoolean, { ReturnValue } from "../hooks/use_boolean.ts";
+import useBoolean, { Returns } from "../hooks/use_boolean.ts";
 
 export type Param = {
   enterEvent: string | Iterable<string>;
@@ -18,7 +18,7 @@ export default function useTooltipState(
     Partial<Option>
   > = {},
   deps?: DependencyList,
-): ReturnValue {
+): Returns {
   const [state, { on, off, toggle }] = useBoolean();
 
   useEffect(() => {

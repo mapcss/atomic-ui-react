@@ -5,10 +5,10 @@ import { renderHook } from "@testing-library/react-hooks";
 Deno.test("should be true on first mount, false on second mount", () => {
   const { result, rerender } = renderHook(() => useIsFirstMount());
 
-  expect(result.current.isFirstMount).toBe(true);
+  expect(result.current).toBe(true);
 
   rerender();
-  expect(result.current.isFirstMount).toBe(false);
+  expect(result.current).toBe(false);
   rerender();
-  expect(result.current.isFirstMount).toBe(false);
+  expect(result.current).toBe(false);
 });

@@ -1,15 +1,17 @@
 import {
-  AllHTMLAttributes,
   createElement,
   forwardRef as _forwardRef,
+  ReactNode,
   Ref,
+  useContext,
   useMemo,
 } from "react";
 import WithAccordionHeader from "./with_accordion_header.ts";
-import { mergeProps } from "../util.ts";
-import { useAs } from "../_shared/hooks.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
-import { Contexts, Options } from "./use_accordion_header.ts";
+import { AttributesWithContexts, Params } from "./use_accordion_header.ts";
+import { CommonContextsContext, IdContext } from "./context.ts";
+import { useId } from "../hooks/mod.ts";
+import { joinChars } from "../util.ts";
 
 type _Props<As extends Tag> = {
   /**
@@ -17,32 +19,48 @@ type _Props<As extends Tag> = {
    */
   as?: As;
 
-  renderAttributes?: (contexts: Contexts) => AllHTMLAttributes<Element>;
-} & Partial<Options>;
+  children?: ReactNode;
+} & Partial<AttributesWithContexts>;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _AccordionHeader<As extends Tag = "button">(
-  { as, on, onKey, keyEntries, renderAttributes, ...props }: Readonly<
-    Props<As>
-  >,
+  { as = "button" as As, children, ...allAttributes }: Readonly<Props<As>>,
   ref: Ref<Element>,
-): JSX.Element {
+): JSX.Element | never {
+  const groupId = useContext(IdContext);
+  const commonContexts = useContext(CommonContextsContext);
+
+  if (!groupId || !commonContexts) throw Error();
+
+  const prefix = useMemo<string>(
+    () => joinChars([groupId, "accordion", "header"], "-")!,
+    [groupId],
+  );
+
+  const { id, index } = useId({ prefix });
+
+  const panelId = useMemo<string>(
+    () => joinChars([groupId, "accordion", "panel", index], "-")!,
+    [groupId, index],
+  );
+
+  const contexts = useMemo<Params>(() => ({
+    ...commonContexts,
+    index,
+    id,
+    panelId,
+  }), [commonContexts, index, id, panelId]);
+
   return WithAccordionHeader({
-    children: (attrs, context) => {
-      const tag = useAs(as, "button");
-      const attributes = useMemo<AllHTMLAttributes<Element>>(
-        () => renderAttributes?.(context) ?? {},
-        [renderAttributes, JSON.stringify(context)],
-      );
-      return createElement(tag, {
+    children: (attrs) => {
+      return createElement(as, {
         ref,
-        ...mergeProps(attrs, mergeProps(props, attributes)),
-      });
+        ...attrs,
+      }, children);
     },
-    onKey,
-    on,
-    keyEntries,
+    contexts,
+    ...allAttributes,
   });
 }
 

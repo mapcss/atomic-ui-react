@@ -14,17 +14,16 @@ import {
   START,
   WAIT,
 } from "./constant.ts";
-import { ReturnValue } from "./use_transition.ts";
-import { TransitionLifecycleMap } from "./use_transition_lifecycle.ts";
+import { TransitionsLifecycle } from "./use_transition_lifecycle.ts";
 
-const ENTER_TRANSITION_MAP: TransitionLifecycleMap = {
+const ENTER_TRANSITION_MAP: TransitionsLifecycle = {
   [INIT]: [ENTER_FROM],
   [START]: [ENTER_FROM, ENTER],
   [WAIT]: [ENTER, ENTER_TO],
   [END]: [ENTERED],
 };
 
-const LEAVE_TRANSITION_MAP: TransitionLifecycleMap = {
+const LEAVE_TRANSITION_MAP: TransitionsLifecycle = {
   [INIT]: [LEAVE_FROM],
   [START]: [LEAVE_FROM, LEAVE],
   [WAIT]: [LEAVE, LEAVE_TO],
@@ -58,29 +57,6 @@ function parseFiniteFloat(value: string): number | undefined {
   return Number.isFinite(num) ? num : undefined;
 }
 
-export function getTransitionMap(isEnter: boolean): TransitionLifecycleMap {
+export function getTransitionMap(isEnter: boolean): TransitionsLifecycle {
   return isEnter ? ENTER_TRANSITION_MAP : LEAVE_TRANSITION_MAP;
-}
-
-/** It takes two `boolean` values and determines if it can be rendered to the DOM.
- * This can be used to determine rendering of components with transitions applied.
- * @param isShow - Whether visible or not.
- * @param isCompleted - Whether the transition is completed or not.
- *
- * ```ts
- * import { isShowable } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
- * isShowable(true, { isActivated: false, isCompleted: false, hasLeaved: true })
- * ```
- */
-export function isShowable(
-  isShow: boolean,
-  { isActivated, isCompleted, hasLeaved }: Readonly<
-    Pick<
-      ReturnValue,
-      "isActivated" | "isCompleted"
-    > & { hasLeaved: boolean }
-  >,
-): boolean {
-  if (!isActivated) return isShow;
-  return isShow || !isCompleted || hasLeaved;
 }

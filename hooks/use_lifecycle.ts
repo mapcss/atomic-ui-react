@@ -2,9 +2,8 @@
 
 import { DependencyList, EffectCallback, useEffect } from "react";
 import useIsomorphicLayoutEffect from "../hooks/use_isomorphic_layout_effect.ts";
-import { Useable } from "./types.ts";
 
-export type Param = {
+export type Params = {
   /** Call on `useLayoutEffect` hooks. */
   onBeforeMount: EffectCallback;
 
@@ -18,10 +17,10 @@ export type Param = {
   onBeforeUnMount: () => void;
 };
 
-export type Option = Useable;
-
-/** Hooks for component lifecycle.
- * Some callbacks can return a callback function to be executed before mounting.
+/** Callbacks for component lifecycle.
+ * Some callbacks can return a callback function to be executed before unmount.
+ * @param params useLifecycle parameters
+ * @param deps All callbacks are called whenever `deps` changes.
  * ```tsx
  * import { useLifecycle } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts"
  * useLifecycle({
@@ -37,23 +36,20 @@ export type Option = Useable;
  *   onBeforeUnMount: () => {
  *     // call on before unmount
  *   },
- * }, undefined, []);
+ * }, []);
  * ```
  */
 export default function useLifecycle(
   { onBeforeMount, onMounted, onAfterMounted, onBeforeUnMount }: Readonly<
-    Partial<Param>
+    Partial<Params>
   >,
-  { use = true }: Readonly<Partial<Option>> = {},
   deps?: DependencyList,
 ): void {
   useIsomorphicLayoutEffect(() => {
-    if (!use) return;
     return onBeforeMount?.();
   }, deps);
 
   useEffect(() => {
-    if (!use) return;
     const onMountedCallback = onMounted?.();
     let onAfterMountCallback: ReturnType<EffectCallback>;
 

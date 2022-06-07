@@ -1,10 +1,15 @@
 import {
   cleanCharacter,
   cleanTokens,
+  equal,
+  first,
   isBrowser,
   joinChars,
+  last,
   mergeProps,
+  next,
   omitRef,
+  prev,
   tokenize,
 } from "./util.ts";
 import {
@@ -188,4 +193,168 @@ Deno.test("omitRef: no ref key from record", () => {
   expect(omitRef({ ref: null })).toEqual({});
   expect(omitRef({ ref: { current: null } })).toEqual({});
   expect(omitRef({ ref: null, a: "b" })).toEqual({ a: "b" });
+});
+
+Deno.test("equal should be same Value Zero as default", () => {
+  const table: ParamReturn<typeof equal>[] = [
+    [0, -0, true],
+    [-0, 0, true],
+    [NaN, NaN, true],
+    [+0, -0, true],
+    [-0, +0, true],
+  ];
+
+  table.forEach(([a, b, result]) => {
+    expect(equal(a, b)).toBe(result);
+  });
+});
+
+Deno.test("equal should ensure equality is primitive and Object and Array as default", () => {
+  const table: ParamReturn<typeof equal>[] = [
+    ["world", "world", true],
+    ["hello", "world", false],
+    ["world", "hello", false],
+    [5, 5, true],
+    [5, 6, false],
+    [6, 5, false],
+    [null, undefined, false],
+    [null, null, true],
+    [() => {}, () => {}, false],
+    [{}, {}, true],
+    [{ hello: "world" }, { hello: "world" }, true],
+    [{ world: "hello" }, { hello: "world" }, false],
+    [
+      { hello: "world", hi: { there: "everyone" } },
+      { hello: "world", hi: { there: "everyone" } },
+      true,
+    ],
+    [
+      { hello: "world", hi: { there: "everyone" } },
+      { hello: "world", hi: { there: "everyone else" } },
+      false,
+    ],
+    [{ hello: "world", hi: { there: "everyone" } }, {
+      hello: "world",
+      hi: { there: "everyone else" },
+    }, false],
+    [{ [Symbol.for("foo")]: "bar" }, { [Symbol.for("foo")]: "bar" }, true],
+    [{ [Symbol("foo")]: "bar" }, { [Symbol("foo")]: "bar" }, false],
+    [[], [], true],
+    [[1, 2, 3, 4], [1, 2, 3, 4], true],
+    [[4, 3, 2, 1], [1, 2, 3, 4], false],
+    [[{}], [{}], true],
+    [[{}, {}, {}, {}], [{}, {}, {}, {}], true],
+    [[{ a: 1 }, { b: 2 }], [{ a: 1 }, { b: 2 }], true],
+    [[{ a: 2 }, { b: 3 }], [{ a: 1 }, { b: 2 }], false],
+    [[{ a: 1 }, { b: 3 }], [{ a: 1 }, { b: 2 }], false],
+    [{ a: [] }, { a: [] }, true],
+    [{ a: [1, 2, 3] }, { a: [1, 2, 3] }, true],
+    [{ a: [1, 2, 4] }, { a: [1, 2, 3] }, false],
+    [{ a: { b: { c: "d" } } }, { a: { b: { c: "d" } } }, true],
+    [{ a: { b: { c: "d", e: "f" } } }, { a: { b: { c: "d", e: "g" } } }, false],
+    [{ a: { b: { c: "d", e: ["f", "g", {}] } } }, {
+      a: { b: { c: "d", e: ["f", "g", {}] } },
+    }, true],
+  ];
+
+  table.forEach(([a, b, result]) => {
+    expect(equal(a, b)).toBe(result);
+  });
+});
+
+Deno.test("equal should return false when the value is not Object or Array as default", () => {
+  const table: ParamReturn<typeof equal>[] = [
+    [/a/, /a/, false],
+    [new Date("2000/1/1"), new Date("2000/1/1"), false],
+    [new Map(), new Map(), false],
+    [new Set(), new Set(), false],
+    [new WeakMap(), new WeakMap(), false],
+    [new WeakSet(), new WeakSet(), false],
+    [new WeakSet(), new WeakSet(), false],
+    [new WeakRef({ hello: "world" }), new WeakRef({ hello: "world" }), false],
+    [new Function(), new Function(), false],
+    [new URL("https://example.test"), new URL("https://example.test"), false],
+    [new Uint8Array(), new Uint8Array(), false],
+  ];
+
+  table.forEach(([a, b, result]) => {
+    expect(equal(a, b)).toBe(result);
+  });
+});
+
+Deno.test("equal should treat cycle reference safety", () => {
+  const objA: { prop?: unknown } = {};
+  objA.prop = objA;
+  const objB: { prop?: unknown } = {};
+  objB.prop = objB;
+
+  expect(equal(objA, objB)).toBe(true);
+});
+
+Deno.test("prev", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 2, 2],
+    [1, 0, 0],
+    [1, 1, 0],
+    [1, 2, 0],
+    [2, 0, 0],
+    [2, 1, 1],
+    [2, 2, 1],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(prev(current, max)).toBe(result)
+  );
+});
+
+Deno.test("next", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 2, 1],
+    [1, 0, 0],
+    [1, 1, 0],
+    [1, 2, 2],
+    [2, 0, 0],
+    [2, 1, 0],
+    [2, 2, 0],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(next(current, max)).toBe(result)
+  );
+});
+
+Deno.test("first", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 0],
+    [0, 2, 0],
+    [1, 0, 0],
+    [1, 1, 0],
+    [1, 2, 0],
+    [2, 0, 0],
+    [2, 1, 0],
+    [2, 2, 0],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(first(current, max)).toBe(result)
+  );
+});
+
+Deno.test("last", () => {
+  const table: [number, number, number][] = [
+    [0, 0, 0],
+    [0, 1, 1],
+    [0, 2, 2],
+    [1, 0, 0],
+    [1, 1, 1],
+    [1, 2, 2],
+    [2, 0, 0],
+    [2, 1, 1],
+    [2, 2, 2],
+  ];
+  table.forEach(([current, max, result]) =>
+    expect(last(current, max)).toBe(result)
+  );
 });

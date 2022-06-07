@@ -1,26 +1,33 @@
 // This module is browser compatible.
 
-import { createElement, forwardRef as _forwardRef, Ref } from "react";
-import { Tag, WithIntrinsicElements } from "../types.ts";
-import useAlert from "./use_alert.ts";
-import { useAs } from "../_shared/hooks.ts";
+import {
+  createElement,
+  forwardRef as _forwardRef,
+  PropsWithChildren,
+  Ref,
+} from "react";
+import { Tag } from "../types.ts";
+import WithAlert, { Props as WithAlertProps } from "./with_alert.ts";
 
-type _Props<As extends Tag> = {
-  /**
-   * @default `div`
-   */
-  as?: As;
-};
+export type Props<As extends Tag> = PropsWithChildren<
+  {
+    /**
+     * @default `div`
+     */
+    as?: As;
+  } & Omit<WithAlertProps, "children">
+>;
 
-export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 function _Alert<As extends Tag = "div">(
-  { as, ...props }: Readonly<Props<As>>,
+  { as = "div" as As, children, ...props }: Readonly<Props<As>>,
   ref: Ref<Element>,
 ): JSX.Element {
-  const tag = useAs(as, "div");
-  const attributes = useAlert();
-
-  return createElement(tag, { ref, ...attributes, ...props });
+  return WithAlert({
+    children: (attributes) => {
+      return createElement(as, { ref, ...attributes }, children);
+    },
+    ...props,
+  });
 }
 
 const Alert = _forwardRef(_Alert);

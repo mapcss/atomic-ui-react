@@ -1,0 +1,3 @@
+export const snapshot = {};
+
+snapshot[`Dialog E2E test > should be render as 1`] = `'<div aria-modal="true" aria-labelledby="atomic-ui-0-dialog-title" aria-describedby="atomic-ui-0-dialog-describe" role="dialog"><h3 id="atomic-ui-0-dialog-title">Title</h3><p id="atomic-ui-0-dialog-describe">Describe it</p><button>Cancel</button></div>'`;

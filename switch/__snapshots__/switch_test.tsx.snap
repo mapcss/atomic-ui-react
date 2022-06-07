@@ -1,0 +1,3 @@
+export const snapshot = {};
+
+snapshot[`Switch > should render as 1`] = `'<button role="switch" tabindex="0" aria-checked="true">button</button>'`;

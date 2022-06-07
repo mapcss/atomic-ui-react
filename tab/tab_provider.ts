@@ -1,109 +1,64 @@
 // This module is browser compatible.
 
-import {
-  createElement,
-  ReactNode,
-  RefObject,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { isNumber } from "../deps.ts";
-import { tempId } from "../_shared/util.ts";
-import { DEFAULT_INDEX, DEFAULT_IS_HORIZONTAL } from "./constant.ts";
+import { createElement, ReactNode, RefObject, useRef } from "react";
 import useId from "../hooks/use_id.ts";
+import { CommonContextsContext, IdContext } from "./context.ts";
 import {
-  DisabledIdsContext,
-  HorizontalContext,
-  IdContext,
-  IndexContext,
-  TabCountContext,
-  TabPanelCountContext,
-  TabRefsContext,
-} from "./context.ts";
+  ExclusiveActiveIndexProps,
+  ExclusiveSelectIndexProps,
+} from "../_shared/types.ts";
+import useExclusiveState from "../_shared/use_exclusive_state.ts";
 
-export type Props = {
-  /** The selected index if you want to use as a controlled component. */
-  selectedIndex?: number;
+export type Props =
+  & {
+    /** When `true`, the orientation of the `TabList` will be `horizontal`, otherwise `vertical`
+     * @default true
+     */
+    isHorizontal?: boolean;
 
-  /** The default selected index.
-   * @default 0
-   */
-  defaultIndex?: number;
-
-  /** A function called whenever the active tab will change. */
-  onChange?: (index: number) => void;
-
-  /** When `true`, the orientation of the `TabList` will be `horizontal`, otherwise `vertical`
-   * @default true
-   */
-  isHorizontal?: boolean;
-
-  children: ReactNode;
-};
+    children: ReactNode;
+  }
+  & ExclusiveActiveIndexProps
+  & ExclusiveSelectIndexProps;
 
 export default function TabProvider(
-  props: Props,
-): JSX.Element {
-  const {
+  {
     children,
-    defaultIndex = DEFAULT_INDEX,
-    selectedIndex,
-    isHorizontal = DEFAULT_IS_HORIZONTAL,
-    onChange,
-  } = props;
-  const id = useId();
-  const refs: RefObject<HTMLElement>[] = [];
-  const tabCount = tempId();
-  const tabPanelCount = tempId();
-  const disabledIds: number[] = [];
+    initialActiveIndex,
+    initialSelectIndex: _initialSelectIndex,
+    selectIndex: _selectIndex,
+    activeIndex: _activeIndex,
+    setActiveIndex: _setActiveIndex,
+    setSelectIndex: _setSelectIndex,
+  }: Readonly<Props>,
+): JSX.Element {
+  const { id } = useId();
+  const [activeIndex, setActiveIndex] = useExclusiveState<number | undefined>({
+    initialState: initialActiveIndex,
+    setState: _setActiveIndex,
+    state: _activeIndex,
+  });
+  const [selectIndex, setSelectIndex] = useExclusiveState<number | undefined>({
+    initialState: _initialSelectIndex,
+    setState: _setSelectIndex,
+    state: _selectIndex,
+  });
 
-  const isControl = useMemo<boolean>(() => isNumber(selectedIndex), [
-    selectedIndex,
-  ]);
-  const [state, setState] = useState<number>(selectedIndex ?? defaultIndex);
-
-  const index = useMemo<number>(
-    () => isControl ? selectedIndex ?? defaultIndex : state,
-    [
-      isControl,
-      selectedIndex,
-      state,
-      defaultIndex,
-    ],
-  );
-
-  useEffect(() => {
-    onChange?.(state);
-  }, [onChange, state]);
+  const tabsRef = useRef<RefObject<Element>[]>([]);
+  const tabPanelsRef = useRef<RefObject<Element>[]>([]);
 
   return createElement(
     IdContext.Provider,
     { value: id },
-    createElement(
-      IndexContext.Provider,
-      { value: [index, setState] },
-      createElement(
-        TabCountContext.Provider,
-        { value: tabCount },
-        createElement(
-          TabPanelCountContext.Provider,
-          { value: tabPanelCount },
-          createElement(
-            TabRefsContext.Provider,
-            { value: refs },
-            createElement(
-              HorizontalContext.Provider,
-              { value: isHorizontal },
-              createElement(
-                DisabledIdsContext.Provider,
-                { value: disabledIds },
-                children,
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
+    createElement(CommonContextsContext.Provider, {
+      value: {
+        activeIndex,
+        setActiveIndex,
+        selectIndex,
+        setSelectIndex,
+        tabsRef,
+        tabPanelsRef,
+      },
+    }, children),
   );
 }

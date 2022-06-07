@@ -1,8 +1,8 @@
 // This module is browser compatible.
 
-import { createContext } from "react";
-import { _DEFAULT_CONTEXT } from "./constant.ts";
-import { _ContextValue } from "./types.ts";
+import { createContext, MutableRefObject } from "react";
+import { defaultStore } from "./constant.ts";
+import { Store } from "../hooks/use_key_id.ts";
 
-const _Context = createContext<_ContextValue>(_DEFAULT_CONTEXT);
-export default _Context;
+const Context = createContext<MutableRefObject<Store>>(defaultStore);
+export default Context;

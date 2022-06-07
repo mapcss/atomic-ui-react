@@ -1,15 +1,23 @@
 // This module is browser compatible.
 
-import { HTMLAttributes, useMemo } from "react";
+import { AllHTMLAttributes } from "react";
+import { AllAttributesWith, useAttributesWith } from "../hooks/mod.ts";
 
-export type Attributes = Pick<HTMLAttributes<Element>, "role">;
+export type Returns = [AllHTMLAttributes<Element>];
 
-export default function useAlert(): Attributes {
-  const attributes = useMemo<Attributes>(() => attrs, []);
+export type AllAttributesWithContexts = AllAttributesWith<[]>;
 
-  return attributes;
+export default function useAlert(
+  allAttributes: Partial<AllAttributesWithContexts> = {},
+): Returns {
+  const attributes = useAttributesWith([], {
+    ...defaultAttributes,
+    ...allAttributes,
+  });
+
+  return [attributes];
 }
 
-const attrs: Attributes = {
+const defaultAttributes: Partial<AllAttributesWith<[]>> = {
   role: "alert",
 };

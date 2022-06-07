@@ -18,6 +18,7 @@ import {
 import {
   distinct,
   filterKeys,
+  Fn,
   isFunction,
   isLength0,
   isNil,
@@ -25,7 +26,9 @@ import {
   isObject,
   isString,
   isUndefined,
+  sortBy,
 } from "./deps.ts";
+import { KeyboardEventHandler } from "./types.ts";
 
 export function filterTruthy<T>(value: T[]): (Exclude<T, undefined | null>)[] {
   return value.filter(Boolean) as never;
@@ -41,6 +44,10 @@ export function lazyEval<T, U extends (...args: any[]) => T = () => T>(
   lazyable: Lazyable<T, U>,
 ): T {
   return isFunction(lazyable) ? lazyable() : lazyable;
+}
+
+export function resolveLazy<T>(value: T): T extends Fn ? ReturnType<T> : T {
+  return isFunction(value) ? value.apply(null) : value;
 }
 
 export function isRefObject<T>(value: unknown): value is RefObject<T> {
@@ -224,7 +231,7 @@ export function mergeProps<T extends Props, U extends Props>(
   return result as T & U;
 }
 
-function isEventHandlerName(value: string): value is `on${string}` {
+export function isEventHandlerName(value: string): value is `on${string}` {
   return value[0] === "o" &&
     value[1] === "n" &&
     value.charCodeAt(2) >= /* 'A' */ 65 &&
@@ -370,4 +377,292 @@ export function visitDisplayName(
       }
     },
   });
+}
+
+export type KeyOrCodeOrKeyboardEvent = string | Partial<KeyboardEvent>;
+
+export type KeyEntries<Ev = KeyboardEvent> = Iterable<[
+  KeyOrCodeOrKeyboardEvent,
+  KeyboardEventHandler<Ev>,
+]>;
+
+export type Options<Ev = KeyboardEvent> = {
+  beforeAll: KeyboardEventHandler<Ev>;
+
+  afterAll: KeyboardEventHandler<Ev>;
+};
+
+export function mappingKey<
+  Ev extends Pick<KeyboardEvent, "key" | "code"> = KeyboardEvent,
+>(
+  keyEntries: Readonly<KeyEntries<Ev>>,
+  { beforeAll, afterAll }: Readonly<Partial<Options<Ev>>> = {},
+): KeyboardEventHandler<Ev> {
+  let beforeAllDone = false;
+
+  const callback: KeyboardEventHandler<Ev> = (ev) => {
+    function callBeforeAll(): void {
+      if (!beforeAllDone) {
+        beforeAllDone = true;
+        beforeAll?.(ev);
+      }
+    }
+    for (const [maybeCode, callback] of keyEntries) {
+      if (isString(maybeCode)) {
+        if ([ev.code, ev.key].includes(maybeCode)) {
+          callBeforeAll();
+          callback(ev);
+          break;
+        }
+        continue;
+      }
+
+      const match = Object.entries(maybeCode).every(([key, value]) => {
+        type Key = keyof Ev;
+        return ev[key as Key] === value as never;
+      });
+      if (match) {
+        callBeforeAll();
+        callback(ev);
+        break;
+      }
+    }
+
+    afterAll?.(ev);
+  };
+
+  return callback;
+}
+
+export function equal(
+  a: unknown,
+  b: unknown,
+): boolean {
+  const seen = new Map();
+
+  const compare = (c: unknown, d: unknown): boolean => {
+    if (equalPrimitive(c, d)) return true;
+
+    if (!isObject(c) || !isObject(d)) return false;
+    if (!constructorsEqual(c, d)) return false;
+
+    if (seen.get(c) === d) {
+      return true;
+    }
+
+    seen.set(c, d);
+
+    if (c.constructor === Object || d.constructor === Array) {
+      const merged = { ...c, ...d };
+      const keys = [
+        ...Object.getOwnPropertyNames(merged),
+        ...Object.getOwnPropertySymbols(merged),
+      ];
+
+      for (const key of keys) {
+        type Key = keyof typeof merged;
+        const hasC = Object.hasOwn(c, key);
+        const hasD = Object.hasOwn(d, key);
+
+        if (!hasC || !hasD) return false;
+
+        if (!compare(c[key as Key], d[key as Key])) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    return false;
+  };
+
+  return compare(a, b);
+}
+
+// deno-lint-ignore ban-types
+function constructorsEqual(a: object, b: object) {
+  return a.constructor === b.constructor ||
+    a.constructor === Object && !b.constructor ||
+    !a.constructor && b.constructor === Object;
+}
+
+function equalPrimitive(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (Number.isNaN(a) && Number.isNaN(b)) return true;
+
+  return false;
+}
+
+export type MergeBy<
+  T extends Record<any, any>,
+  U extends Record<any, any>,
+> = {
+  [k in keyof T | keyof U]: T[k] | U[k];
+};
+
+export type Intersection<T extends Record<any, any>, U> = {
+  [k in keyof U]: T[k];
+};
+
+export type Merge<T, U> = Omit<Omit<T, keyof U> & U, never>;
+
+export type Exclusive<T, U> =
+  | (Omit<T, keyof U> & { [k in keyof U]?: never })
+  | (Omit<U, keyof T> & { [k in keyof T]?: never });
+
+export type PropsWithoutChildren<P> = P extends any
+  ? ("children" extends keyof P ? Pick<P, Exclude<keyof P, "children">> : P)
+  : P;
+
+export function hasFocusElement(
+  // deno-lint-ignore ban-types
+  object: object,
+): object is HTMLElement | SVGElement {
+  return [HTMLElement, SVGElement].some((instance) =>
+    object instanceof instance
+  );
+}
+
+export function defineSync<T extends Fn<any[]>>(...functions: readonly T[]) {
+  return (...args: Parameters<T>): void => {
+    for (const fn of functions) {
+      fn.apply(null, args);
+    }
+  };
+}
+
+const selector =
+  'a[href], button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+
+function hasNotInvalidAttribute(el: Element): boolean {
+  return !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden");
+}
+
+export function next(current: number | undefined, max: number): number {
+  if (!isNumber(current) || max <= 0) return 0;
+  const next = current + 1;
+  if (max < next) return 0;
+
+  return next;
+}
+
+export function prev(current: number | undefined, max: number): number {
+  if (!isNumber(current) || max <= 0) return 0;
+  const prev = current - 1;
+  if (prev < 0) return max;
+
+  return prev;
+}
+
+export function first(_: number | undefined, __: number): number {
+  return 0;
+}
+
+export function last(_: number | undefined, max: number): number {
+  return max;
+}
+
+export function filterFocusable(
+  root: ParentNode | null | undefined,
+): (HTMLElement | SVGElement)[] {
+  if (!root) return [];
+  const els = [...root.querySelectorAll(selector)];
+
+  return els.filter(hasNotInvalidAttribute).filter(hasFocusElement);
+}
+
+export function getNextFocusable(
+  root: ParentNode,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = next(current, els.length - 1);
+
+  return els[featureIndex];
+}
+
+export function getFirstFocusable(
+  root: ParentNode | null | undefined,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = first(current, els.length - 1);
+
+  return els[featureIndex];
+}
+
+export function getPreviousFocusable(
+  root: ParentNode,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = prev(current, els.length - 1);
+
+  return els[featureIndex];
+}
+
+export function getLastFocusable(
+  root: ParentNode | null | undefined,
+  activeElement = document.activeElement,
+): HTMLElement | SVGElement | undefined {
+  const els = filterFocusable(root);
+  const activeElementIndex = els.findIndex((node) =>
+    node.isSameNode(activeElement)
+  );
+  const current = activeElementIndex < 0 ? undefined : activeElementIndex;
+  const featureIndex = last(current, els.length - 1);
+
+  return els[featureIndex];
+}
+
+export function safeFocus(
+  node: Node | null | undefined,
+  options?: FocusOptions,
+): void {
+  if (node instanceof HTMLElement || node instanceof SVGElement) {
+    node.focus(options);
+  }
+}
+
+export function sortTabOrder(
+  focusableElements: Readonly<Iterable<Element>>,
+): Element[] {
+  const result = sortBy(Array.from(focusableElements), (el) => {
+    const tabIndex = el.getAttribute("tabindex");
+
+    if (!tabIndex) return 0;
+
+    return Number(tabIndex);
+  });
+  return result.reverse();
+}
+
+/** Safe `JSON.stringify`
+ * It never throws an error and never returns `undefined`. Instead, it returns an empty string.
+ */
+export function JSONStringify(
+  ...args: Parameters<typeof JSON.stringify>
+): string {
+  try {
+    const result = JSON.stringify(args);
+    return isString(result) ? result : "";
+  } catch {
+    return "";
+  }
 }

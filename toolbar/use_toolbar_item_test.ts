@@ -1,38 +1,53 @@
-import { createRef } from "react";
 import useToolbarItem from "./use_toolbar_item.ts";
 import { renderHook } from "@testing-library/react-hooks";
-import useActiveElement from "../hooks/use_active_element.ts";
-import {
-  anyBoolean,
-  anyFunction,
-  anyNumber,
-  anyObject,
-  expect,
-} from "../dev_deps.ts";
+import { anyFunction, anyNumber, anyObject, expect } from "../dev_deps.ts";
 
-Deno.test("useToolbarItem", () => {
-  const ref = createRef<HTMLElement>();
+Deno.test("useToolbarItem should return as default", () => {
   const { result } = renderHook(() => {
-    const stateSet = useActiveElement();
     return useToolbarItem({
-      refs: [],
-      ref,
-      activeElementStateSet: stateSet,
+      activeIndex: 0,
+      setActiveIndex: () => {},
+      id: "0",
+      index: 0,
+      itemsRef: { current: [] },
     });
   });
 
   expect(result.current[0]).toEqual({
     tabIndex: anyNumber(),
-    onKeyDown: anyFunction(),
-    onFocus: anyFunction(),
-    ref: anyObject(),
+    onClick: anyFunction(),
   });
   expect(result.current[1]).toEqual({
-    isFirst: anyBoolean(),
-    isActive: anyBoolean(),
-    focusPrev: anyFunction(),
-    focusNext: anyFunction(),
-    focusFirst: anyFunction(),
-    focusLast: anyFunction(),
+    isActive: true,
+    activeIndex: anyNumber(),
+    setActiveIndex: anyFunction(),
+    itemsRef: anyObject(),
+    index: 0,
+    id: "0",
+  });
+});
+
+Deno.test("useToolbarItem should define attributes with contexts", () => {
+  const { result } = renderHook(() => {
+    return useToolbarItem(
+      {
+        activeIndex: 0,
+        setActiveIndex: () => {},
+        id: "0",
+        index: 0,
+        itemsRef: { current: [] },
+      },
+      undefined,
+      {
+        tabIndex: 2,
+        className: ({ isActive }) => isActive ? "active" : "non-active",
+      },
+    );
+  });
+
+  expect(result.current[0]).toEqual({
+    tabIndex: 2,
+    onClick: anyFunction(),
+    className: "active",
   });
 });

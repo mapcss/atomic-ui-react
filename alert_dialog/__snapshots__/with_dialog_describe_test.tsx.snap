@@ -1,3 +1,0 @@
-export const snapshot = {};
-
-snapshot[`WithDialogDescribe > should render as 1`] = `'<div id="atomic-ui-0-alert-dialog-describe"></div>'`;

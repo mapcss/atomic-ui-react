@@ -1,41 +1,70 @@
 import {
-  AllHTMLAttributes,
   createElement,
   forwardRef as _forwardRef,
+  ReactNode,
   Ref,
+  useContext,
   useMemo,
 } from "react";
 import WithAccordionPanel from "./with_accordion_panel.ts";
-import { useAs } from "../_shared/hooks.ts";
-import { mergeProps } from "../util.ts";
+import { AttributesWithContexts, Params } from "./use_accordion_panel.ts";
 import { Tag, WithIntrinsicElements } from "../types.ts";
-import { Contexts } from "./use_accordion_panel.ts";
+import { CommonContextsContext, IdContext } from "./context.ts";
+import { joinChars } from "../util.ts";
+import { useId } from "../hooks/mod.ts";
 
 type _Props<As extends Tag> = {
+  /**
+   * @default `div`
+   */
   as?: As;
 
-  renderAttributes?: (contexts: Contexts) => AllHTMLAttributes<Element>;
-};
+  children?: ReactNode;
+} & Partial<AttributesWithContexts>;
 
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _AccordionPanel<As extends Tag>(
-  { as, renderAttributes, ...props }: Readonly<Props<As>>,
+  { as = "div" as As, children, ...allAttributes }: Readonly<Props<As>>,
   ref: Ref<Element>,
 ): JSX.Element {
-  return WithAccordionPanel({
-    children: (attrs, contexts) => {
-      const tag = useAs(as, "div");
-      const attributes = useMemo<AllHTMLAttributes<Element>>(
-        () => renderAttributes?.(contexts) ?? {},
-        [renderAttributes, JSON.stringify(contexts)],
-      );
+  const groupId = useContext(IdContext);
+  const commonContexts = useContext(CommonContextsContext);
 
-      return createElement(tag, {
+  if (!groupId || !commonContexts) throw Error();
+  const { openIndex, setOpenIndex } = commonContexts;
+
+  const prefix = useMemo<string>(
+    () => joinChars([groupId, "accordion", "panel"], "-")!,
+    [groupId],
+  );
+
+  const { id, index } = useId({
+    prefix,
+  });
+
+  const headerId = useMemo<string>(
+    () => joinChars([groupId, "accordion", "header", index], "-")!,
+    [groupId, index],
+  );
+
+  const contexts = useMemo<Params>(() => ({
+    openIndex,
+    setOpenIndex,
+    id,
+    index,
+    headerId,
+  }), [openIndex, setOpenIndex, id, index, headerId]);
+
+  return WithAccordionPanel({
+    children: (attrs) => {
+      return createElement(as, {
         ref,
-        ...mergeProps(attrs, mergeProps(props, attributes)),
-      });
+        ...attrs,
+      }, children);
     },
+    contexts,
+    ...allAttributes,
   });
 }
 

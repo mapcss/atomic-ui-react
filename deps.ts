@@ -14,9 +14,15 @@ export {
 } from "https://deno.land/x/isx@v1.0.0-beta.17/mod.ts";
 export { distinct } from "https://deno.land/std@0.136.0/collections/distinct.ts";
 export { mapValues } from "https://deno.land/std@0.136.0/collections/map_values.ts";
+export { mapEntries } from "https://deno.land/std@0.136.0/collections/map_entries.ts";
 export { filterKeys } from "https://deno.land/std@0.136.0/collections/filter_keys.ts";
+export { filterValues } from "https://deno.land/std@0.136.0/collections/filter_values.ts";
 export { associateWith } from "https://deno.land/std@0.138.0/collections/mod.ts";
+export { sortBy } from "https://deno.land/std@0.142.0/collections/mod.ts";
 export type VFn = () => void;
+export type Fn<Args extends readonly unknown[] = [], Return = any> = (
+  ...args: Args
+) => Return;
 export type ValueOf<T> = T[keyof T];
 
 export function wrap<T>(val: T): T extends any[] ? T : T[] {

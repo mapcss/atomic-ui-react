@@ -2,7 +2,7 @@ import useBoolean from "./use_boolean.ts";
 import { expect } from "../dev_deps.ts";
 import { act, renderHook } from "@testing-library/react-hooks";
 
-Deno.test("should toggle state", () => {
+Deno.test("useBoolean should toggle state", () => {
   const { result } = renderHook(() => useBoolean());
 
   expect(result.current[0]).toBe(false);
