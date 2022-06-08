@@ -74,7 +74,7 @@ Deno.test("useTimeout: should call with arguments", () => {
   );
 
   time.runAll();
-  expect(mock).toHaveBeenCalledWith([10]);
+  expect(mock).toHaveBeenCalledWith({ "0": 10 });
 
   time.restore();
 });
