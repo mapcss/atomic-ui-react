@@ -1,3 +1,10 @@
+# [1.0.0-beta.51](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.50...1.0.0-beta.51) (2022-06-07)
+
+
+### Bug Fixes
+
+* **switch:** remove duplicated AllHTMLAttributes types ([dca0e06](https://github.com/mapcss/atomic-ui-react/commit/dca0e06eb2263b6967af69d9a285654adf085125))
+
 # [1.0.0-beta.50](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.49...1.0.0-beta.50) (2022-06-07)
 
 
