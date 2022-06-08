@@ -12,10 +12,7 @@ export type {
   Returns as UseIdReturns,
 } from "./use_id.ts";
 export { default as useTimeout } from "./use_timeout.ts";
-export type {
-  Handler as TimeoutHandler,
-  Option as UseTimeoutOption,
-} from "./use_timeout.ts";
+export type { Params as UseTimeoutParams } from "./use_timeout.ts";
 export { default as useLifecycle } from "./use_lifecycle.ts";
 export type { Params as UseLifecycleParams } from "./use_lifecycle.ts";
 export type { Useable } from "./types.ts";

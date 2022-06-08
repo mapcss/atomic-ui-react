@@ -499,9 +499,43 @@ Accepts up to 2 arguments.
 
 `T | U | undefined`
 
+### useTimeout
+
+[Source](./use_timeout.ts) [Test](./use_timeout_test.ts)
+
+Safe `setTimeout` that automatically clear on unmount or `deps` is updated.
+
+#### Example
+
+```tsx
+import { useTimeout } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  useTimeout({
+    callback: () => {
+      console.log("call after 2s");
+    },
+    ms: 2000,
+  }, []);
+};
+```
+
+#### Params
+
+| N | Name     | Required / Default | Description                                                                                                                                                                                                                                                         |
+| - | -------- | :----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | params   | :white_check_mark: | useTimeout parameters.                                                                                                                                                                                                                                              |
+|   | callback | :white_check_mark: | `EffectCallback` &#124; `TimerHandler`<br>A function to be executed after the timer expires.                                                                                                                                                                        |
+|   | ms       | :white_check_mark: | `number` &#124; `undefined`<br>The time, in milliseconds that the timer should wait before the specified function or code is executed. If this parameter is omitted, a value of 0 is used, meaning execute "immediately", or more accurately, the next event cycle. |
+|   | args     |        `[]`        | `Iterable<unknown>`<br>Additional arguments which are passed through to the function specified by `function`.                                                                                                                                                       |
+| 2 | deps     |         -          | `DependencyList`<br>If present, effect will only activate if the values in the list change.                                                                                                                                                                         |
+
+#### Return
+
+`void`
+
 ### useUpdateEffect
 
-[Source](./use_update_effect.ts.ts) [Test](./use_update_effect_test.ts)
+[Source](./use_update_effect.ts) [Test](./use_update_effect_test.ts)
 
 Accepts a function that contains imperative, possibly effectful code. It is not
 called at first rendering, and the side effect is executed only at re-rendering.
