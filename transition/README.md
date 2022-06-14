@@ -108,110 +108,21 @@ export default () => {
 
 #### Render props
 
-<table>
-  <thead>
-    <tr>
-      <th>N</th>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>attributes</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>className</td>
-      <td><code>string | undefined</code></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>ref</td>
-      <td><code>Ref&lt;Element&gt;</code></td>
-    </tr>
-    <tr>
-      <td>2</td>
-      <td>contexts</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>classNames</td>
-      <td>
-        <code>string[]</code><br />The className tokens adapted currently
-        transition.
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>cleanTransitions</td>
-      <td>
-        <code>Partial&lt;Transitions&gt;</code><br />Non-duplicated token and
-        space transition props.<br />It guarantee that there is no empty string
-        or spaces only characters.
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>isCompleted</td>
-      <td>
-        <code>boolean</code><br />Whether transition lifecycle is completed or
-        not.
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>currentTransitions</td>
-      <td>
-        <code>TransitionName[]</code><br />List of currently adapted transition.
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>status</td>
-      <td><code>TransitionStatus</code><br />Current transition lifecycle.</td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>isShowable</td>
-      <td>
-        <code>boolean</code><br />Whether transition is completed and
-        <code>isShow</code> state is <code>false</code> or not.
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>isActivated</td>
-      <td>
-        <code>boolean</code><br />Whether transitions are activated or not.
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>lifecycle</td>
-      <td>
-        <code>TransitionLifecycle</code><br />Named transition lifecycle<br />
-        <ul>
-          <li><code>init</code>: Initializing</li>
-          <li><code>start</code>: Start</li>
-          <li><code>wait</code>: Waiting for end</li>
-          <li><code>end</code>: Ended</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td></td>
-      <td>mode</td>
-      <td>
-        <code>"enter" | "leave"</code><br />
-        Current transition mode.<br />
-        If it is not activated, return <code>undefined</code>.
-      </td>
-    </tr>
-  </tbody>
-</table>
+| N | Name               | Description                                                                                                                                                        |
+| - | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1 | attributes         |                                                                                                                                                                    |
+|   | className          | `string` &#124; `undefined`                                                                                                                                        |
+|   | ref                | `Ref<Element>`                                                                                                                                                     |
+| 2 | contexts           |                                                                                                                                                                    |
+|   | classNames         | `string[]`<br> The className tokens adapted currently transition.                                                                                                  |
+|   | cleanTransitions   | `Partial<Transitions>`<br> Non-duplicated token and space transition props.<br>It guarantee that there is no empty string or spaces only characters.               |
+|   | isCompleted        | `boolean`<br>Whether transition lifecycle is completed or not.                                                                                                     |
+|   | currentTransitions | `TransitionName[]`<br>List of currently adapted transition.                                                                                                        |
+|   | status             | `TransitionStatus`<br>Current transition lifecycle.                                                                                                                |
+|   | isShowable         | `boolean`<br>Whether transition is completed and `isShow` state is `false` or not.                                                                                 |
+|   | isActivated        | `boolean`<br>Whether transitions are activated or not.                                                                                                             |
+|   | lifecycle          | `TransitionLifecycle`<br>Named transition lifecycle.<ul><li> `init`: initializing</li><li> `start`: Start</li><li> `wait`: Waiting</li><li> `end`: Ended</li></ul> |
+|   | mode               | `"enter"` &#124; `"leave"` &#124; `undefined`<br>Current transition mode.<br>If it is not activated, return `undefined`.                                           |
 
 ### useTransition
 
