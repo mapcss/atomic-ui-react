@@ -1,3 +1,12 @@
+# [1.0.0-beta.52](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.51...1.0.0-beta.52) (2022-06-08)
+
+
+### Features
+
+* **hooks:** add `useEventListener` hook that manage `addEventListener` safety ([a7ad877](https://github.com/mapcss/atomic-ui-react/commit/a7ad87740b2b14e11e1ec70b956324d3bd439be1))
+* **hooks:** add `useTimeout` hook that clear automatically on unmount ([344b339](https://github.com/mapcss/atomic-ui-react/commit/344b3399a2e22ae73ae2d46f97b0732a7e8fd323))
+* **tooltip:** add `Tooltip`, `TooltipContainer` and `TooltipTrigger` components ([e9c6cd8](https://github.com/mapcss/atomic-ui-react/commit/e9c6cd8439c7d4dd2aeab65e8a7dab3d8fc6c94c))
+
 # [1.0.0-beta.51](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.50...1.0.0-beta.51) (2022-06-07)
 
 
