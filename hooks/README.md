@@ -324,6 +324,35 @@ export default () => {
 
 `boolean`
 
+### useIsomorphicLayoutEffect
+
+[Source](./use_isomorphic_layout_effect.ts)
+[Test](./use_isomorphic_layout_effect_test.ts)
+
+`useLayoutEffect` that that works on server.
+
+#### Example
+
+```tsx
+import { useIsomorphicLayoutEffect } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  useIsomorphicLayoutEffect(() => {
+    // effect
+  }, []);
+};
+```
+
+#### Params
+
+| N | Name   | Required / Default | Description                                                                                 |
+| - | ------ | :----------------: | ------------------------------------------------------------------------------------------- |
+| 1 | effect | :white_check_mark: | `EffectCallback`<br>Imperative function that can return a cleanup function.                 |
+| 2 | deps   |         -          | `DependencyList`<br>If present, effect will only activate if the values in the list change. |
+
+#### Return
+
+`void`
+
 ### useLifecycle
 
 Callbacks for component lifecycle. Some callbacks can return a callback function
