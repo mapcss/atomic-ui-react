@@ -5,7 +5,7 @@ import { StateSet, Tag } from "../types.ts";
 import { Exclusive } from "../util.ts";
 import { IsCheckedProps } from "./types.ts";
 import WithSwitch, { Props as WithSwitchProps } from "./with_switch.ts";
-import { useAlterState } from "../hooks/mod.ts";
+import { useStateSet } from "../hooks/mod.ts";
 
 type _Props<As extends Tag> =
   & {
@@ -41,7 +41,7 @@ function _Switch<As extends Tag = "button">(
   }: Props<As>,
   ref: Ref<Element>,
 ): JSX.Element {
-  const [isChecked, setIsChecked] = useAlterState<boolean>(
+  const [isChecked, setIsChecked] = useStateSet<boolean>(
     initialIsChecked,
     isCheckedSet,
   );
