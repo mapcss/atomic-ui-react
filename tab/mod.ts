@@ -1,11 +1,17 @@
 // This module is browser compatible.
+export { default as Tab } from "./tab.ts";
+export type { Props as TabProps } from "./tab.ts";
+export { default as TabList } from "./tab_list.ts";
+export type { Props as TabListProps } from "./tab_list.ts";
+export { default as TabPanel } from "./tab_panel.ts";
+export type { Props as TabPanelProps } from "./tab_panel.ts";
+export { default as TabProvider } from "./tab_provider.ts";
+export type { Props as TabProviderProps } from "./tab_provider.ts";
 
 export { default as WithTabList } from "./with_tab_list.ts";
 export type { Props as WithTabListProps } from "./with_tab_list.ts";
 export { default as WithTabPanel } from "./with_tab_panel.ts";
 export type { Props as WithTabPanelProps } from "./with_tab_panel.ts";
-export { default as TabProvider } from "./tab_provider.ts";
-export type { Props as TabProviderProps } from "./tab_provider.ts";
 export { default as WithTab } from "./with_tab.ts";
 export type { Props as WithTabProps } from "./with_tab.ts";
 

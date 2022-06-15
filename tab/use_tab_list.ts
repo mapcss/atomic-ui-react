@@ -1,13 +1,14 @@
 // This module is browser compatible.
 
 import { AllHTMLAttributes, KeyboardEvent, useMemo } from "react";
-import useAttributesWith, {
-  AllAttributesWith,
-} from "../hooks/use_attributes_with.ts";
+import { AllAttributesWith, useAttributesWith } from "../hooks/mod.ts";
 import { isNumber } from "../deps.ts";
-import { ActiveThenSelectProps, FocusStrategyProps } from "../focus/mod.ts";
-import RovingTabIndex from "../focus/roving_tabindex.ts";
-import useFocusStrategy from "../focus/use_focus_strategy.ts";
+import {
+  ActiveThenSelectProps,
+  FocusStrategyProps,
+  RovingTabIndex,
+  useFocusStrategy,
+} from "../focus/mod.ts";
 import { CommonContexts } from "./types.ts";
 import {
   defineSync,
@@ -31,6 +32,8 @@ export type Options =
 
 export type Contexts = CommonContexts & Options;
 
+export type AttributesWithContexts = Partial<AllAttributesWith<[Contexts]>>;
+
 export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useTabList(
@@ -41,9 +44,7 @@ export default function useTabList(
     activeIndex,
     tabPanelsRef,
     tabsRef,
-  }: Readonly<
-    CommonContexts
-  >,
+  }: Readonly<CommonContexts>,
   {
     isHorizontal = true,
     focusStrategy = RovingTabIndex,
@@ -51,6 +52,7 @@ export default function useTabList(
   }: Readonly<
     Partial<Options>
   > = {},
+  allAttributes: AttributesWithContexts = {},
 ): Returns {
   const contexts = useMemo<Contexts>(
     () => ({
@@ -92,6 +94,7 @@ export default function useTabList(
   const attributes = useAttributesWith([contexts], {
     ...defaultAttributes,
     ...focusAttributes,
+    ...allAttributes,
   });
 
   return [attributes, contexts];

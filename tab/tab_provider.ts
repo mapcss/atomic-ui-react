@@ -1,13 +1,12 @@
 // This module is browser compatible.
 
 import { createElement, ReactNode, RefObject, useRef } from "react";
-import useId from "../hooks/use_id.ts";
 import { CommonContextsContext, IdContext } from "./context.ts";
 import {
-  ExclusiveActiveIndexProps,
-  ExclusiveSelectIndexProps,
+  ExclusiveActiveIndex,
+  ExclusiveSelectIndex,
 } from "../_shared/types.ts";
-import useExclusiveState from "../_shared/use_exclusive_state.ts";
+import { useId, useStateSet } from "../hooks/mod.ts";
 
 export type Props =
   & {
@@ -18,31 +17,27 @@ export type Props =
 
     children: ReactNode;
   }
-  & ExclusiveActiveIndexProps
-  & ExclusiveSelectIndexProps;
+  & ExclusiveActiveIndex
+  & ExclusiveSelectIndex;
 
 export default function TabProvider(
   {
     children,
-    initialActiveIndex,
-    initialSelectIndex: _initialSelectIndex,
-    selectIndex: _selectIndex,
-    activeIndex: _activeIndex,
-    setActiveIndex: _setActiveIndex,
-    setSelectIndex: _setSelectIndex,
+    initialSelectIndex = 0,
+    initialActiveIndex = initialSelectIndex ?? 0,
+    selectIndexSet,
+    activeIndexSet,
   }: Readonly<Props>,
 ): JSX.Element {
   const { id } = useId();
-  const [activeIndex, setActiveIndex] = useExclusiveState<number | undefined>({
-    initialState: initialActiveIndex,
-    setState: _setActiveIndex,
-    state: _activeIndex,
-  });
-  const [selectIndex, setSelectIndex] = useExclusiveState<number | undefined>({
-    initialState: _initialSelectIndex,
-    setState: _setSelectIndex,
-    state: _selectIndex,
-  });
+  const [activeIndex, setActiveIndex] = useStateSet(
+    initialActiveIndex,
+    activeIndexSet,
+  );
+  const [selectIndex, setSelectIndex] = useStateSet(
+    initialSelectIndex,
+    selectIndexSet,
+  );
 
   const tabsRef = useRef<RefObject<Element>[]>([]);
   const tabPanelsRef = useRef<RefObject<Element>[]>([]);
