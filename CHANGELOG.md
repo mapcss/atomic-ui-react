@@ -1,3 +1,13 @@
+# [1.0.0-beta.53](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.52...1.0.0-beta.53) (2022-06-15)
+
+
+### Features
+
+* **hooks:** add `useIsomorphicLayoutEffect` hook that prevent to output warining on server ([e70b773](https://github.com/mapcss/atomic-ui-react/commit/e70b7730ab8cc2cc3144e957f753ca44ff2495cf))
+* **hooks:** add `useStateSet` hook ([01397ac](https://github.com/mapcss/atomic-ui-react/commit/01397ac1a35caf7b5ccb011a3159e0105f2f2b70))
+* **switch:** rename state set interface, `onChangeChecked` to `onIsCheckedChange` ([178b1c0](https://github.com/mapcss/atomic-ui-react/commit/178b1c019a8eed15fd2d645ad00a2ff247f2e4ba))
+* **tab:** add `Tab` components, what has default tag ([e685608](https://github.com/mapcss/atomic-ui-react/commit/e68560895bb3992d56b88793f7eedaa3daf71b30))
+
 # [1.0.0-beta.52](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.51...1.0.0-beta.52) (2022-06-08)
 
 
