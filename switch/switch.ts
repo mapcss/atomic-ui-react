@@ -1,12 +1,11 @@
 // This module is browser compatible.
 
 import { createElement, forwardRef, ReactNode, Ref } from "react";
-import { Tag } from "../types.ts";
+import { StateSet, Tag } from "../types.ts";
 import { Exclusive } from "../util.ts";
-import { useAs } from "../_shared/hooks.ts";
 import { IsCheckedProps } from "./types.ts";
 import WithSwitch, { Props as WithSwitchProps } from "./with_switch.ts";
-import useAlterState from "../_shared/use_alter_state.ts";
+import { useAlterState } from "../hooks/mod.ts";
 
 type _Props<As extends Tag> =
   & {
@@ -19,7 +18,10 @@ type _Props<As extends Tag> =
     children?: ReactNode;
   }
   & Omit<WithSwitchProps, "children" | keyof IsCheckedProps>
-  & Exclusive<IsCheckedProps, {
+  & Exclusive<{
+    /** `isChecked` and dispatch it set. */
+    isCheckedSet: StateSet<boolean>;
+  }, {
     /** Initial `isChecked` state.
      * @default false
      */
@@ -30,34 +32,33 @@ export type Props<As extends Tag> = _Props<As>;
 
 function _Switch<As extends Tag = "button">(
   {
-    as,
+    as = "button" as As,
     children,
     initialIsChecked = false,
-    setIsChecked: setState,
-    isChecked: state,
-    ...rest
+    isCheckedSet,
+    onIsCheckChange,
+    ...allAttributes
   }: Props<As>,
   ref: Ref<Element>,
 ): JSX.Element {
-  const [isChecked, setIsChecked] = useAlterState<boolean>(initialIsChecked, [
-    state,
-    setState,
-  ]);
+  const [isChecked, setIsChecked] = useAlterState<boolean>(
+    initialIsChecked,
+    isCheckedSet,
+  );
   return WithSwitch({
     children: (attrs) => {
-      const tag = useAs(as, "button");
-      return createElement(tag, { ref, ...attrs }, children);
+      return createElement(as, { ref, ...attrs }, children);
     },
     isChecked,
     setIsChecked,
-    ...rest,
+    onIsCheckChange,
+    ...allAttributes,
   });
 }
 
 /**
  * ```tsx
  * import { Switch } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
- *
  * export default () => {
  *   return <Switch />;
  * };

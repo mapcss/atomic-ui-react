@@ -7,7 +7,6 @@ off.
 
 ```tsx
 import { Switch } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
-
 export default () => {
   return <Switch />;
 };
@@ -34,8 +33,8 @@ features:
 - `tabIndex` = 0
 - `onClick`
 - `onKeyDown`
-  - <kbd>Space<kbd>
-  - <kbd>Enter<kbd>
+  - <kbd>Space</kbd>
+  - <kbd>Enter</kbd>
 
 ## API
 
@@ -49,7 +48,6 @@ type: `Component`
 
 ```tsx
 import { Switch } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
-
 export default () => {
   return <Switch />;
 };
@@ -61,14 +59,18 @@ export default () => {
 
 #### Props
 
-| Name              | Required / Default | Description                                                                     |
-| ----------------- | :----------------: | ------------------------------------------------------------------------------- |
-| as                |      'button'      | `T`<br>Element type                                                             |
-| children          |         -          | `ReactNode`<br>Children.                                                        |
-| isChecked         |         -          | `boolean`<br>Whether or not the switch is checked.                              |
-| setIsChecked      |         -          | `Dispatch<SetStateAction<boolean>>`<br>Dispatch function of `isChecked`.        |
-| initialIsChecked  |      `false`       | `boolean`<br>Initial `isChecked` state.                                         |
-| onChangeIsChecked |         -          | `(contexts: Contexts) => void`<br>Call on `isChecked` is mutated with contexts. |
+| Name             | Required / Default | Description                                                                     |
+| ---------------- | :----------------: | ------------------------------------------------------------------------------- |
+| as               |      'button'      | `T`<br>Element type                                                             |
+| children         |         -          | `ReactNode`<br>Children.                                                        |
+| isCheckedSet     |         -          | `[boolean, Dispatch<boolean>]`<br> `isChecked` and dispatch it set.             |
+| initialIsChecked |      `false`       | `boolean`<br>Initial `isChecked` state.                                         |
+| onIsCheckChange  |         -          | `(contexts: Contexts) => void`<br>Call on `isChecked` is mutated with contexts. |
+| ...allAttributes |         -          | `AllAttributesWith<[Contexts]>`<br>All HTML attributes.                         |
+
+@remark
+
+Only one of `isCheckedSet` and `initialIsChecked` must be specified.
 
 #### Contexts
 
@@ -78,3 +80,36 @@ export default () => {
 #### Return
 
 `JSX.Element`
+
+#### Scoped state
+
+See [Scoped state](../concepts/scoped_state.md) for more information.
+
+##### Controllable
+
+`isCheckedSet`
+
+```tsx
+import { Switch } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useState } from "react";
+export default () => {
+  const [state, setState] = useState(true);
+  return (
+    <>
+      <button onClick={() => setState((state) => !state)}>toggle</button>
+      <Switch isCheckedSet={[state, setState]} />
+    </>
+  );
+};
+```
+
+##### Uncontrollable
+
+`initialIsChecked`
+
+```tsx
+import { Switch } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  return <Switch initialIsChecked />;
+};
+```

@@ -23,7 +23,7 @@ export default function WithSwitch(
     children,
     isChecked,
     setIsChecked,
-    onChangeChecked,
+    onIsCheckChange,
     ...allAttributes
   }: Readonly<Props>,
 ): JSX.Element {
@@ -32,7 +32,7 @@ export default function WithSwitch(
       isChecked,
       setIsChecked,
     },
-    { onChangeChecked },
+    { onIsCheckChange },
     allAttributes,
   );
 

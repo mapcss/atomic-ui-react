@@ -10,7 +10,7 @@ import { IsCheckedProps } from "./types.ts";
 
 export type Options = {
   /** Call on `isChecked` is mutated with contexts. */
-  onChangeChecked: (contexts: Contexts) => void;
+  onIsCheckChange: (contexts: Contexts) => void;
 };
 
 export type Contexts = IsCheckedProps;
@@ -21,7 +21,7 @@ export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
 export default function useSwitch(
   { isChecked, setIsChecked }: Readonly<IsCheckedProps>,
-  { onChangeChecked }: Readonly<Partial<Options>> = {},
+  { onIsCheckChange }: Readonly<Partial<Options>> = {},
   allAttributesWith: AllAttributesWithContexts = {},
 ): Returns {
   const contexts: Contexts = {
@@ -30,7 +30,7 @@ export default function useSwitch(
   };
 
   useUpdateEffect(() => {
-    onChangeChecked?.(contexts);
+    onIsCheckChange?.(contexts);
   }, [contexts.isChecked]);
 
   const attributes = useAttributesWith(
