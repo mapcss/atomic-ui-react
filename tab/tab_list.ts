@@ -1,4 +1,10 @@
-import { createElement, ReactNode, useContext } from "react";
+import {
+  createElement,
+  forwardRef as _forwardRef,
+  ReactNode,
+  Ref,
+  useContext,
+} from "react";
 import { CommonContextsContext, HorizontalContext } from "./context.ts";
 import { Tag } from "../types.ts";
 import { FocusStrategyContext } from "../focus/mod.ts";
@@ -14,8 +20,9 @@ export type Props<T extends Tag> = {
   children?: ReactNode;
 } & AttributesWithContexts;
 
-export default function TabList<T extends Tag>(
+function TabList<T extends Tag>(
   { tag = "div" as T, children, ...allAttributes }: Props<T>,
+  ref: Ref<Element>,
 ): JSX.Element | never {
   const commonContexts = useContext(CommonContextsContext);
   const isHorizontal = useContext(HorizontalContext);
@@ -30,5 +37,7 @@ export default function TabList<T extends Tag>(
     focusStrategy,
   }, allAttributes);
 
-  return createElement(tag, attributes, children);
+  return createElement(tag, { ref, ...attributes }, children);
 }
+
+export default _forwardRef(TabList);

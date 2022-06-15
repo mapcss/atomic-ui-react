@@ -1,4 +1,12 @@
-import { createElement, ReactNode, useContext, useMemo } from "react";
+import {
+  createElement,
+  forwardRef as _forwardRef,
+  ReactNode,
+  Ref,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import {
   CommonContextsContext,
   HorizontalContext,
@@ -8,7 +16,7 @@ import { Tag } from "../types.ts";
 import { FocusStrategyContext } from "../focus/mod.ts";
 import { ERROR_MSG } from "./constant.ts";
 import useTab, { AttributesWithContexts, Params } from "./use_tab.ts";
-import { useId } from "../hooks/mod.ts";
+import { useId, useMergedRef } from "../hooks/mod.ts";
 import { joinChars } from "../util.ts";
 
 export type Props<T extends Tag> = {
@@ -20,8 +28,9 @@ export type Props<T extends Tag> = {
   children?: ReactNode;
 } & AttributesWithContexts;
 
-export default function Tab<T extends Tag>(
+function Tab<T extends Tag>(
   { tag = "button" as T, children, ...allAttributes }: Props<T>,
+  ref: Ref<Element>,
 ): JSX.Element | never {
   const groupId = useContext(IdContext);
   const isHorizontal = useContext(HorizontalContext);
@@ -31,6 +40,11 @@ export default function Tab<T extends Tag>(
   if (!groupId || !commonContexts) {
     throw Error(ERROR_MSG);
   }
+
+  const [getRef, setRef] = useMergedRef(ref);
+  useEffect(() => {
+    commonContexts.tabsRef.current.push(getRef);
+  }, []);
 
   const prefix = useMemo<string>(() => joinChars([groupId, "tab"], "-")!, [
     groupId,
@@ -54,5 +68,7 @@ export default function Tab<T extends Tag>(
     focusStrategy,
   }, allAttributes);
 
-  return createElement(tag, attributes, children);
+  return createElement(tag, { ref: setRef, ...attributes }, children);
 }
+
+export default _forwardRef(Tab);

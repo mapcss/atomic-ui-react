@@ -1,8 +1,16 @@
-import { createElement, ReactNode, useContext, useMemo } from "react";
+import {
+  createElement,
+  forwardRef as _forwardRef,
+  ReactNode,
+  Ref,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
 import { CommonContextsContext, IdContext } from "./context.ts";
 import { Tag } from "../types.ts";
 import { ERROR_MSG } from "./constant.ts";
-import { useId } from "../hooks/mod.ts";
+import { useId, useMergedRef } from "../hooks/mod.ts";
 import { joinChars } from "../util.ts";
 import useTabPanel, {
   AttributesWithContexts,
@@ -18,8 +26,9 @@ export type Props<T extends Tag> = {
   children?: ReactNode;
 } & AttributesWithContexts;
 
-export default function TabPanel<T extends Tag>(
+function TabPanel<T extends Tag>(
   { tag = "div" as T, children, ...allAttributes }: Props<T>,
+  ref: Ref<Element>,
 ): JSX.Element | never {
   const groupId = useContext(IdContext);
   const commonContexts = useContext(CommonContextsContext);
@@ -27,6 +36,11 @@ export default function TabPanel<T extends Tag>(
   if (!groupId || !commonContexts) {
     throw Error(ERROR_MSG);
   }
+
+  const [getRef, setRef] = useMergedRef(ref);
+  useEffect(() => {
+    commonContexts.tabPanelsRef.current.push(getRef);
+  }, []);
 
   const prefix = useMemo<string>(
     () => joinChars([groupId, "tab", "panel"], "-")!,
@@ -48,5 +62,7 @@ export default function TabPanel<T extends Tag>(
 
   const [attributes] = useTabPanel(contexts, allAttributes);
 
-  return createElement(tag, attributes, children);
+  return createElement(tag, { ref: setRef, ...attributes }, children);
 }
+
+export default _forwardRef(TabPanel);
