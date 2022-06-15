@@ -23,7 +23,7 @@ export type Props<As extends Tag> = {
   children?: ReactNode;
 } & Partial<AllAttributesWith<[Contexts]>>;
 
-function _Tooltip<As extends Tag = "div">(
+function Tooltip<As extends Tag = "div">(
   { as = "div" as As, children, ...allAttributes }: Readonly<Props<As>>,
   ref: ForwardedRef<As>,
 ) {
@@ -35,6 +35,4 @@ function _Tooltip<As extends Tag = "div">(
   return createElement(as, { ref, ...attributes }, children);
 }
 
-const Tooltip = forwardRef(_Tooltip);
-
-export default Tooltip;
+export default forwardRef(Tooltip);

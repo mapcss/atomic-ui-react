@@ -5,9 +5,13 @@ type Contexts = IsShowProps;
 
 export type AttributesWithContexts = Partial<AllAttributesWith<[Contexts]>>;
 
-export default function useTooltipTrigger(contexts: Contexts) {
+export default function useTooltipTrigger(
+  contexts: Contexts,
+  allAttributes: AttributesWithContexts = {},
+) {
   const attributes = useAttributesWith<[Contexts]>([contexts], {
     ...defaultAttributes,
+    ...allAttributes,
   });
 
   return [attributes];
