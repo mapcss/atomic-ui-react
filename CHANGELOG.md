@@ -1,3 +1,10 @@
+# [1.0.0-beta.55](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.54...1.0.0-beta.55) (2022-06-15)
+
+
+### Bug Fixes
+
+* **tooltip:** accept all attributes to props ([c7bdfe7](https://github.com/mapcss/atomic-ui-react/commit/c7bdfe7730442dc004c95763663f29ffb0e90c5b))
+
 # [1.0.0-beta.54](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.53...1.0.0-beta.54) (2022-06-15)
 
 
