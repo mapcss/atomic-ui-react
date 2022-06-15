@@ -1,3 +1,10 @@
+# [1.0.0-beta.54](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.53...1.0.0-beta.54) (2022-06-15)
+
+
+### Bug Fixes
+
+* **tab:** to be forwardrefable components ([d7bb20c](https://github.com/mapcss/atomic-ui-react/commit/d7bb20c9b7bb6af5b3683c28da98d41c64c945e9))
+
 # [1.0.0-beta.53](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.52...1.0.0-beta.53) (2022-06-15)
 
 
