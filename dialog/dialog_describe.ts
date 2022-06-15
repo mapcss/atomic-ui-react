@@ -53,10 +53,3 @@ function _DialogDescribe<As extends Tag = "p">(
 const DialogDescribe = _forwardRef(_DialogDescribe);
 
 export default DialogDescribe;
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}

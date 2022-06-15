@@ -50,7 +50,7 @@ it(describeTests, "should be render if disclosure open", (t) => {
     {
       wrapper: ({ children }) => (
         <SSRProvider>
-          <DisclosureProvider isInitialOpen>
+          <DisclosureProvider initialIsOpen>
             {children as ReactElement}
           </DisclosureProvider>
         </SSRProvider>

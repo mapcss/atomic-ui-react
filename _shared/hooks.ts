@@ -2,11 +2,7 @@
 
 import { useCallback, useMemo } from "react";
 import { associateWith } from "../deps.ts";
-import { AllHandler, AllHandlerMap, Tag } from "../types.ts";
-
-export function useAs<As extends Tag>(as: As | undefined, defaultAs: Tag): Tag {
-  return useMemo<Tag>(() => as ?? defaultAs, [as, defaultAs]);
-}
+import { AllHandler, AllHandlerMap } from "../types.ts";
 
 export function useEventHandler(
   on: Iterable<AllHandler>,

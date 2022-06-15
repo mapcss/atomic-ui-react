@@ -30,15 +30,15 @@ const defaultLi: Required<Components>["li"] = (props) =>
 const DEFAULT_SEPARATOR = "/";
 
 export type Components = {
-  nav?: Component<NavProps>;
-  ol?: Component<OlProps>;
-  li?: FCWithContext<LiProps, { forSeparator: boolean }>;
+  nav: Component<NavProps>;
+  ol: Component<OlProps>;
+  li: FCWithContext<LiProps, { forSeparator: boolean }>;
 };
 
 export type Props = {
   children: ReactNode | Iterable<ReactNode>;
 
-  components?: Components;
+  components?: Partial<Components>;
 
   /**
    * @default `/`

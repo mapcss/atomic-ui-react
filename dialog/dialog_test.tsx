@@ -21,7 +21,7 @@ it(describeTests, "should render as default", (t) => {
 
   assertSnapshot(t, container.innerHTML);
 
-  rerender(<Dialog isShow setIsShow={() => {}} />);
+  rerender(<Dialog isShowSet={[true, () => {}]} />);
   assertSnapshot(t, container.innerHTML);
 });
 

@@ -1,13 +1,17 @@
 import { AllHTMLAttributes, KeyboardEvent, useMemo } from "react";
-import useAttributesWith, {
+import {
   AllAttributesWith,
   AttributesHandler,
-} from "../hooks/use_attributes_with.ts";
+  useAttributesWith,
+} from "../hooks/mod.ts";
 import { first, last, mappingKey, next, prev } from "../util.ts";
 import { CommonContexts } from "./types.ts";
-import useFocusStrategy from "../focus/use_focus_strategy.ts";
-import RovingTabIndex from "../focus/roving_tabindex.ts";
-import { FocusStrategy } from "../focus/types.ts";
+import {
+  FocusStrategy,
+  RovingTabIndex,
+  useFocusStrategy,
+} from "../focus/mod.ts";
+import { isNumber } from "../deps.ts";
 
 export type AllAttributesWithContexts = AllAttributesWith<[CommonContexts]>;
 
@@ -33,7 +37,10 @@ export default function useToolbar(
   );
 
   const activeElement = useMemo(
-    () => itemsRef.current[activeIndex]?.current,
+    () =>
+      isNumber(activeIndex)
+        ? itemsRef.current[activeIndex]?.current
+        : undefined,
     [activeIndex],
   );
 

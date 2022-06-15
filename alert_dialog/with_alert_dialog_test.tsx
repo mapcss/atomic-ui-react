@@ -24,7 +24,7 @@ const describeTests = describe({
 
 it(describeTests, "should render as", (t) => {
   const { container } = render(
-    <WithAlertDialog initialIsShow>
+    <WithAlertDialog isShow setIsShow={() => {}}>
       {(attributes) => <div {...attributes} />}
     </WithAlertDialog>,
     {
@@ -42,7 +42,7 @@ it(describeTests, "should render as", (t) => {
 it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   render(
-    <WithAlertDialog initialIsShow>
+    <WithAlertDialog isShow setIsShow={() => {}}>
       {(attributes, context) => {
         mockFn(attributes);
         mockFn(context);

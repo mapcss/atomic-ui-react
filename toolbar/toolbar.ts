@@ -1,7 +1,6 @@
 import { createElement, forwardRef as _forwardRef, Ref } from "react";
 import { Tag, WithIntrinsicElements } from "../types.ts";
 import WithToolbar from "./with_toolbar.ts";
-import { useAs } from "../_shared/hooks.ts";
 
 type _Props<As extends Tag> = {
   /**
@@ -13,14 +12,12 @@ type _Props<As extends Tag> = {
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _Toolbar<As extends Tag = "div">(
-  { as, ...props }: Props<As>,
+  { as = "div" as As, ...props }: Props<As>,
   ref: Ref<HTMLElement | SVGElement>,
 ): JSX.Element {
   return WithToolbar({
     children: (attributes) => {
-      const tag = useAs(as, "div");
-
-      return createElement(tag, { ref, ...attributes, ...props });
+      return createElement(as, { ref, ...attributes, ...props });
     },
   });
 }

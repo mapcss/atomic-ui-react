@@ -12,7 +12,7 @@ const describeTests = describe({
 
 it(describeTests, "should render as default", (t) => {
   const { container, rerender } = render(
-    <AlertDialog isShow={false} setIsShow={() => {}} />,
+    <AlertDialog />,
     {
       wrapper: ({ children }) => (
         <SSRProvider>
@@ -24,7 +24,7 @@ it(describeTests, "should render as default", (t) => {
 
   assertSnapshot(t, container.innerHTML);
 
-  rerender(<AlertDialog isShow setIsShow={() => {}} />);
+  rerender(<AlertDialog isShowSet={[true, () => {}]} />);
   assertSnapshot(t, container.innerHTML);
 });
 
