@@ -55,4 +55,4 @@ export type HandlersWithContext<Context> = {
   ) => ReturnType<Required<AllHandlerMap>[k]>;
 };
 
-export type StateSet<T> = [T, Dispatch<T>];
+export type StateSet<T> = [state: T, dispatch: Dispatch<T>];
