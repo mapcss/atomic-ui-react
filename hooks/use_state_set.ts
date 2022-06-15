@@ -9,7 +9,7 @@ import { Dispatch, useMemo, useState } from "react";
  * export default () => {
  *   const [state, setState] = useStateSet(false);
  *   const states = useState(true);
- *   const stateSet = useStateSet(undefined, states);
+ *   const stateSet = useStateSet(false, states);
  * };
  * ```
  */
