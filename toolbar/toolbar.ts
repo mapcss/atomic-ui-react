@@ -25,10 +25,3 @@ function _Toolbar<As extends Tag = "div">(
 const Toolbar = _forwardRef(_Toolbar);
 
 export default Toolbar;
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}

@@ -54,10 +54,3 @@ function _DialogTitle<As extends Tag = "h3">(
 const DialogTitle = _forwardRef(_DialogTitle);
 
 export default DialogTitle;
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}

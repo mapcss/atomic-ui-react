@@ -110,10 +110,3 @@ function _Transition<As extends Tag = "div">(
  */
 const Transition = _forwardRef(_Transition);
 export default Transition;
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}
