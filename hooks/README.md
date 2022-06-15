@@ -528,6 +528,39 @@ Accepts up to 2 arguments.
 
 `T | U | undefined`
 
+### useStateSet
+
+[Source](./use_state_set.ts) [Test](./use_state_set_test.ts)
+
+Return `useState` return value or custom state and dispatch set.
+
+#### Example
+
+```tsx
+import { useStateSet } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useState } from "react";
+export default () => {
+  const [state, setState] = useStateSet(false);
+  const states = useState(true);
+  const stateSet = useStateSet(undefined, states);
+};
+```
+
+#### Generics
+
+- `S`
+
+#### Params
+
+| N | Name         | Required / Default | Description                                          |
+| - | ------------ | :----------------: | ---------------------------------------------------- |
+| 1 | initialState | :white_check_mark: | `S` &#124; `() => S`<br>Initial state.               |
+| 2 | stateSet     |         -          | `[S, Dispatch<S>]`<br>Custom state and dispatch set. |
+
+#### Returns
+
+`[S, Dispatch<S>]`
+
 ### useTimeout
 
 [Source](./use_timeout.ts) [Test](./use_timeout_test.ts)

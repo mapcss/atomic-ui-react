@@ -43,3 +43,4 @@ export { default as useMergedRef } from "./use_merged_ref.ts";
 export type { Returns as UseMergedRefReturns } from "./use_merged_ref.ts";
 export { default as useCallable } from "./use_callable.ts";
 export { default as useBind } from "./use_bind.ts";
+export { default as useStateSet } from "./use_state_set.ts";
