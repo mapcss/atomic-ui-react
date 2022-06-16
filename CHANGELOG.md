@@ -1,3 +1,10 @@
+# [1.0.0-beta.56](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.55...1.0.0-beta.56) (2022-06-16)
+
+
+### Features
+
+* **breadcrumb:** change default rendering element, add docs ([e233940](https://github.com/mapcss/atomic-ui-react/commit/e233940b6db9abaf261e73450655b260c75ae8bd))
+
 # [1.0.0-beta.55](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.54...1.0.0-beta.55) (2022-06-15)
 
 
