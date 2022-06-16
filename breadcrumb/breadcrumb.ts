@@ -1,56 +1,82 @@
 // This module is browser compatible.
 
-import { Children, cloneElement, createElement, ReactNode } from "react";
+import {
+  Children,
+  cloneElement,
+  createElement,
+  PropsWithChildren,
+  ReactNode,
+} from "react";
 import { isIterable, isString } from "../deps.ts";
 import { isCloneable } from "../util.ts";
 
-type FC<Props> = (props: Props) => JSX.Element;
-type FCWithContext<Props, Context> = (
-  props: Props,
-  context: Context,
+type Component<Args extends readonly unknown[]> = (
+  ...args: Args
 ) => JSX.Element;
-type Component<Props> = FC<Props>;
 
-export type NavProps = Pick<
-  JSX.IntrinsicElements["nav"],
-  "children" | "aria-label"
->;
-export type OlProps = Pick<JSX.IntrinsicElements["ol"], "children">;
-export type LiProps = Pick<
-  JSX.IntrinsicElements["li"],
-  "children" | "aria-hidden"
->;
-
-const defaultNav: Required<Components>["nav"] = (props) =>
-  createElement("nav", props);
-const defaultOl: Required<Components>["ol"] = (props) =>
-  createElement("ol", props);
-const defaultLi: Required<Components>["li"] = (props) =>
-  createElement("li", props);
+const defaultNav: Components["nav"] = (props) =>
+  createElement("nav", { "aria-label": "Breadcrumb", ...props });
+const defaultOl: Components["ol"] = (props) => createElement("ol", props);
+const defaultLi: Components["li"] = (props, { forSeparator }) => {
+  const attributes = forSeparator ? { "aria-hidden": "true", ...props } : props;
+  return createElement("li", attributes);
+};
 const DEFAULT_SEPARATOR = "/";
 
 export type Components = {
-  nav: Component<NavProps>;
-  ol: Component<OlProps>;
-  li: FCWithContext<LiProps, { forSeparator: boolean }>;
+  /** Override `nav` component.
+   * @defaultValue {@link defaultNav}
+   */
+  nav: Component<[PropsWithChildren<unknown>]>;
+
+  /** Override `ol` component.
+   * @defaultValue {@link defaultOl}
+   */
+  ol: Component<[PropsWithChildren<unknown>]>;
+
+  /** Override `li` component.
+   * @defaultValue {@link defaultLi}
+   */
+  li: Component<[PropsWithChildren<unknown>, { forSeparator: boolean }]>;
 };
 
 export type Props = {
+  /** Child or children. */
   children: ReactNode | Iterable<ReactNode>;
 
-  components?: Partial<Components>;
-
-  /**
+  /** Separator between breadcrumb.
    * @default `/`
    */
   separator?: ReactNode;
 
-  /**
+  /** Whether to disable the automatic assignment of `aria-current`.
+   * - `true` - If the last element is an anchor element, the `aria-current` attribute will be added.
+   * - `false` - Do nothing.
    * @default false
    */
   disabledAriaCurrent?: boolean;
+
+  /** The key is the name of the element to override. The value is the component to render instead. */
+  components?: Partial<Components>;
 };
 
+/** A breadcrumb consists of a list of links to the parent pages of the
+ * current page in hierarchical order. It helps users find their place within a website or web
+ * application. Breadcrumbs are often placed horizontally before a page's main
+ * content.
+ * ```tsx
+ * import { Breadcrumb } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ * export default () => {
+ *   return (
+ *     <Breadcrumb>
+ *       <a href="/html">HTML</a>
+ *       <a href="/html/breadcrumb">Breadcrumb</a>
+ *       <a href="/html/breadcrumb/example">Example</a>
+ *     </Breadcrumb>
+ *   );
+ * };
+ * ```
+ */
 export default function Breadcrumb(
   {
     components: {
@@ -61,7 +87,7 @@ export default function Breadcrumb(
     children,
     separator = DEFAULT_SEPARATOR,
     disabledAriaCurrent = false,
-  }: Props,
+  }: Readonly<Props>,
 ): JSX.Element {
   const _children = isString(children)
     ? [children]
@@ -83,9 +109,7 @@ export default function Breadcrumb(
               Children.toArray(
                 [
                   separator && 0 < i &&
-                  li({ children: separator, "aria-hidden": "true" }, {
-                    forSeparator: true,
-                  }),
+                  li({ children: separator }, { forSeparator: true }),
                   li({ children: node }, { forSeparator: false }),
                 ],
               )
@@ -93,7 +117,6 @@ export default function Breadcrumb(
           }),
         })
       ),
-      "aria-label": "Breadcrumb",
     })
   );
 }
