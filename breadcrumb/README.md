@@ -60,16 +60,16 @@ features:
 | ------------------- | :----------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | children            | :white_check_mark: | `ReactNode` &#124; `Iterable<ReactNode>`<br>Child or children.                                                                                                                                                              |
 | separator           |       `"/"`        | `ReactNode`<br> Separator between breadcrumb.                                                                                                                                                                               |
-| disabledAriaCurrent |      `false`       | `boolean`<br>Whether to disable the automatic assignment of `aria-current`.<ul><li> `true` - If the last element is an anchor element, the `aria-current` attribute will be added.</li><li> `false` - Do nothing.</li></ul> |
+| disabledAriaCurrent |      `false`       | `boolean`<br>Whether to disable the automatic assignment of `aria-current`.<ul><li> `true` - Do nothing.</li><li> `false` - If the last element is an anchor element, the `aria-current` attribute will be added.</li></ul> |
 | components          |         -          | `Partial<Components>`<br>The key is the name of the element to override. The value is the component to render instead.                                                                                                      |
 
 #### Components
 
-| Name | Required / Default | Description                                                                              |
-| ---- | :----------------: | ---------------------------------------------------------------------------------------- |
-| nav  |    `defaultNav`    | `(props: NavProps) => JSX.Element`<br> Override `nav` component.                         |
-| ol   |    `defaultOl`     | `(props: OlProps) => JSX.Element`<br> Override `ol` component.                           |
-| li   |    `defaultLi`     | `(props: LiProps, { forSeparator: boolean}) => JSX.Element`<br> Override `li` component. |
+| Name | Required / Default | Description                                                                                                 |
+| ---- | :----------------: | ----------------------------------------------------------------------------------------------------------- |
+| nav  |    `defaultNav`    | `(props: PropsWithChildren<unknown>) => JSX.Element`<br> Override `nav` component.                          |
+| ol   |    `defaultOl`     | `(props: PropsWithChildren<unknown>) => JSX.Element`<br> Override `ol` component.                           |
+| li   |    `defaultLi`     | `(props: PropsWithChildren<unknown>, { forSeparator: boolean}) => JSX.Element`<br> Override `li` component. |
 
 ```ts
 import { createElement, PropsWithChildren } from "react";

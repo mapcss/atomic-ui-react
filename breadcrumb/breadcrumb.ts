@@ -50,8 +50,8 @@ export type Props = {
   separator?: ReactNode;
 
   /** Whether to disable the automatic assignment of `aria-current`.
-   * - `true` - If the last element is an anchor element, the `aria-current` attribute will be added.
-   * - `false` - Do nothing.
+   * - `true` - Do nothing.
+   * - `false` - If the last element is an anchor element, the `aria-current` attribute will be added.
    * @default false
    */
   disabledAriaCurrent?: boolean;
