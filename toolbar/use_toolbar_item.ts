@@ -1,12 +1,11 @@
 import { AllHTMLAttributes, useMemo } from "react";
-import useAttributesWith, {
-  AllAttributesWith,
-  AttributesHandler,
-} from "../hooks/use_attributes_with.ts";
+import { AllAttributesWith, useAttributesWith } from "../hooks/mod.ts";
 import { CommonContexts } from "./types.ts";
-import useFocusStrategy from "../focus/use_focus_strategy.ts";
-import RovingTabIndex from "../focus/roving_tabindex.ts";
-import { FocusStrategyProps } from "../focus/types.ts";
+import {
+  FocusStrategyProps,
+  RovingTabIndex,
+  useFocusStrategy,
+} from "../focus/mod.ts";
 
 export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
 
@@ -69,13 +68,6 @@ export default function useToolbarItem(
   return [attributes, contexts];
 }
 
-const defaultOnClick: AttributesHandler<[Contexts], "onClick"> = (
-  _,
-  { setActiveIndex, index },
-) => {
-  setActiveIndex(index);
-};
-
 const defaultAttributes: Partial<AllAttributesWith<[Contexts]>> = {
-  onClick: defaultOnClick,
+  onClick: (_, { setActiveIndex, index }) => setActiveIndex(index),
 };

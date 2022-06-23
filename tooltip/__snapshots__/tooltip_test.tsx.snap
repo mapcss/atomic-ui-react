@@ -1,5 +1,0 @@
-export const snapshot = {};
-
-snapshot[`Tooltip > should render markup 1`] = `'<span role="tooltip"></span>'`;
-
-snapshot[`Tooltip > should render markup 2`] = `'<span role="tooltip">test</span>'`;

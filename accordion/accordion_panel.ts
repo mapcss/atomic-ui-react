@@ -70,10 +70,3 @@ function _AccordionPanel<As extends Tag>(
 
 const AccordionPanel = _forwardRef(_AccordionPanel);
 export default AccordionPanel;
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}

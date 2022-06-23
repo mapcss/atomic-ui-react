@@ -2,10 +2,11 @@
 
 import { AllHTMLAttributes, useMemo } from "react";
 import { CommonContexts } from "./types.ts";
-import useAttributesWith, {
+import {
   AllAttributesWith,
-} from "../hooks/use_attributes_with.ts";
-import { Returns as UseIdReturns } from "../hooks/use_id.ts";
+  useAttributesWith,
+  UseIdReturns,
+} from "../hooks/mod.ts";
 
 export type Params =
   & {
@@ -18,7 +19,7 @@ export type Contexts = Params & {
   isSelect: boolean;
 };
 
-export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
+export type AttributesWithContexts = Partial<AllAttributesWith<[Contexts]>>;
 
 export type Returns = [AllHTMLAttributes<Element>, Contexts];
 
@@ -33,9 +34,8 @@ export default function useTabPanel(
     setActiveIndex,
     tabPanelsRef,
     tabsRef,
-  }: Readonly<
-    Params
-  >,
+  }: Readonly<Params>,
+  allAttributes: AttributesWithContexts = {},
 ): Returns {
   const isSelect = useMemo<boolean>(() => index === selectIndex, [
     index,
@@ -71,6 +71,7 @@ export default function useTabPanel(
 
   const attributes = useAttributesWith([contexts], {
     ...defaultAttributes,
+    ...allAttributes,
   });
 
   return [attributes, contexts];

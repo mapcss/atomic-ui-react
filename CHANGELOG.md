@@ -1,3 +1,57 @@
+# [1.0.0-beta.56](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.55...1.0.0-beta.56) (2022-06-16)
+
+
+### Features
+
+* **breadcrumb:** change default rendering element, add docs ([e233940](https://github.com/mapcss/atomic-ui-react/commit/e233940b6db9abaf261e73450655b260c75ae8bd))
+
+# [1.0.0-beta.55](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.54...1.0.0-beta.55) (2022-06-15)
+
+
+### Bug Fixes
+
+* **tooltip:** accept all attributes to props ([c7bdfe7](https://github.com/mapcss/atomic-ui-react/commit/c7bdfe7730442dc004c95763663f29ffb0e90c5b))
+
+# [1.0.0-beta.54](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.53...1.0.0-beta.54) (2022-06-15)
+
+
+### Bug Fixes
+
+* **tab:** to be forwardrefable components ([d7bb20c](https://github.com/mapcss/atomic-ui-react/commit/d7bb20c9b7bb6af5b3683c28da98d41c64c945e9))
+
+# [1.0.0-beta.53](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.52...1.0.0-beta.53) (2022-06-15)
+
+
+### Features
+
+* **hooks:** add `useIsomorphicLayoutEffect` hook that prevent to output warining on server ([e70b773](https://github.com/mapcss/atomic-ui-react/commit/e70b7730ab8cc2cc3144e957f753ca44ff2495cf))
+* **hooks:** add `useStateSet` hook ([01397ac](https://github.com/mapcss/atomic-ui-react/commit/01397ac1a35caf7b5ccb011a3159e0105f2f2b70))
+* **switch:** rename state set interface, `onChangeChecked` to `onIsCheckedChange` ([178b1c0](https://github.com/mapcss/atomic-ui-react/commit/178b1c019a8eed15fd2d645ad00a2ff247f2e4ba))
+* **tab:** add `Tab` components, what has default tag ([e685608](https://github.com/mapcss/atomic-ui-react/commit/e68560895bb3992d56b88793f7eedaa3daf71b30))
+
+# [1.0.0-beta.52](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.51...1.0.0-beta.52) (2022-06-08)
+
+
+### Features
+
+* **hooks:** add `useEventListener` hook that manage `addEventListener` safety ([a7ad877](https://github.com/mapcss/atomic-ui-react/commit/a7ad87740b2b14e11e1ec70b956324d3bd439be1))
+* **hooks:** add `useTimeout` hook that clear automatically on unmount ([344b339](https://github.com/mapcss/atomic-ui-react/commit/344b3399a2e22ae73ae2d46f97b0732a7e8fd323))
+* **tooltip:** add `Tooltip`, `TooltipContainer` and `TooltipTrigger` components ([e9c6cd8](https://github.com/mapcss/atomic-ui-react/commit/e9c6cd8439c7d4dd2aeab65e8a7dab3d8fc6c94c))
+
+# [1.0.0-beta.51](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.50...1.0.0-beta.51) (2022-06-07)
+
+
+### Bug Fixes
+
+* **switch:** remove duplicated AllHTMLAttributes types ([dca0e06](https://github.com/mapcss/atomic-ui-react/commit/dca0e06eb2263b6967af69d9a285654adf085125))
+
+# [1.0.0-beta.50](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.49...1.0.0-beta.50) (2022-06-07)
+
+
+### Bug Fixes
+
+* **tooltip:** export `Tooltip` component ([897059c](https://github.com/mapcss/atomic-ui-react/commit/897059c57573ea277371df85f0f3cb2b3d64e72c))
+
 # [1.0.0-beta.49](https://github.com/mapcss/atomic-ui-react/compare/1.0.0-beta.48...1.0.0-beta.49) (2022-06-06)
 
 

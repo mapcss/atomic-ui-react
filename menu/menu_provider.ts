@@ -1,6 +1,6 @@
 import { createElement, ReactNode, RefObject, useMemo, useRef } from "react";
 import { CommonContextsContext, GroupIdContext } from "./contexts.ts";
-import { CommonContexts, IsOpenProps } from "./types.ts";
+import { CommonContexts } from "./types.ts";
 import {
   current,
   Exclusive,
@@ -8,43 +8,38 @@ import {
   safeFocus,
   sortTabOrder,
 } from "../util.ts";
-import useExclusiveState from "../_shared/use_exclusive_state.ts";
-import { useId, useUpdateEffect } from "../hooks/mod.ts";
-import { ExclusiveActiveIndexProps } from "../_shared/types.ts";
+import { useId, useStateSet, useUpdateEffect } from "../hooks/mod.ts";
+import { ExclusiveActiveIndex } from "../_shared/types.ts";
+import { StateSet } from "../types.ts";
 
 export type Props =
   & {
     children?: ReactNode;
   }
-  & Exclusive<IsOpenProps, {
+  & Exclusive<{
+    isOpenSet: StateSet<boolean>;
+  }, {
     /**
      * @default false
      */
-    initialIsOpen?: boolean;
+    initialIsOpen: boolean;
   }>
-  & ExclusiveActiveIndexProps;
+  & ExclusiveActiveIndex;
 
 export default function MenuProvider(
   {
     children,
     initialIsOpen = false,
-    isOpen: _isOpen,
-    setIsOpen: _setIsOpen,
-    activeIndex: _activeIndex,
-    setActiveIndex: _setActiveIndex,
+    isOpenSet,
     initialActiveIndex = 0,
+    activeIndexSet,
   }: Readonly<Props>,
 ): JSX.Element {
-  const [isOpen, setIsOpen] = useExclusiveState({
-    initialState: initialIsOpen,
-    state: _isOpen,
-    setState: _setIsOpen,
-  });
-  const [activeIndex, setActiveIndex] = useExclusiveState<number | undefined>({
-    initialState: initialActiveIndex,
-    state: _activeIndex,
-    setState: _setActiveIndex,
-  });
+  const [isOpen, setIsOpen] = useStateSet<boolean>(initialIsOpen, isOpenSet);
+  const [activeIndex, setActiveIndex] = useStateSet<number | undefined>(
+    initialActiveIndex,
+    activeIndexSet,
+  );
   const { id } = useId();
   const menuRef = useRef<Element>(null);
   const menuTriggerRef = useRef<Element>(null);

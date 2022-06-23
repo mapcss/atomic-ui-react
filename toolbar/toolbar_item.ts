@@ -8,7 +8,6 @@ import { Tag, WithIntrinsicElements } from "../types.ts";
 import WithToolbarItem, {
   Props as WithToolbarItemProps,
 } from "./with_toolbar_item.ts";
-import { useAs } from "../_shared/hooks.ts";
 
 type _Props<As extends Tag> = {
   /**
@@ -22,15 +21,13 @@ type _Props<As extends Tag> = {
 export type Props<As extends Tag> = WithIntrinsicElements<_Props<As>, As>;
 
 function _ToolbarItem<As extends Tag = "button">(
-  { as, children, ...rest }: Props<As>,
+  { as = "button" as As, children, ...rest }: Props<As>,
   _: Ref<HTMLElement | SVGElement>,
 ): JSX.Element {
   return WithToolbarItem({
     children: (attributes) => {
-      const tag = useAs(as, "button");
-
       return createElement(
-        tag,
+        as,
         attributes,
         children,
       );
@@ -42,10 +39,3 @@ function _ToolbarItem<As extends Tag = "button">(
 const ToolbarItem = _forwardRef(_ToolbarItem);
 
 export default ToolbarItem;
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}

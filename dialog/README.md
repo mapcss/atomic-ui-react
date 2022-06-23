@@ -15,9 +15,9 @@ import {
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 import { useState } from "react";
 export default () => {
-  const [isShow, setIsShow] = useState(false);
+  const stateSet = useState(false);
   return (
-    <Dialog isShow={isShow} setIsShow={setIsShow} hasTitle hasDescribe>
+    <Dialog isShowSet={stateSet} hasTitle hasDescribe>
       <DialogTitle>Title</DialogTitle>
       <DialogDescribe>Describe it</DialogDescribe>
 

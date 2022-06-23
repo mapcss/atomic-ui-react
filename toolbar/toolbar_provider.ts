@@ -1,58 +1,61 @@
 // This module is browser compatible.
 
-import { createElement, ReactNode } from "react";
+import { createElement, ReactNode, RefObject, useMemo, useRef } from "react";
 import {
-  ActiveIndexStateSetContext,
+  CommonContextsContext,
   FocusStrategyContext,
   IdContext,
-  ItemsRefContext,
 } from "./context.ts";
-import useToolbarState, { Options, Params } from "./use_toolbar_state.ts";
-import useId from "../hooks/use_id.ts";
-import { FocusStrategyProps } from "../focus/types.ts";
-import RovingTabIndex from "../focus/roving_tabindex.ts";
+import { useId, useStateSet, useUpdateEffect } from "../hooks/mod.ts";
+import { FocusStrategyProps, RovingTabIndex } from "../focus/mod.ts";
+import { ExclusiveActiveIndex } from "../_shared/types.ts";
+import { CommonContexts } from "./types.ts";
 
 export type Props =
   & {
-    children: ReactNode;
+    children?: ReactNode;
+
+    onChangeActive?: (contexts: CommonContexts) => void;
   }
-  & Params
-  & Partial<Options>
-  & Partial<FocusStrategyProps>;
+  & Partial<FocusStrategyProps>
+  & ExclusiveActiveIndex;
 
 export default function ToolbarProvider(
   {
     children,
-    initialActiveIndex,
-    setActiveIndex,
-    activeIndex,
+    initialActiveIndex = 0,
+    activeIndexSet,
     onChangeActive,
     focusStrategy = RovingTabIndex,
-  }: Props,
+  }: Readonly<Props>,
 ): JSX.Element {
-  const [states, dispatches] = useToolbarState({
-    initialActiveIndex,
-    setActiveIndex: setActiveIndex as never,
-    activeIndex: activeIndex as never,
-  }, { onChangeActive });
   const idReturns = useId();
+  const [activeIndex, setActiveIndex] = useStateSet<number | undefined>(
+    initialActiveIndex,
+    activeIndexSet,
+  );
+
+  useUpdateEffect(() => {
+    onChangeActive?.({ activeIndex, setActiveIndex, itemsRef });
+  }, [activeIndex]);
+
+  const itemsRef = useRef<RefObject<HTMLElement | SVGElement>[]>([]);
+
+  const commonContexts = useMemo<CommonContexts>(
+    () => ({ activeIndex, setActiveIndex, itemsRef }),
+    [activeIndex, setActiveIndex, itemsRef],
+  );
 
   return createElement(
-    ItemsRefContext.Provider,
-    { value: states.itemsRef },
+    CommonContextsContext.Provider,
+    { value: commonContexts },
     createElement(
-      ActiveIndexStateSetContext.Provider,
-      {
-        value: [states.activeIndex, dispatches.setActiveIndex],
-      },
+      IdContext.Provider,
+      { value: idReturns },
       createElement(
-        IdContext.Provider,
-        { value: idReturns },
-        createElement(
-          FocusStrategyContext.Provider,
-          { value: focusStrategy },
-          children,
-        ),
+        FocusStrategyContext.Provider,
+        { value: focusStrategy },
+        children,
       ),
     ),
   );

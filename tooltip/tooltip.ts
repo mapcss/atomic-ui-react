@@ -1,29 +1,38 @@
 // This module is browser compatible.
 
-import { createElement, ForwardedRef, forwardRef, useMemo } from "react";
+import {
+  createElement,
+  ForwardedRef,
+  forwardRef,
+  ReactNode,
+  useContext,
+} from "react";
+import { Tag } from "../types.ts";
+import { IsShowContexts } from "./contexts.ts";
+import useTooltip from "./use_tooltip.ts";
+import { Contexts } from "./types.ts";
+import { AllAttributesWith } from "../hooks/mod.ts";
+import { ERROR_MSG } from "./constants.ts";
 
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}
-
-export type Props<As extends keyof JSX.IntrinsicElements> = {
+export type Props<As extends Tag> = {
   /**
    * @default `span`
    */
   as?: As;
-} & JSX.IntrinsicElements[As];
 
-function _Tooltip<As extends keyof JSX.IntrinsicElements = "span">(
-  { as: _as, ...props }: Props<As>,
+  children?: ReactNode;
+} & Partial<AllAttributesWith<[Contexts]>>;
+
+function Tooltip<As extends Tag = "div">(
+  { as = "div" as As, children, ...allAttributes }: Readonly<Props<As>>,
   ref: ForwardedRef<As>,
 ) {
-  const as = useMemo<string>(() => _as ?? "span", [_as]);
-  return createElement(as, { role: "tooltip", ref, ...props });
+  const isShowProps = useContext(IsShowContexts);
+  if (!isShowProps) throw Error(ERROR_MSG);
+
+  const [attributes] = useTooltip(isShowProps, allAttributes);
+
+  return createElement(as, { ref, ...attributes }, children);
 }
 
-const Tooltip = forwardRef(_Tooltip);
-
-export default Tooltip;
+export default forwardRef(Tooltip);

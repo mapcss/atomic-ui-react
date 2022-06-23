@@ -1,16 +1,19 @@
 // This module is browser compatible.
 
 import { AllHTMLAttributes, useMemo } from "react";
-import useAttributesWith, {
+import {
   AllAttributesWith,
-} from "../hooks/use_attributes_with.ts";
-import { Returns as UseIdReturns } from "../hooks/use_id.ts";
+  useAttributesWith,
+  UseIdReturns,
+} from "../hooks/mod.ts";
 import { CommonContexts } from "./types.ts";
-import { FocusStrategyProps } from "../focus/types.ts";
-import RovingTabIndex from "../focus/roving_tabindex.ts";
-import useFocusStrategy from "../focus/use_focus_strategy.ts";
+import {
+  FocusStrategyProps,
+  RovingTabIndex,
+  useFocusStrategy,
+} from "../focus/mod.ts";
 
-export type AllAttributesWithContexts = AllAttributesWith<[Contexts]>;
+export type AttributesWithContexts = Partial<AllAttributesWith<[Contexts]>>;
 
 export type Params = CommonContexts & UseIdReturns & {
   tabPanelId: string;
@@ -50,6 +53,7 @@ export default function useTab(
     isHorizontal = true,
     focusStrategy = RovingTabIndex,
   }: Readonly<Partial<Options>> = {},
+  allAttributes: AttributesWithContexts = {},
 ): Returns {
   const isSelect = useMemo<boolean>(() => index === selectIndex, [
     index,
@@ -99,12 +103,13 @@ export default function useTab(
   const attributes = useAttributesWith([contexts], {
     ...defaultAttributes,
     ...focusAttributes,
+    ...allAttributes,
   });
 
   return [attributes, contexts];
 }
 
-const defaultAttributes: Partial<AllAttributesWith<[Contexts]>> = {
+const defaultAttributes: AttributesWithContexts = {
   role: "tab",
   id: ({ id }) => id,
   "aria-selected": ({ isSelect }) => isSelect,

@@ -12,7 +12,7 @@ export type Props = {
 
 export default function WithTabList(
   { children, isHorizontal, focusStrategy = RovingTabIndex, activeThenSelect }:
-    Props,
+    Readonly<Props>,
 ): JSX.Element | never {
   const commonContexts = useContext(CommonContextsContext);
 

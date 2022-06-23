@@ -1,6 +1,6 @@
 // This module is browser compatible.
 
-import { AllHTMLAttributes, DOMAttributes } from "react";
+import { AllHTMLAttributes, Dispatch, DOMAttributes } from "react";
 
 export type AllHandlerMap = Omit<
   DOMAttributes<Element>,
@@ -54,3 +54,5 @@ export type HandlersWithContext<Context> = {
     context: Context,
   ) => ReturnType<Required<AllHandlerMap>[k]>;
 };
+
+export type StateSet<T> = [state: T, dispatch: Dispatch<T>];

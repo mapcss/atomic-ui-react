@@ -6,20 +6,13 @@ import {
   useRef,
 } from "react";
 import useListbox, { Options, Returns } from "./use_listbox.ts";
-import useId from "../hooks/use_id.ts";
+import { useId, useStateSet } from "../hooks/mod.ts";
 import { CommonContextsContext, IdContext } from "./context.ts";
-import useExclusiveState from "../_shared/use_exclusive_state.ts";
-import { ActiveIndexes, SelectIndexes } from "./types.ts";
-import { Exclusive } from "../util.ts";
-import FocusStrategyContext from "../focus/context.ts";
-import ActiveDescendant from "../focus/active_descendant.ts";
-
-type X = Exclusive<ActiveIndexes, {
-  initialActiveIndex?: number;
-}>;
-type Y = Exclusive<SelectIndexes, {
-  initialSelectIndex?: number;
-}>;
+import {
+  ExclusiveActiveIndex,
+  ExclusiveSelectIndex,
+} from "../_shared/types.ts";
+import { ActiveDescendant, FocusStrategyContext } from "../focus/mod.ts";
 
 export type Props =
   & {
@@ -30,20 +23,18 @@ export type Props =
     ) => ReactElement;
   }
   & Partial<Options>
-  & X
-  & Y;
+  & ExclusiveActiveIndex
+  & ExclusiveSelectIndex;
 
 export default function WithListbox(
   {
     children,
-    initialActiveIndex: initialState = 0,
-    setActiveIndex: setState,
-    activeIndex: state,
+    initialActiveIndex = 0,
+    activeIndexSet,
     focusStrategy = ActiveDescendant,
     onChangeActive,
-    selectIndex: _selectIndex,
-    setSelectIndex: _setSelectIndex,
     initialSelectIndex,
+    selectIndexSet,
     onChangeSelect,
   }: Props,
 ): JSX.Element {
@@ -51,16 +42,15 @@ export default function WithListbox(
     RefObject<HTMLElement | SVGElement | MathMLElement>[]
   >([]);
   const { id } = useId();
-  const [activeIndex, setActiveIndex] = useExclusiveState({
-    state,
-    setState,
-    initialState,
-  });
-  const [selectIndex, setSelectIndex] = useExclusiveState<number | undefined>({
-    state: _selectIndex,
-    setState: _setSelectIndex,
-    initialState: initialSelectIndex,
-  });
+  const [activeIndex, setActiveIndex] = useStateSet<number | undefined>(
+    initialActiveIndex,
+    activeIndexSet,
+  );
+  const [selectIndex, setSelectIndex] = useStateSet<number | undefined>(
+    initialSelectIndex,
+    selectIndexSet,
+  );
+
   const ref = useRef<HTMLElement | SVGElement>(null);
 
   const [attributes, contexts] = useListbox({

@@ -24,7 +24,7 @@ const describeTests = describe({
 
 it(describeTests, "should render as child", (t) => {
   const { container } = render(
-    <WithDialog initialIsShow>
+    <WithDialog isShow setIsShow={() => {}}>
       {(attributes) => {
         return <div {...attributes}></div>;
       }}
@@ -46,7 +46,7 @@ it(
   "should have aria-labelledby attribute when hasTitle is true",
   (t) => {
     const { container } = render(
-      <WithDialog hasTitle initialIsShow>
+      <WithDialog hasTitle isShow setIsShow={() => {}}>
         {(attrs) => <div {...attrs}></div>}
       </WithDialog>,
       {
@@ -67,7 +67,7 @@ it(
   "should have aria-describedby attribute when hasDescribe is true",
   (t) => {
     const { container } = render(
-      <WithDialog hasDescribe initialIsShow>
+      <WithDialog hasDescribe isShow setIsShow={() => {}}>
         {(attrs) => (
           <div {...attrs}>
           </div>
@@ -89,7 +89,7 @@ it(
 it(describeTests, "should render children as props", (t) => {
   const mockFn = fn();
   render(
-    <WithDialog>
+    <WithDialog isShow={false} setIsShow={() => {}}>
       {(attributes, context) => {
         mockFn(attributes);
         mockFn(context);
@@ -127,7 +127,7 @@ it(
   "should focus focusable element on fire keyDown event with tab key",
   () => {
     const { getByTestId } = render(
-      <WithDialog initialIsShow>
+      <WithDialog isShow setIsShow={() => {}}>
         {(attrs) => (
           <div {...attrs}>
             <button data-testid="test1">1</button>
@@ -172,7 +172,7 @@ it(
   () => {
     const mockFn = fn();
     render(
-      <WithDialog initialIsShow onChangeShow={mockFn}>
+      <WithDialog isShow setIsShow={mockFn}>
         {(attrs) => <div {...attrs}></div>}
       </WithDialog>,
       {

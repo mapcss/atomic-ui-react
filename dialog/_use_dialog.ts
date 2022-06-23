@@ -5,13 +5,14 @@ import {
   getFirstFocusable,
   getNextFocusable,
   getPreviousFocusable,
+  mappingKey,
 } from "../util.ts";
 import { IsShowProps } from "./types.ts";
 import {
   AllAttributesWith,
   useAttributesWith,
+  useCallable,
   useEventListener,
-  useKeyboardEventHandler,
   useUpdateEffect,
 } from "../hooks/mod.ts";
 
@@ -89,31 +90,33 @@ export function defineUseDialog(role: "dialog" | "alertdialog") {
       onChangeShow?.(contexts);
     }, [isShow]);
 
-    const keyboardHandler = useKeyboardEventHandler([
-      [{ code: "Tab", shiftKey: true }, (ev) => {
-        const _root = root();
-        if (_root) {
-          ev.preventDefault();
-          const el = getPreviousFocusable(_root);
-          el?.focus();
-        }
-      }],
-      ["Tab", (ev) => {
-        const _root = root();
-        if (_root) {
-          ev.preventDefault();
-          const el = getNextFocusable(_root);
-          el?.focus();
-        }
-      }],
-      [
-        "Escape",
-        (ev) => {
-          ev.preventDefault();
-          setIsShow(false);
-        },
-      ],
-    ]);
+    const keyboardHandler = useCallback((ev: KeyboardEvent) => {
+      mappingKey([
+        [{ code: "Tab", shiftKey: true }, (ev) => {
+          const _root = root();
+          if (_root) {
+            ev.preventDefault();
+            const el = getPreviousFocusable(_root);
+            el?.focus();
+          }
+        }],
+        ["Tab", (ev) => {
+          const _root = root();
+          if (_root) {
+            ev.preventDefault();
+            const el = getNextFocusable(_root);
+            el?.focus();
+          }
+        }],
+        [
+          "Escape",
+          (ev) => {
+            ev.preventDefault();
+            setIsShow(false);
+          },
+        ],
+      ])(ev);
+    }, []);
 
     const titleId = useMemo<string | undefined>(
       () => hasTitle ? _titleId : undefined,
@@ -140,10 +143,11 @@ export function defineUseDialog(role: "dialog" | "alertdialog") {
       role,
     });
 
+    const callback = useCallable(keyboardHandler, isShow);
+
     useEventListener(
-      { target, event: "keydown", callback: keyboardHandler },
-      { use: isShow },
-      [target, isShow, keyboardHandler],
+      { target, event: "keydown", callback },
+      [target, callback],
     );
 
     return [attributes, contexts];

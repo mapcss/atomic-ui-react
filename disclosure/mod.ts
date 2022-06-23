@@ -22,4 +22,3 @@ export { default as useDisclosureContent } from "./use_disclosure_content.ts";
 export type {
   Params as UseDisclosureContentParams,
 } from "./use_disclosure_content.ts";
-export { default as useDisclosureStates } from "./use_disclosure_states.ts";

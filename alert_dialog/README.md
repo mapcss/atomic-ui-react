@@ -18,12 +18,11 @@ import {
 } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
 import { useCallback, useState } from "react";
 export default () => {
-  const [isShow, setIsShow] = useState(false);
-  const close = useCallback(() => setIsShow(false), []);
+  const stateSet = useState(false);
+  const close = useCallback(() => stateSet[1](false), []);
   return (
     <AlertDialog
-      isShow={isShow}
-      setIsShow={setIsShow}
+      isShowSet={stateSet}
       hasTitle
       hasDescribe
     >

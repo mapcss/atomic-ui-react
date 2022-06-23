@@ -17,6 +17,14 @@ export type ExclusiveActiveIndexProps = Exclusive<
   InitialActiveIndexProps
 >;
 
+export type ExclusiveActiveIndex = Exclusive<{
+  activeIndexSet: [number | undefined, () => number | undefined];
+}, InitialActiveIndexProps>;
+
+export type ExclusiveSelectIndex = Exclusive<{
+  selectIndexSet: [number | undefined, () => number | undefined];
+}, InitialSelectIndexProps>;
+
 export type SelectIndexProps = {
   /** The selected index if you want to use as a controlled component. */
   selectIndex: number | undefined;

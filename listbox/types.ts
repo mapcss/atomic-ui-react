@@ -1,5 +1,6 @@
 import { MutableRefObject, RefObject } from "react";
 import { Fn } from "../deps.ts";
+import { ActiveIndexProps, SelectIndexProps } from "../_shared/types.ts";
 
 export type ActiveIndexes = {
   activeIndex: number;
@@ -32,5 +33,5 @@ export type CommonContexts =
       RefObject<HTMLElement | SVGElement | MathMLElement>[]
     >;
   }
-  & ActiveIndexes
-  & SelectIndexes;
+  & ActiveIndexProps
+  & SelectIndexProps;

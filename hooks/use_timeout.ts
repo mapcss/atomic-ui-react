@@ -8,50 +8,61 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { isString } from "../deps.ts";
+import { isFunction, isString } from "../deps.ts";
 
-type Useable = {
-  /** Whether enable this hooks or not.
-   * @default true
-   */
-  use: boolean;
-};
+export type Params = {
+  /** A function to be executed after the timer expires. */
+  callback: EffectCallback | TimerHandler;
 
-export type Handler = EffectCallback | TimerHandler;
-export type Option = {
   /** The time, in milliseconds that the timer should wait before the specified function or code is executed.
    * If this parameter is omitted, a value of 0 is used, meaning execute "immediately", or more accurately, the next event cycle. */
-  ms: number;
+  ms: number | undefined;
 
   /** Additional arguments which are passed through to the function specified by `function`. */
-  args: any[];
-} & Useable;
+  args?: Iterable<unknown>;
+};
 
-/** Safe `setTimeout` with effect */
+/** Safe `setTimeout` that automatically clear on unmount or `deps` is updated.
+ * @param params useTimeout parameters.
+ * @param deps If present, effect will only activate if the values in the list change.
+ * ```tsx
+ * import { useTimeout } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ * export default () => {
+ *   useTimeout({
+ *     callback: () => {
+ *       console.log("call after 2s");
+ *     },
+ *     ms: 2000,
+ *   }, []);
+ * };
+ * ```
+ */
 export default function useTimeout(
-  handler: Handler,
-  { ms, use = true, args }: Readonly<Partial<Option>> = {},
+  {
+    callback,
+    ms,
+    args = [],
+  }: Readonly<Params>,
   deps?: DependencyList,
-): void {
-  const callback = useRef<ReturnType<EffectCallback>>();
-
-  const _handler = useMemo<Handler>(() => {
-    return isString(handler) ? handler : (...args: any[]) => {
-      // deno-lint-ignore ban-types
-      callback.current = (handler as Function).call(null, ...args);
-    };
-  }, [handler]);
+) {
+  const destructor = useRef<ReturnType<EffectCallback>>();
+  const handler = useMemo<TimerHandler>(
+    () =>
+      isString(callback) ? callback : ((...args: readonly any[]) => {
+        // deno-lint-ignore ban-types
+        destructor.current = (callback as Function).apply(null, args);
+      }),
+    [callback],
+  );
   useEffect(() => {
-    if (!use) return;
-
-    const id = setTimeout(_handler, ms, args);
+    const id = setTimeout(handler, ms, ...args);
 
     return () => {
       clearTimeout(id);
-      if (callback.current) {
-        callback.current();
-        callback.current = undefined;
+      if (isFunction(destructor.current)) {
+        destructor.current();
+        destructor.current = undefined;
       }
     };
-  }, [_handler, ms, use, JSON.stringify(args), JSON.stringify(deps)]);
+  }, deps);
 }

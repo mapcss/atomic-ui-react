@@ -166,6 +166,81 @@ Accepts up to 2 arguments.
 
 `boolean`
 
+### useEventListener
+
+[Source](./use_event_listener.ts) [Test](./use_event_listener_test.ts)
+
+Hook to register event listeners. Automatically removes event listeners when
+unmounting and whenever `deps` is changed.
+
+#### Example
+
+```tsx
+import { useEventListener } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  useEventListener({
+    target: () => document,
+    event: "keydown",
+    callback: (ev) => {
+      // console.log(ev.code)
+    },
+    options: {
+      passive: true,
+    },
+  }, []);
+};
+```
+
+#### Generics
+
+- `Target extends EventTarget`
+- `Ev extends keyof EventMap<Target> = keyof EventMap<Target>`
+
+```ts
+type EventMap<T> = T extends Window ? WindowEventMap
+  : T extends WindowEventHandlers ? WindowEventHandlersEventMap
+  : T extends Document ? DocumentEventMap
+  : T extends HTMLElement ? HTMLElementEventMap
+  : T extends SVGElement ? SVGElementEventMap
+  : T extends SVGSVGElement ? SVGSVGElementEventMap
+  : T extends Element ? ElementEventMap
+  : T extends Animation ? AnimationEventMap
+  : T extends ServiceWorker ? ServiceWorkerEventMap
+  : T extends ServiceWorkerContainer ? ServiceWorkerContainerEventMap
+  : T extends ServiceWorkerRegistration ? ServiceWorkerRegistrationEventMap
+  : T extends Worker ? WorkerEventMap
+  : T extends SharedWorker ? AbstractWorkerEventMap
+  : T extends ShadowRoot ? ShadowRootEventMap
+  : T extends SourceBuffer ? SourceBufferEventMap
+  : T extends SourceBufferList ? SourceBufferListEventMap
+  : T extends SpeechSynthesis ? SpeechSynthesisEventMap
+  : T extends SpeechSynthesisUtterance ? SpeechSynthesisUtteranceEventMap
+  : T extends TextTrack ? TextTrackEventMap
+  : T extends TextTrackCue ? TextTrackCueEventMap
+  : T extends TextTrackList ? TextTrackListEventMap
+  : T extends VisualViewport ? VisualViewportEventMap
+  : T extends WebSocket ? WebSocketEventMap
+  : T extends XMLHttpRequest ? XMLHttpRequestEventMap
+  : T extends XMLHttpRequestEventTarget ? XMLHttpRequestEventTargetEventMap
+  : T extends AbortSignal ? AbortSignalEventMap
+  : never;
+```
+
+#### Params
+
+| N | Name     | Required / Default | Description                                                                                                                                         |
+| - | -------- | :----------------: | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | params   | :white_check_mark: | useEventListener parameters                                                                                                                         |
+|   | target   | :white_check_mark: | `Target` &#124; `null` &#124; `undefined` &#124; `(() => Target` &#124; `null` &#124; `undefined` `)`<br>The target to add event listener.          |
+|   | callback | :white_check_mark: | `(ev: EventMap<Target>[Ev]) => void`<br>The callback event.                                                                                         |
+|   | event    | :white_check_mark: | `Ev`<br>Event type.                                                                                                                                 |
+|   | options  |         -          | `boolean` &#124; `AddEventListenerOptions`<br>Event listener options. This applies internally to both `addEventListener` and `removeEventListener`. |
+| 2 | deps     |         -          | `DependencyList`<br>If present, effect will only activate if the values in the list change.                                                         |
+
+#### Return
+
+`void`
+
 ### useId
 
 [Source](./use_id.ts) [Test](./use_id_test.ts)
@@ -248,6 +323,35 @@ export default () => {
 #### Returns
 
 `boolean`
+
+### useIsomorphicLayoutEffect
+
+[Source](./use_isomorphic_layout_effect.ts)
+[Test](./use_isomorphic_layout_effect_test.ts)
+
+`useLayoutEffect` that that works on server.
+
+#### Example
+
+```tsx
+import { useIsomorphicLayoutEffect } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  useIsomorphicLayoutEffect(() => {
+    // effect
+  }, []);
+};
+```
+
+#### Params
+
+| N | Name   | Required / Default | Description                                                                                 |
+| - | ------ | :----------------: | ------------------------------------------------------------------------------------------- |
+| 1 | effect | :white_check_mark: | `EffectCallback`<br>Imperative function that can return a cleanup function.                 |
+| 2 | deps   |         -          | `DependencyList`<br>If present, effect will only activate if the values in the list change. |
+
+#### Return
+
+`void`
 
 ### useLifecycle
 
@@ -424,9 +528,76 @@ Accepts up to 2 arguments.
 
 `T | U | undefined`
 
+### useStateSet
+
+[Source](./use_state_set.ts) [Test](./use_state_set_test.ts)
+
+Return `useState` return value or custom state and dispatch set.
+
+#### Example
+
+```tsx
+import { useStateSet } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+import { useState } from "react";
+export default () => {
+  const [state, setState] = useStateSet(false);
+  const states = useState(true);
+  const stateSet = useStateSet(false, states);
+};
+```
+
+#### Generics
+
+- `S`
+
+#### Params
+
+| N | Name         | Required / Default | Description                                          |
+| - | ------------ | :----------------: | ---------------------------------------------------- |
+| 1 | initialState | :white_check_mark: | `S` &#124; `() => S`<br>Initial state.               |
+| 2 | stateSet     |         -          | `[S, Dispatch<S>]`<br>Custom state and dispatch set. |
+
+#### Returns
+
+`[S, Dispatch<S>]`
+
+### useTimeout
+
+[Source](./use_timeout.ts) [Test](./use_timeout_test.ts)
+
+Safe `setTimeout` that automatically clear on unmount or `deps` is updated.
+
+#### Example
+
+```tsx
+import { useTimeout } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+export default () => {
+  useTimeout({
+    callback: () => {
+      console.log("call after 2s");
+    },
+    ms: 2000,
+  }, []);
+};
+```
+
+#### Params
+
+| N | Name     | Required / Default | Description                                                                                                                                                                                                                                                         |
+| - | -------- | :----------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | params   | :white_check_mark: | useTimeout parameters.                                                                                                                                                                                                                                              |
+|   | callback | :white_check_mark: | `EffectCallback` &#124; `TimerHandler`<br>A function to be executed after the timer expires.                                                                                                                                                                        |
+|   | ms       | :white_check_mark: | `number` &#124; `undefined`<br>The time, in milliseconds that the timer should wait before the specified function or code is executed. If this parameter is omitted, a value of 0 is used, meaning execute "immediately", or more accurately, the next event cycle. |
+|   | args     |        `[]`        | `Iterable<unknown>`<br>Additional arguments which are passed through to the function specified by `function`.                                                                                                                                                       |
+| 2 | deps     |         -          | `DependencyList`<br>If present, effect will only activate if the values in the list change.                                                                                                                                                                         |
+
+#### Return
+
+`void`
+
 ### useUpdateEffect
 
-[Source](./use_update_effect.ts.ts) [Test](./use_update_effect_test.ts)
+[Source](./use_update_effect.ts) [Test](./use_update_effect_test.ts)
 
 Accepts a function that contains imperative, possibly effectful code. It is not
 called at first rendering, and the side effect is executed only at re-rendering.

@@ -1,10 +1,9 @@
 import { MutableRefObject, RefObject } from "react";
+import { ActiveIndexProps } from "../_shared/types.ts";
 
 export type States = {
-  activeIndex: number;
-
   itemsRef: MutableRefObject<
-    RefObject<HTMLElement | SVGElement | MathMLElement>[]
+    RefObject<HTMLElement | SVGElement>[]
   >;
 };
 
@@ -13,5 +12,5 @@ export type Dispatches = {
 };
 
 export type CommonContexts =
-  & States
-  & Dispatches;
+  & ActiveIndexProps
+  & States;

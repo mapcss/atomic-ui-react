@@ -11,10 +11,9 @@ import {
 } from "react";
 import { joinChars } from "../util.ts";
 import {
-  ActiveIndexStateSetContext,
+  CommonContextsContext,
   FocusStrategyContext,
   IdContext,
-  ItemsRefContext,
 } from "./context.ts";
 import useToolbarItem, {
   AllAttributesWithContexts,
@@ -35,11 +34,10 @@ export default function WithToolbarItem(
   { children, ...allAttributes }: Readonly<Props>,
 ): JSX.Element | never {
   const idReturns = useContext(IdContext);
-  const itemsRef = useContext(ItemsRefContext);
+  const commonContexts = useContext(CommonContextsContext);
   const focusStrategy = useContext(FocusStrategyContext);
-  const activeIndexStateSet = useContext(ActiveIndexStateSetContext);
 
-  if (!idReturns || !itemsRef || !activeIndexStateSet) {
+  if (!idReturns || !commonContexts) {
     throw Error(ERROR_MSG);
   }
   const ref = useRef<HTMLElement | SVGElement>(null);
@@ -50,18 +48,17 @@ export default function WithToolbarItem(
   const { id, index } = useId({ prefix });
 
   useEffect(() => {
-    itemsRef.current?.push(ref);
+    commonContexts.itemsRef.current?.push(ref);
   }, []);
 
-  const [activeIndex, setActiveIndex] = activeIndexStateSet;
+  const ctx = useMemo(() => ({ id, index, ...commonContexts }), [
+    commonContexts,
+    id,
+    index,
+  ]);
+
   const [attributes, contexts] = useToolbarItem(
-    {
-      itemsRef,
-      id,
-      index,
-      activeIndex,
-      setActiveIndex,
-    },
+    ctx,
     { focusStrategy },
     allAttributes,
   );

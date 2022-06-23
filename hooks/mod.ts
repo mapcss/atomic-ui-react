@@ -12,10 +12,7 @@ export type {
   Returns as UseIdReturns,
 } from "./use_id.ts";
 export { default as useTimeout } from "./use_timeout.ts";
-export type {
-  Handler as TimeoutHandler,
-  Option as UseTimeoutOption,
-} from "./use_timeout.ts";
+export type { Params as UseTimeoutParams } from "./use_timeout.ts";
 export { default as useLifecycle } from "./use_lifecycle.ts";
 export type { Params as UseLifecycleParams } from "./use_lifecycle.ts";
 export type { Useable } from "./types.ts";
@@ -25,11 +22,7 @@ export type {
   Params as UseOutsideParams,
 } from "./use_outside.ts";
 export { default as useEventListener } from "./use_event_listener.ts";
-export type {
-  Option as UseEventListenerOption,
-  Param as UseEventListenerParam,
-} from "./use_event_listener.ts";
-export { default as useKeyboardEventHandler } from "./use_keyboard_event_handler.ts";
+export type { Params as UseEventListenerParams } from "./use_event_listener.ts";
 export { default as useKeyId } from "./use_key_id.ts";
 export type {
   Options as UseKeyIdOptions,
@@ -50,3 +43,4 @@ export { default as useMergedRef } from "./use_merged_ref.ts";
 export type { Returns as UseMergedRefReturns } from "./use_merged_ref.ts";
 export { default as useCallable } from "./use_callable.ts";
 export { default as useBind } from "./use_bind.ts";
+export { default as useStateSet } from "./use_state_set.ts";

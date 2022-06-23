@@ -1,14 +1,18 @@
 import { AllHTMLAttributes, KeyboardEvent, useMemo } from "react";
 import { CommonContexts } from "./types.ts";
-import useAttributesWith, {
+import {
   AllAttributesWith,
   AttributesHandler,
-} from "../hooks/use_attributes_with.ts";
+  useAttributesWith,
+  useUpdateEffect,
+} from "../hooks/mod.ts";
 import { mappingKey, next, prev } from "../util.ts";
-import { FocusStrategyProps } from "../focus/types.ts";
-import useFocusStrategy from "../focus/use_focus_strategy.ts";
-import ActiveDescendant from "../focus/active_descendant.ts";
-import useUpdateEffect from "../hooks/use_update_effect.ts";
+import {
+  ActiveDescendant,
+  FocusStrategyProps,
+  useFocusStrategy,
+} from "../focus/mod.ts";
+import { isNumber } from "../deps.ts";
 
 export type AllAttributesWithContexts = AllAttributesWith<[CommonContexts]>;
 
@@ -56,7 +60,10 @@ export default function useListbox(
   }, [contexts.selectIndex]);
 
   const activeElement = useMemo(
-    () => childrenRef.current[activeIndex]?.current,
+    () =>
+      isNumber(activeIndex)
+        ? childrenRef.current[activeIndex]?.current
+        : undefined,
     [activeIndex],
   );
 

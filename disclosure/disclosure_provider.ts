@@ -2,32 +2,54 @@
 
 import { createElement, ReactNode } from "react";
 import { IdContext, OpenContext } from "./context.ts";
-import useDisclosureStates, {
-  Options,
-  Params,
-} from "./use_disclosure_states.ts";
+import { useId, useStateSet, useUpdateEffect } from "../hooks/mod.ts";
+import { StateSet } from "../types.ts";
+import { SharedContexts } from "./types.ts";
+import { Exclusive } from "../util.ts";
 
 export type Props =
   & {
-    children: ReactNode;
+    children?: ReactNode;
+
+    onIsOpenChange?: (contexts: SharedContexts) => void;
   }
-  & Params
-  & Partial<Options>;
+  & Exclusive<{
+    isOpenSet: StateSet<boolean>;
+  }, {
+    /** Default state of `isOpen`
+     * @default false
+     */
+    initialIsOpen?: boolean;
+  }>;
 
 export default function DisclosureProvider(
-  { children, isOpen, setIsOpen, onChangeOpen, isInitialOpen }: Props,
+  {
+    children,
+    onIsOpenChange,
+    initialIsOpen = false,
+    isOpenSet,
+  }: Readonly<Props>,
 ): JSX.Element {
-  const [states, dispatches] = useDisclosureStates({
-    isInitialOpen,
-    isOpen: isOpen as never,
-    setIsOpen: setIsOpen as never,
-  }, { onChangeOpen });
+  const { id } = useId();
+
+  const [isOpen, setIsOpen] = useStateSet(initialIsOpen, isOpenSet);
+
+  useUpdateEffect(
+    () => {
+      onIsOpenChange?.({
+        id,
+        isOpen,
+        setIsOpen,
+      });
+    },
+    [isOpen],
+  );
 
   return createElement(
     IdContext.Provider,
-    { value: states.id },
+    { value: id },
     createElement(OpenContext.Provider, {
-      value: [states.isOpen, dispatches.setIsOpen],
+      value: [isOpen, setIsOpen],
     }, children),
   );
 }

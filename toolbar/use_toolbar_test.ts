@@ -32,7 +32,7 @@ Deno.test("useToolbar should define attributes with contexts", () => {
       },
       undefined,
       {
-        tabIndex: (contexts) => contexts.activeIndex,
+        tabIndex: (contexts) => contexts.activeIndex!,
         title: "test",
       },
     )

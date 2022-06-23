@@ -12,7 +12,9 @@ const describeTests = describe({
 it(describeTests, "should be match snapshot", (t) => {
   const { container } = render(
     <Breadcrumb>
-      <a>test</a>
+      <a href="/html">HTML</a>
+      <a href="/html/breadcrumb">Breadcrumb</a>
+      <a href="/html/breadcrumb/example">Example</a>
     </Breadcrumb>,
   );
 
@@ -59,7 +61,7 @@ it(describeTests, "should overwrite components", (t) => {
   rerender(
     <Breadcrumb
       components={{
-        ol: (props) => <ul {...props} />,
+        ol: (props) => <ul {...props} className="text-lg" />,
       }}
     >
       <a>1</a>

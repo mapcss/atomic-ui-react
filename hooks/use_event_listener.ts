@@ -1,13 +1,7 @@
 // This module is browser compatible.
 
-import { DependencyList, useEffect } from "react";
-import { Lazyable, lazyEval } from "../util.ts";
-import { isString } from "../deps.ts";
-import { Useable } from "./types.ts";
-
-export type TargetLike<
-  T extends EventTarget,
-> = Lazyable<T | undefined | null>;
+import { DependencyList, useEffect, useMemo } from "react";
+import { resolveLazy } from "../util.ts";
 
 export type EventMap<T> = T extends Window ? WindowEventMap
   : T extends WindowEventHandlers ? WindowEventHandlersEventMap
@@ -37,50 +31,70 @@ export type EventMap<T> = T extends Window ? WindowEventMap
   : T extends AbortSignal ? AbortSignalEventMap
   : never;
 
-export type Param<
+export type Params<
   Target extends EventTarget,
-  E extends keyof EventMap<Target> = keyof EventMap<Target>,
+  Ev extends keyof EventMap<Target> = keyof EventMap<Target>,
 > = {
-  target: TargetLike<Target>;
-  callback: (ev: EventMap<Target>[E]) => void;
-  event: E | E[];
+  /** The target to add event listener. */
+  target: Target | null | undefined | (() => Target | null | undefined);
+
+  /** The callback event. */
+  callback: (ev: EventMap<Target>[Ev]) => void;
+
+  /** Event type. */
+  event: Ev;
+
+  /** Event listener options.
+   * This applies internally to both `addEventListener` and `removeEventListener`.
+   */
+  options?: boolean | AddEventListenerOptions;
 };
 
-export type Option = {
-  listenerOption: boolean | AddEventListenerOptions | undefined;
-} & Useable;
-
+/** Hook to register event listeners. Automatically removes event listeners when
+ * unmounting and whenever `deps` is changed.
+ * @param params useEventListener parameters.
+ * @param deps If present, effect will only activate if the values in the list change.
+ * @remark The event types is automatically deduced from `target` and `event`.
+ * ```tsx
+ * import { useEventListener } from "https://deno.land/x/atomic_ui_react@$VERSION/mod.ts";
+ * export default () => {
+ *   useEventListener({
+ *     target: () => document,
+ *     event: "keydown",
+ *     callback: (ev) => {
+ *       // console.log(ev.code)
+ *     },
+ *     options: {
+ *       passive: true,
+ *     },
+ *   }, []);
+ * };
+ * ```
+ */
 export default function useEventListener<
   Target extends EventTarget,
-  E extends keyof EventMap<Target> = keyof EventMap<Target>,
+  Ev extends keyof EventMap<Target> = keyof EventMap<Target>,
 >(
-  { target: _target, event: _event, callback }: Readonly<Param<Target, E>>,
-  { listenerOption, use = true }: Readonly<Partial<Option>> = {},
+  { target: _target, event: _event, callback, options }: Readonly<
+    Params<Target, Ev>
+  >,
   deps?: DependencyList,
 ): void {
+  const event = useMemo<string>(() => String(_event), [_event]);
   useEffect(() => {
-    if (!use) return;
-
-    const target = lazyEval(_target) as Target;
+    const target = resolveLazy(_target);
     if (!target) return;
 
-    const events = isString(_event)
-      ? [_event]
-      : Array.isArray(_event)
-      ? _event
-      : [_event];
-    events.forEach((event) => {
-      target.addEventListener(String(event), callback as never, listenerOption);
-    });
+    type Callback = Parameters<typeof target["addEventListener"]>[1];
+
+    target.addEventListener(event, callback as Callback, options);
 
     return () => {
-      events.forEach((event) => {
-        target.removeEventListener(
-          String(event),
-          callback as never,
-          listenerOption,
-        );
-      });
+      target.removeEventListener(
+        event,
+        callback as Callback,
+        options,
+      );
     };
   }, deps);
 }

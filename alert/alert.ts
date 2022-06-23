@@ -32,10 +32,3 @@ function _Alert<As extends Tag = "div">(
 
 const Alert = _forwardRef(_Alert);
 export default Alert;
-
-declare module "react" {
-  // deno-lint-ignore ban-types
-  function forwardRef<T, P = {}>(
-    render: (props: P, ref: Ref<T>) => ReactElement | null,
-  ): (props: P & RefAttributes<T>) => ReactElement | null;
-}
